@@ -1,0 +1,327 @@
+/* Design tokens */
+:root {
+  --bg: #0b0d10;
+  --surface: #111418;
+  --text: #0b0d10;
+  --muted: #6b717a;
+  --white: #ffffff;
+  --brand: #ff6a3d; /* accent similar to references */
+  --brand-600: #ff5a2a;
+  --brand-700: #e94e1f;
+  --ring: 0 0 0 3px rgba(255, 106, 61, 0.35);
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+    Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  color: var(--text);
+  line-height: 1.6;
+  background: #f6f7f9;
+}
+
+.container {
+  width: min(1160px, 92%);
+  margin: 0 auto;
+}
+
+/* Header */
+.topbar {
+  background: var(--brand);
+  color: var(--white);
+  font-size: 12px;
+}
+.topbar .container {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+.topbar .social a {
+  color: var(--white);
+  text-decoration: none;
+  margin-left: 12px;
+  opacity: 0.9;
+}
+.topbar .social a:hover {
+  opacity: 1;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+}
+.logo {
+  font-weight: 700;
+  text-decoration: none;
+  color: #111418;
+  letter-spacing: 0.2px;
+}
+.nav {
+  display: flex;
+  gap: 24px;
+}
+.nav a {
+  color: #111418;
+  text-decoration: none;
+  font-weight: 500;
+  opacity: 0.9;
+}
+.nav a:hover {
+  opacity: 1;
+}
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 0;
+  font-size: 20px;
+}
+
+/* Section 1 - Light Hero */
+.section {
+  position: relative;
+}
+.hero-light {
+  padding: 64px 0 40px;
+  background: linear-gradient(180deg, #f7f8fb 0%, #ffffff 100%);
+  overflow: hidden;
+}
+.hero-media {
+  position: absolute;
+  inset: 0;
+  background: url("https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?q=80&w=2000&auto=format&fit=crop")
+    center/cover no-repeat;
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+}
+.hero-content {
+  position: relative;
+}
+.hero-title {
+  margin: 0 0 8px;
+  font-size: clamp(28px, 5vw, 44px);
+  letter-spacing: -0.02em;
+}
+.hero-subtitle {
+  margin: 0 0 24px;
+  color: var(--muted);
+  max-width: 820px;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+.service-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  background: #ffffffcc;
+  border: 1px solid #e9eef5;
+  border-radius: var(--radius);
+  padding: 18px;
+  backdrop-filter: blur(4px);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.service-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(17, 20, 24, 0.06);
+  border-color: #dfe7f1;
+}
+.service-card .icon {
+  width: 44px;
+  height: 44px;
+  color: var(--brand);
+  display: grid;
+  place-items: center;
+}
+.service-card svg {
+  width: 28px;
+  height: 28px;
+}
+.service-card .label {
+  font-weight: 600;
+}
+
+.hero-cta {
+  margin-top: 16px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn:focus {
+  outline: none;
+  box-shadow: var(--ring);
+}
+.btn-accent {
+  background: var(--brand);
+  color: var(--white);
+}
+.btn-accent:hover {
+  background: var(--brand-600);
+}
+.btn-primary {
+  background: #ffd31f;
+  color: #111418;
+}
+.btn-primary:hover {
+  background: #ffca0a;
+}
+
+/* Section 2 - Dark Form Hero */
+.hero-dark {
+  background: #1a1f26;
+  color: var(--white);
+  padding: 72px 0;
+}
+.dark-content {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+.dark-text h2 {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 5vw, 40px);
+  letter-spacing: -0.02em;
+}
+.dark-text p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.lead-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.lead-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  color: #d3d8df;
+}
+.lead-form input {
+  width: 100%;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--white);
+  padding: 0 12px;
+}
+.lead-form input::placeholder {
+  color: #a9b0ba;
+}
+.lead-form input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: var(--ring);
+  background: rgba(0, 0, 0, 0.35);
+}
+.lead-form .btn {
+  grid-column: span 2;
+  height: 48px;
+  font-weight: 700;
+}
+.form-note {
+  grid-column: span 2;
+  margin: 0;
+  font-size: 12px;
+  color: #9aa3ad;
+}
+
+/* Footer */
+.site-footer {
+  background: #0f1318;
+  color: #c8d0da;
+  padding: 20px 0;
+}
+.site-footer .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.footer-nav a {
+  color: #c8d0da;
+  text-decoration: none;
+  margin-left: 16px;
+  opacity: 0.85;
+}
+.footer-nav a:hover {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .dark-content {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 680px) {
+  .nav {
+    display: none;
+    position: absolute;
+    inset: 64px 0 auto 0;
+    background: #ffffff;
+    border-top: 1px solid #e9eef5;
+    padding: 12px 4%;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .nav a {
+    padding: 10px 0;
+  }
+  .nav.is-open {
+    display: flex;
+  }
+  .nav-toggle {
+    display: inline-flex;
+  }
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lead-form {
+    grid-template-columns: 1fr;
+  }
+  .lead-form .btn,
+  .form-note {
+    grid-column: auto;
+  }
+}
