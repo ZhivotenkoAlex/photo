@@ -154,6 +154,15 @@ body {
   grid-template-columns: repeat(6, 1fr);
   gap: 16px;
 }
+.cards-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-title {
+  margin: 22px 0 10px;
+  font-weight: 700;
+  color: #ffffff;
+}
 
 .service-card {
   display: flex;
@@ -349,6 +358,11 @@ body {
   .cards-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+
+  .cards-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   .dark-content {
     grid-template-columns: 1fr;
   }
@@ -376,6 +390,11 @@ body {
   .cards-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .cards-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .lead-form {
     grid-template-columns: 1fr;
   }

@@ -26,7 +26,7 @@ if (leadForm) {
             alert('Please provide your name and phone number.');
             return;
         }
-        const url = 'https://script.google.com/macros/s/AKfycbybUEw5diLsBwObp-ON17grCKU6e-rJ762HesrnQjKB8VkwcVerNwyK32kdf3vBi4REqQ/exec'
+        const url = 'https://script.google.com/macros/s/AKfycbzgb0rC329a7nyjFR7Hc0GFHN_WM9iUxOGAC7r6_UaQ63Q0yxn1cpGYITOTzq8pSCfTMQ/exec'
         const qs = new URLSearchParams({ name, surname, phone, contact, city, street, house, comment });
         fetch(`${url}?${qs.toString()}`, { method: 'GET' })
             .then(async (r) => {
@@ -53,8 +53,8 @@ const translations = {
         'nav.portfolio': 'Portfolio',
         'nav.about': 'About',
         'nav.contact': 'Contact',
-        'hero.title': 'Professional Photography Help',
-        'hero.subtitle': 'Portraits, family stories, product shoots, events, and more. Capture the moments, elevate your brand.',
+        'hero.title': 'Professional photography service',
+        'hero.subtitle': 'Memori — your moment that stays in memory. The celebration passes quickly, but memories live forever. Preserve your special day so every moment stays with you.',
         'hero.cta': 'Book a Consultation',
         'svc.portrait': 'Portrait Session',
         'svc.family': 'Family Photography',
@@ -62,6 +62,12 @@ const translations = {
         'svc.product': 'Product Photos',
         'svc.love': 'Love Stories',
         'svc.custom': 'Custom Request',
+        'svc.photo_birthday': 'Birthday photography',
+        'svc.photo_wedding': 'Wedding photography',
+        'svc.photo_corporate': 'Corporate photography',
+        'svc.video_birthday': 'Birthday video',
+        'svc.video_wedding': 'Wedding video',
+        'svc.video_corporate': 'Corporate video',
         'dark.title': 'Photography Services in Your City',
         'dark.desc': 'Experienced team, clear pricing, fast delivery. Submit your request and we’ll call you back within 15 minutes.',
         'form.name': 'Your name',
@@ -89,7 +95,7 @@ const translations = {
         'nav.about': 'O nás',
         'nav.contact': 'Kontakt',
         'hero.title': 'Profesionální fotografické služby',
-        'hero.subtitle': 'Portréty, rodinné příběhy, produktové focení, události a další. Zachyťte okamžiky, posuňte svou značku.',
+        'hero.subtitle': 'Memori — tvůj okamžik, který zůstane v paměti. Oslava uteče rychle, ale vzpomínky zůstávají navždy. Zachovej svůj den tak, aby každá chvíle zůstala s tebou.',
         'hero.cta': 'Objednat konzultaci',
         'svc.portrait': 'Portrétní focení',
         'svc.family': 'Rodinná fotografie',
@@ -97,6 +103,12 @@ const translations = {
         'svc.product': 'Produktové fotky',
         'svc.love': 'Láskyplné příběhy',
         'svc.custom': 'Individuální požadavek',
+        'svc.photo_birthday': 'Fotografie na narozeniny',
+        'svc.photo_wedding': 'Fotografie na svatbu',
+        'svc.photo_corporate': 'Fotografie na korporátní akce',
+        'svc.video_birthday': 'Video na narozeniny',
+        'svc.video_wedding': 'Video na svatbu',
+        'svc.video_corporate': 'Video na korporátní akce',
         'dark.title': 'Fotografické služby ve vašem městě',
         'dark.desc': 'Zkušený tým, férové ceny, rychlé dodání. Zanechte žádost a do 15 minut se vám ozveme.',
         'form.name': 'Jméno',
@@ -121,7 +133,7 @@ const translations = {
 };
 
 function applyI18n(lang) {
-    const dict = translations[lang] || translations.en;
+    const dict = translations[lang] || translations.sc;
     document.querySelectorAll('[data-i18n]').forEach((el) => {
         const key = el.getAttribute('data-i18n');
         if (dict[key]) el.textContent = dict[key];
