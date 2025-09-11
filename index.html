@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>PhotoService — Professional Photography</title>
+    <title>Memori — Video_foto_praha</title>
     <meta
       name="description"
       content="Modern photography services: portraits, family, events, product, and more."
@@ -23,14 +23,25 @@
           <span>+380 (99) 123-45-67</span>
           <span>hello@photosvc.com</span>
           <nav class="social">
-            <a aria-label="Instagram" href="#">IG</a>
-            <a aria-label="Facebook" href="#">FB</a>
-            <a aria-label="Telegram" href="#">TG</a>
+            <a aria-label="Instagram" href="#">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect x="2.75" y="2.75" width="18.5" height="18.5" rx="5" />
+                <circle cx="12" cy="12" r="4.25" />
+                <circle cx="17.5" cy="6.5" r="1.25" />
+              </svg>
+            </a>
           </nav>
         </div>
       </div>
       <div class="container navbar">
-        <a class="logo" href="#">PhotoService</a>
+        <a class="logo" href="#">Memori</a>
         <button
           class="nav-toggle"
           aria-label="Toggle navigation"
@@ -159,40 +170,96 @@
     <!-- Section 2: Dark CTA with form (inspired by second reference) -->
     <section id="contact" class="section hero-dark">
       <div class="container dark-content">
-        <div class="dark-text">
-          <h2>Photography Services in Your City</h2>
-          <p>
-            Experienced team, clear pricing, fast delivery. Submit your request
-            and we’ll call you back within 15 minutes.
-          </p>
+        <div class="dark-left">
+          <div class="dark-text">
+            <h2>Photography Services in Your City</h2>
+            <p>
+              Experienced team, clear pricing, fast delivery. Submit your
+              request and we’ll call you back within 15 minutes.
+            </p>
+          </div>
+          <form class="lead-form" novalidate>
+            <label>
+              <span>Your name</span>
+              <input
+                type="text"
+                name="name"
+                placeholder="Jane Doe"
+                autocomplete="name"
+                required
+              />
+            </label>
+            <label>
+              <span>Surname</span>
+              <input
+                type="text"
+                name="surname"
+                placeholder="Surname"
+                autocomplete="family-name"
+              />
+            </label>
+            <label>
+              <span>Phone number</span>
+              <input
+                type="tel"
+                name="phone"
+                placeholder="+380 99 123 45 67"
+                inputmode="tel"
+                autocomplete="tel"
+                required
+              />
+            </label>
+            <label>
+              <span>Additional connection (Telegram/Viber)</span>
+              <input
+                type="text"
+                name="contact"
+                placeholder="@telegram or Viber number"
+                autocomplete="off"
+              />
+            </label>
+            <label>
+              <span>City</span>
+              <input
+                type="text"
+                name="city"
+                placeholder="City"
+                autocomplete="address-level2"
+              />
+            </label>
+            <label>
+              <span>Street</span>
+              <input
+                type="text"
+                name="street"
+                placeholder="Street name"
+                autocomplete="address-line1"
+              />
+            </label>
+            <label>
+              <span>House number</span>
+              <input
+                type="text"
+                name="house"
+                placeholder="e.g., 24A"
+                autocomplete="address-line2"
+              />
+            </label>
+            <label class="full">
+              <span>Comment</span>
+              <textarea
+                name="comment"
+                rows="4"
+                placeholder="Describe your request (date, location, style)..."
+              ></textarea>
+            </label>
+            <button type="submit" class="btn btn-primary">Get a Quote</button>
+            <p class="form-note">
+              By sending the form, you agree to our privacy policy.
+            </p>
+          </form>
         </div>
-        <form class="lead-form" novalidate>
-          <label>
-            <span>Your name</span>
-            <input
-              type="text"
-              name="name"
-              placeholder="Jane Doe"
-              autocomplete="name"
-              required
-            />
-          </label>
-          <label>
-            <span>Phone number</span>
-            <input
-              type="tel"
-              name="phone"
-              placeholder="+380 99 123 45 67"
-              inputmode="tel"
-              autocomplete="tel"
-              required
-            />
-          </label>
-          <button type="submit" class="btn btn-primary">Get a Quote</button>
-          <p class="form-note">
-            By sending the form, you agree to our privacy policy.
-          </p>
-        </form>
+        <div class="dark-visual" aria-hidden="true"></div>
       </div>
     </section>
 
