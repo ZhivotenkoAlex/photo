@@ -93,6 +93,24 @@ body {
 .nav a:hover {
   opacity: 1;
 }
+.lang-switch {
+  display: inline-flex;
+  gap: 8px;
+  margin-left: 8px;
+}
+.lang-switch button {
+  border: 1px solid #e9eef5;
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.lang-switch button.active {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
 .nav-toggle {
   display: none;
   background: none;

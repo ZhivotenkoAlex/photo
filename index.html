@@ -50,10 +50,14 @@
           ☰
         </button>
         <nav class="nav">
-          <a href="#services">Services</a>
-          <a href="#portfolio">Portfolio</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
+          <a href="#services" data-i18n="nav.services">Services</a>
+          <a href="#portfolio" data-i18n="nav.portfolio">Portfolio</a>
+          <a href="#about" data-i18n="nav.about">About</a>
+          <a href="#contact" data-i18n="nav.contact">Contact</a>
+          <div class="lang-switch" role="group" aria-label="Language">
+            <button type="button" data-lang="en">EN</button>
+            <button type="button" data-lang="cs">CS</button>
+          </div>
         </nav>
       </div>
     </header>
@@ -62,8 +66,10 @@
     <section id="services" class="section hero-light">
       <div class="hero-media" aria-hidden="true"></div>
       <div class="container hero-content">
-        <h1 class="hero-title">Professional Photography Help</h1>
-        <p class="hero-subtitle">
+        <h1 class="hero-title" data-i18n="hero.title">
+          Professional Photography Help
+        </h1>
+        <p class="hero-subtitle" data-i18n="hero.subtitle">
           Portraits, family stories, product shoots, events, and more. Capture
           the moments, elevate your brand.
         </p>
@@ -83,7 +89,7 @@
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
             </div>
-            <div class="label">Portrait Session</div>
+            <div class="label" data-i18n="svc.portrait">Portrait Session</div>
           </a>
           <a class="service-card" href="#contact">
             <div class="icon" aria-hidden="true">
@@ -98,7 +104,7 @@
                 <circle cx="12" cy="13" r="4" />
               </svg>
             </div>
-            <div class="label">Family Photography</div>
+            <div class="label" data-i18n="svc.family">Family Photography</div>
           </a>
           <a class="service-card" href="#contact">
             <div class="icon" aria-hidden="true">
@@ -113,7 +119,7 @@
                 <path d="M3 14l4-4 3 3 3-3 5 5" />
               </svg>
             </div>
-            <div class="label">Event Coverage</div>
+            <div class="label" data-i18n="svc.event">Event Coverage</div>
           </a>
           <a class="service-card" href="#contact">
             <div class="icon" aria-hidden="true">
@@ -128,7 +134,7 @@
                 <path d="M9 9h6v6H9z" />
               </svg>
             </div>
-            <div class="label">Product Photos</div>
+            <div class="label" data-i18n="svc.product">Product Photos</div>
           </a>
           <a class="service-card" href="#contact">
             <div class="icon" aria-hidden="true">
@@ -143,7 +149,7 @@
                 <circle cx="12" cy="10" r="3" />
               </svg>
             </div>
-            <div class="label">Love Stories</div>
+            <div class="label" data-i18n="svc.love">Love Stories</div>
           </a>
           <a class="service-card" href="#contact">
             <div class="icon" aria-hidden="true">
@@ -157,12 +163,14 @@
                 <path d="M4 7h16M4 12h16M4 17h16" />
               </svg>
             </div>
-            <div class="label">Custom Request</div>
+            <div class="label" data-i18n="svc.custom">Custom Request</div>
           </a>
         </div>
 
         <div class="hero-cta">
-          <a class="btn btn-accent" href="#contact">Book a Consultation</a>
+          <a class="btn btn-accent" href="#contact" data-i18n="hero.cta"
+            >Book a Consultation</a
+          >
         </div>
       </div>
     </section>
@@ -172,89 +180,97 @@
       <div class="container dark-content">
         <div class="dark-left">
           <div class="dark-text">
-            <h2>Photography Services in Your City</h2>
-            <p>
+            <h2 data-i18n="dark.title">Photography Services in Your City</h2>
+            <p data-i18n="dark.desc">
               Experienced team, clear pricing, fast delivery. Submit your
               request and we’ll call you back within 15 minutes.
             </p>
           </div>
           <form class="lead-form" novalidate>
             <label>
-              <span>Your name</span>
+              <span data-i18n="form.name">Your name</span>
               <input
                 type="text"
                 name="name"
-                placeholder="Jane Doe"
+                data-i18n-placeholder="ph.name"
                 autocomplete="name"
                 required
               />
             </label>
             <label>
-              <span>Surname</span>
+              <span data-i18n="form.surname">Surname</span>
               <input
                 type="text"
                 name="surname"
-                placeholder="Surname"
+                data-i18n-placeholder="ph.surname"
                 autocomplete="family-name"
               />
             </label>
             <label>
-              <span>Phone number</span>
+              <span data-i18n="form.phone">Phone number</span>
               <input
                 type="tel"
                 name="phone"
-                placeholder="+380 99 123 45 67"
+                data-i18n-placeholder="ph.phone"
                 inputmode="tel"
                 autocomplete="tel"
                 required
               />
             </label>
             <label>
-              <span>Additional connection (Telegram/Viber)</span>
+              <span data-i18n="form.contact"
+                >Additional connection (Telegram/Viber)</span
+              >
               <input
                 type="text"
                 name="contact"
-                placeholder="@telegram or Viber number"
+                data-i18n-placeholder="ph.contact"
                 autocomplete="off"
               />
             </label>
             <label>
-              <span>City</span>
+              <span data-i18n="form.city">City</span>
               <input
                 type="text"
                 name="city"
-                placeholder="City"
+                data-i18n-placeholder="ph.city"
                 autocomplete="address-level2"
               />
             </label>
             <label>
-              <span>Street</span>
+              <span data-i18n="form.street">Street</span>
               <input
                 type="text"
                 name="street"
-                placeholder="Street name"
+                data-i18n-placeholder="ph.street"
                 autocomplete="address-line1"
               />
             </label>
             <label>
-              <span>House number</span>
+              <span data-i18n="form.house">House number</span>
               <input
                 type="text"
                 name="house"
-                placeholder="e.g., 24A"
+                data-i18n-placeholder="ph.house"
                 autocomplete="address-line2"
               />
             </label>
             <label class="full">
-              <span>Comment</span>
+              <span data-i18n="form.comment">Comment</span>
               <textarea
                 name="comment"
                 rows="4"
-                placeholder="Describe your request (date, location, style)..."
+                data-i18n-placeholder="ph.comment"
               ></textarea>
             </label>
-            <button type="submit" class="btn btn-primary">Get a Quote</button>
-            <p class="form-note">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              data-i18n="form.submit"
+            >
+              Get a Quote
+            </button>
+            <p class="form-note" data-i18n="form.note">
               By sending the form, you agree to our privacy policy.
             </p>
           </form>
@@ -266,12 +282,12 @@
     <footer class="site-footer">
       <div class="container">
         <div class="footer-left">
-          <strong>PhotoService</strong>
+          <strong>Memori</strong>
           <span>© <span id="year"></span></span>
         </div>
         <nav class="footer-nav">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
+          <a href="#" data-i18n="footer.privacy">Privacy</a>
+          <a href="#" data-i18n="footer.terms">Terms</a>
         </nav>
       </div>
     </footer>
