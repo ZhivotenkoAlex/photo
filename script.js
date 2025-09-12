@@ -8,6 +8,17 @@ if (navToggleButton) {
     });
 }
 
+// Add shadow when scrolled
+const headerEl = document.querySelector('.site-header');
+if (headerEl) {
+    const onScroll = () => {
+        if (window.scrollY > 10) headerEl.classList.add('is-scrolled');
+        else headerEl.classList.remove('is-scrolled');
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+}
+
 // Close mobile menu when a nav item is clicked
 document.querySelectorAll('.nav a').forEach((link) => {
     link.addEventListener('click', () => {
@@ -63,6 +74,7 @@ const translations = {
         'nav.portfolio': 'Portfolio',
         'nav.about': 'About',
         'nav.contact': 'Contact',
+        'nav.price': 'Price',
         'hero.title': 'Professional photography service',
         'hero.subtitle': 'Memori — your moment that stays in memory. The celebration passes quickly, but memories live forever. Preserve your special day so every moment stays with you.',
         'hero.cta': 'Book a Consultation',
@@ -78,6 +90,8 @@ const translations = {
         'svc.video_birthday': 'Birthday video',
         'svc.video_wedding': 'Wedding video',
         'svc.video_corporate': 'Corporate video',
+        'svc.photo_studio': 'Studio photo session',
+        'svc.video_misc': 'Other video',
         'dark.title': 'Photography Services in Your City',
         'dark.desc': 'Experienced team, clear pricing, fast delivery. Submit your request and we’ll call you back within 15 minutes.',
         'form.name': 'Your name',
@@ -109,12 +123,20 @@ const translations = {
         'pricing.extras': 'Extras',
         'pricing.print_all': 'Printing all package photos',
         'pricing.video_disc': 'Video on disc',
+        'form.location': 'We are currently working in Prague and the surrounding areas.',
+        'about.title': 'The story of Memori',
+        'about.p1': 'Memori is a team that preserves what matters most in life — your moments. We shoot professional photo and video, create custom clips and slide shows, print photos, and make sure no important event gets lost in time.',
+        'about.p2': 'Our videographers and photographers do everything to make your moment unforgettable. We put not only technology but also soul into every project so images convey genuine emotions.',
+        'about.p3': 'Our goal is simple — to give people the chance to return to their memories whenever they wish. A wedding, a birthday, a baby’s first smile, a concert, a performance, or just an ordinary day that became special — all this can be relived by opening an album or pressing play.',
+        'about.p4': 'We do this because we believe moments are true wealth. Things can be replaced, but feelings, emotions, and memories are priceless. That’s why Memori was created — to stop time in a frame and give people a memory that does not fade.',
+        'about.p5': 'Our philosophy is simple: life is made of moments — and we make them timeless.',
     },
     cs: {
         'nav.services': 'Služby',
         'nav.portfolio': 'Portfolio',
         'nav.about': 'O nás',
         'nav.contact': 'Kontakt',
+        'nav.price': 'Ceny',
         'hero.title': 'Profesionální fotografické služby',
         'hero.subtitle': 'Memori — tvůj okamžik, který zůstane v paměti. Oslava uteče rychle, ale vzpomínky zůstávají navždy. Zachovej svůj den tak, aby každá chvíle zůstala s tebou.',
         'hero.cta': 'Objednat konzultaci',
@@ -130,6 +152,8 @@ const translations = {
         'svc.video_birthday': 'Video na narozeniny',
         'svc.video_wedding': 'Video na svatbu',
         'svc.video_corporate': 'Video na korporátní akce',
+        'svc.photo_studio': 'Ateliérové focení',
+        'svc.video_misc': 'Ostatní video',
         'dark.title': 'Fotografické služby ve vašem městě',
         'dark.desc': 'Zkušený tým, férové ceny, rychlé dodání. Zanechte žádost a do 15 minut se vám ozveme.',
         'form.name': 'Jméno',
@@ -161,6 +185,75 @@ const translations = {
         'pricing.extras': 'Doplňky',
         'pricing.print_all': 'Tisk všech fotografií z balíčku',
         'pricing.video_disc': 'Video na disku',
+        'form.location': 'Momentálně pracujeme v Praze a jejím okolí.',
+        'about.title': 'Příběh Memori',
+        'about.p1': 'Memori je tým, který uchovává to nejcennější v životě — vaše momenty. Děláme profesionální foto a video, vytváříme individuální klipy a slideshow, tiskneme fotografie a dbáme na to, aby se žádná důležitá událost neztratila v čase.',
+        'about.p2': 'Naši kameramani a fotografové udělají vše pro to, aby se váš moment zapsal do paměti. Do každé práce dáváme nejen techniku, ale i srdce, aby záběry přenesly skutečné emoce.',
+        'about.p3': 'Naším cílem je jednoduché — dát lidem možnost vracet se ke svým vzpomínkám, kdykoli budou chtít. Svatba, narozeniny, první dětský úsměv, koncert, vystoupení nebo obyčejný den, který se stal výjimečným — to vše lze prožít znovu otevřením alba nebo stisknutím tlačítka přehrát.',
+        'about.p4': 'Děláme to proto, že věříme: momenty jsou skutečným bohatstvím. Věci lze nahradit, ale pocity, emoce a vzpomínky jsou nevyčíslitelné. Proto vzniklo Memori — abychom zastavili čas v záběru a darovali lidem paměť, která nevyhasíná.',
+        'about.p5': 'Naše filozofie je jednoduchá: život se skládá z momentů — a my je děláme věčnými.',
+    },
+    uk: {
+        'nav.services': 'Послуги',
+        'nav.portfolio': 'Портфоліо',
+        'nav.about': 'Про нас',
+        'nav.contact': 'Контакти',
+        'nav.price': 'Ціни',
+        'hero.title': 'Професійні фото- та відеопослуги',
+        'hero.subtitle': 'Memori — твій момент, що залишиться в пам’яті. Свято минає швидко, але спогади живуть завжди. Збережи свій день так, щоб кожна мить лишалася поруч.',
+        'hero.cta': 'Записатися на консультацію',
+        'svc.portrait': 'Портретна зйомка',
+        'svc.family': 'Сімейна фотографія',
+        'svc.event': 'Зйомка подій',
+        'svc.product': 'Предметна зйомка',
+        'svc.love': 'Love story',
+        'svc.custom': 'Індивідуальний запит',
+        'svc.photo_birthday': 'Фото на день народження',
+        'svc.photo_wedding': 'Фото на весілля',
+        'svc.photo_corporate': 'Фото для корпоративів',
+        'svc.photo_studio': 'Студійна фотосесія',
+        'svc.video_birthday': 'Відео на день народження',
+        'svc.video_wedding': 'Відео на весілля',
+        'svc.video_corporate': 'Відео для корпоративів',
+        'svc.video_misc': 'Інше відео',
+        'dark.title': 'Фото- та відеопослуги у вашому місті',
+        'dark.desc': 'Досвідчена команда, чесні ціни, швидкі терміни. Залишайте заявку — ми передзвонимо протягом 15 хвилин.',
+        'form.name': "Ваше ім'я",
+        'form.surname': 'Прізвище',
+        'form.phone': 'Номер телефону',
+        'form.contact': 'Додатковий контакт (Telegram/Viber)',
+        'form.city': 'Місто',
+        'form.street': 'Вулиця',
+        'form.house': 'Номер будинку',
+        'form.comment': 'Коментар',
+        'form.submit': 'Отримати пропозицію',
+        'form.note': 'Надсилаючи форму, ви погоджуєтесь з політикою конфіденційності.',
+        'ph.name': 'Іван Іваненко',
+        'ph.surname': 'Прізвище',
+        'ph.phone': '+380 99 123 45 67',
+        'ph.contact': '@telegram або номер Viber',
+        'ph.city': 'Місто',
+        'ph.street': 'Назва вулиці',
+        'ph.house': 'напр., 24А',
+        'ph.comment': 'Опишіть запит (дата, локація, стиль)...',
+        'pricing.title': 'Пакети та ціни (CZK)',
+        'pricing.note': 'Ціни орієнтовні та можуть змінюватись залежно від локації, часу та вимог. Остаточну вартість підтвердимо після короткої консультації.',
+        'pricing.photo': 'Фотографія',
+        'pricing.standard': 'Стандарт — 90 хв + 40 фото',
+        'pricing.basic': 'Базовий — 60 хв + 25 фото',
+        'pricing.premium': 'Преміум — 120 хв + 60 фото',
+        'pricing.video': 'Відео',
+        'pricing.video_hour': '1 година',
+        'pricing.extras': 'Додатково',
+        'pricing.print_all': 'Друк усіх фото з пакету',
+        'pricing.video_disc': 'Відео на диску',
+        'form.location': 'Ми в даний момент працюємо в містах Прага та її околицях.',
+        'about.title': 'Історія компанії Memori',
+        'about.p1': 'Memori – це команда, яка зберігає найцінніше у житті – ваші моменти. Ми займаємось професійною фото- та відеозйомкою, створюємо індивідуальні кліпи, слайд-шоу, друкуємо фотографії та допомагаємо зробити так, щоб жодна важлива подія не загубилася у потоці часу.',
+        'about.p2': 'Наша команда операторів і фотографів зробить усе, щоб твій момент запам’ятався. Ми вкладаємо у кожну роботу не тільки техніку, а й душу, щоб знімки передавали справжні емоції.',
+        'about.p3': 'Наша мета проста – подарувати людям можливість повертатися у свої спогади тоді, коли цього найбільше хочеться. Весілля, день народження, перша дитяча усмішка, концерт, виступ чи навіть звичайний день, який став особливим – усе це можна прожити знову, відкривши альбом чи ввімкнувши відео.',
+        'about.p4': 'Ми робимо це тому, що віримо: моменти – це справжнє багатство. Речі можна замінити, але почуття, емоції та спогади безцінні. Саме тому Memori створена для того, щоб зупиняти час у кадрі й дарувати людям пам’ять, яка не згасає.',
+        'about.p5': 'Наша філософія проста: життя складається з моментів – і ми робимо їх вічними.',
     }
 };
 
@@ -180,8 +273,37 @@ function applyI18n(lang) {
     });
 }
 
-document.querySelectorAll('.lang-switch button').forEach((btn) => {
-    btn.addEventListener('click', () => applyI18n(btn.getAttribute('data-lang')));
-});
+// Custom dropdown - always opens downward
+const langDd = document.getElementById('lang-dd');
+if (langDd) {
+    const btn = langDd.querySelector('.lang-dd__btn');
+    const list = langDd.querySelector('.lang-dd__list');
+    const label = document.getElementById('lang-dd-label');
+    const saved = localStorage.getItem('lang') || 'en';
+    label.textContent = saved.toUpperCase();
+    applyI18n(saved);
+    // highlight active
+    list.querySelectorAll('li').forEach(li => li.classList.toggle('active', li.getAttribute('data-lang') === saved));
 
-applyI18n(localStorage.getItem('lang') || 'en');
+    btn.addEventListener('click', () => {
+        const open = langDd.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', String(open));
+    });
+    list.querySelectorAll('li').forEach((li) => {
+        li.addEventListener('click', () => {
+            const lang = li.getAttribute('data-lang');
+            applyI18n(lang);
+            localStorage.setItem('lang', lang);
+            label.textContent = lang.toUpperCase();
+            list.querySelectorAll('li').forEach(el => el.classList.toggle('active', el === li));
+            langDd.classList.remove('is-open');
+            btn.setAttribute('aria-expanded', 'false');
+        });
+    });
+    document.addEventListener('click', (e) => {
+        if (!langDd.contains(e.target)) {
+            langDd.classList.remove('is-open');
+            btn.setAttribute('aria-expanded', 'false');
+        }
+    });
+}
