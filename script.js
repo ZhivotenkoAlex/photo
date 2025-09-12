@@ -8,6 +8,16 @@ if (navToggleButton) {
     });
 }
 
+// Close mobile menu when a nav item is clicked
+document.querySelectorAll('.nav a').forEach((link) => {
+    link.addEventListener('click', () => {
+        if (navMenu && navMenu.classList.contains('is-open')) {
+            navMenu.classList.remove('is-open');
+            if (navToggleButton) navToggleButton.setAttribute('aria-expanded', 'false');
+        }
+    });
+});
+
 // Simple form handling
 const leadForm = document.querySelector('.lead-form');
 if (leadForm) {

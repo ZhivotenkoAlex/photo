@@ -493,22 +493,35 @@ body {
     padding: 12px 4%;
     flex-direction: column;
     gap: 12px;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
   }
   .nav a {
     padding: 10px 0;
   }
   .nav.is-open {
     display: flex;
+    opacity: 1;
+    transform: translateY(0);
+    z-index: 1;
+    top: 115px;
   }
   .nav-toggle {
     display: inline-flex;
   }
   .cards-grid {
     grid-template-columns: repeat(2, 1fr);
+    grid-auto-flow: dense;
   }
 
   .cards-3 {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* If the grid has an odd number of items, make the last one span full width */
+  .cards-grid .service-card:nth-last-child(odd):last-child {
+    grid-column: 1 / -1;
   }
 
   .lead-form {
