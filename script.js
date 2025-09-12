@@ -279,7 +279,7 @@ if (langDd) {
     const btn = langDd.querySelector('.lang-dd__btn');
     const list = langDd.querySelector('.lang-dd__list');
     const label = document.getElementById('lang-dd-label');
-    const saved = localStorage.getItem('lang') || 'en';
+    const saved = localStorage.getItem('lang') || 'cs';
     label.textContent = saved.toUpperCase();
     applyI18n(saved);
     // highlight active
