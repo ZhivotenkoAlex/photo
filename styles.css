@@ -51,14 +51,25 @@ body {
   color: var(--white);
   text-decoration: none;
   opacity: 0.9;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
 }
 .topbar .social a:hover {
   opacity: 1;
+  color: var(--muted);
+  transform: translateY(-1px);
 }
 .topbar .social svg {
   width: 18px;
   height: 18px;
   display: block;
+  transition: transform 0.25s ease;
+}
+
+.social {
+  display: flex;
+  gap: 10px;
 }
 
 .navbar {
