@@ -104,6 +104,7 @@ body {
 .nav {
   display: flex;
   gap: 24px;
+  align-items: center;
 }
 .nav a {
   color: #111418;
