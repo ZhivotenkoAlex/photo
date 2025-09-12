@@ -393,6 +393,9 @@ body {
   padding: 16px;
   box-shadow: 0 12px 24px rgba(17, 20, 24, 0.06);
   backdrop-filter: saturate(1.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 .price-head {
   margin: 0 0 10px;
@@ -410,9 +413,10 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border: 1px dashed var(--border);
   border-radius: 10px;
+  min-height: 48px;
 }
 .price-list strong {
   font-weight: 800;
@@ -422,6 +426,8 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 .price-list strong {
   white-space: nowrap;
@@ -567,5 +573,22 @@ body {
     font-size: 11px;
     line-height: 1.4;
     opacity: 0.85;
+  }
+
+  /* Pricing: stack label and price on small screens */
+  .price-card {
+    padding: 14px;
+  }
+  .price-list li {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-height: auto;
+  }
+  .price-list li span {
+    white-space: normal;
+  }
+  .price-list strong {
+    text-align: right;
   }
 }
