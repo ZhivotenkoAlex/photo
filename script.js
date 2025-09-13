@@ -43,12 +43,31 @@ if (leadForm) {
         const street = (formData.get('street') || '').toString().trim();
         const house = (formData.get('house') || '').toString().trim();
         const comment = (formData.get('comment') || '').toString().trim();
-        if (!name || !phone) {
-            alert('Please provide your name and phone number.');
-            return;
-        }
-        const url = 'https://script.google.com/macros/s/AKfycbzgb0rC329a7nyjFR7Hc0GFHN_WM9iUxOGAC7r6_UaQ63Q0yxn1cpGYITOTzq8pSCfTMQ/exec'
-        const qs = new URLSearchParams({ name, surname, phone, contact, city, street, house, comment });
+        const packageName = (formData.get('package') || '').toString().trim();
+        // Basic validation
+        // clear previous errors
+        leadForm.querySelectorAll('.field-error').forEach(el => el.remove());
+        leadForm.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+        const errors = [];
+        const markError = (selectorKey) => {
+            const field = leadForm.querySelector(`[name="${selectorKey}"]`);
+            if (field) {
+                field.classList.add('error');
+                const msg = document.createElement('div');
+                msg.className = 'field-error';
+                msg.textContent = 'This field is required';
+                field.parentElement.appendChild(msg);
+            }
+        };
+        if (!name) { errors.push('name'); markError('name'); }
+        if (!surname) { errors.push('surname'); markError('surname'); }
+        if (!city) { errors.push('city'); markError('city'); }
+        if (!packageName) { errors.push('package'); markError('package'); }
+        const phoneValid = /^\+?[0-9\s-]{8,20}$/.test(phone);
+        if (!phoneValid) { errors.push('phone'); markError('phone'); }
+        if (errors.length) return;
+        const url = 'https://script.google.com/macros/s/AKfycbw5rkSkBRpG4MejP6yIZfEDKy_Zl_zRYklByB4XLOjsDeyq0MOIH1X9s-BblH160zhgyQ/exec'
+        const qs = new URLSearchParams({ name, surname, phone, contact, city, street, house, comment, package: packageName });
         fetch(`${url}?${qs.toString()}`, { method: 'GET' })
             .then(async (r) => {
                 const data = await r.json().catch(() => ({}));
@@ -104,6 +123,7 @@ const translations = {
         'form.comment': 'Comment',
         'form.package': 'Package',
         'form.package_placeholder': 'Choose a package',
+        'form.required_hint': 'Fields marked with * are required.',
         'form.submit': 'Get a Quote',
         'form.note': 'By sending the form, you agree to our privacy policy.',
         'ph.name': 'Jane',
@@ -172,6 +192,7 @@ const translations = {
         'form.comment': 'Komentář',
         'form.package': 'Balíček',
         'form.package_placeholder': 'Vyberte balíček',
+        'form.required_hint': 'Povinná pole jsou označena *.',
         'form.submit': 'Získat nabídku',
         'form.note': 'Odesláním formuláře souhlasíte se zásadami ochrany osobních údajů.',
         'ph.name': 'Jan',
@@ -240,6 +261,7 @@ const translations = {
         'form.comment': 'Коментар',
         'form.package': 'Пакет',
         'form.package_placeholder': 'Оберіть пакет',
+        'form.required_hint': 'Поля, позначені *, є обов’язковими.',
         'form.submit': 'Отримати пропозицію',
         'form.note': 'Надсилаючи форму, ви погоджуєтесь з політикою конфіденційності.',
         'ph.name': 'Іван',

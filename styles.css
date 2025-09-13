@@ -330,6 +330,25 @@ body {
   gap: 6px;
   font-size: 13px;
   color: #d3d8df;
+  grid-template-rows: auto auto 16px; /* reserve space for error */
+}
+.lead-form label.required > span::after {
+  content: " *";
+  color: #ff6a6a;
+  margin-left: 2px;
+}
+.lead-form .error {
+  border-color: #ff6a6a !important;
+  box-shadow: 0 0 0 3px rgba(255, 106, 106, 0.15);
+}
+.lead-form .field-error {
+  color: #ff9a9a;
+  font-size: 12px;
+  margin: 0;
+  line-height: 16px;
+}
+.req-hint {
+  opacity: 0.9;
 }
 .lead-form input {
   width: 100%;

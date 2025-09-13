@@ -340,7 +340,7 @@
             </p>
           </div>
           <form class="lead-form" novalidate>
-            <label>
+            <label class="required">
               <span data-i18n="form.name">Your name</span>
               <input
                 type="text"
@@ -350,16 +350,17 @@
                 required
               />
             </label>
-            <label>
+            <label class="required">
               <span data-i18n="form.surname">Surname</span>
               <input
                 type="text"
                 name="surname"
                 data-i18n-placeholder="ph.surname"
                 autocomplete="family-name"
+                required
               />
             </label>
-            <label>
+            <label class="required">
               <span data-i18n="form.phone">Phone number</span>
               <input
                 type="tel"
@@ -367,12 +368,14 @@
                 data-i18n-placeholder="ph.phone"
                 inputmode="tel"
                 autocomplete="tel"
+                pattern="^\+?[0-9\s-]{8,20}$"
+                title="Valid formats: +420 777 123 456"
                 required
               />
             </label>
-            <label>
+            <label class="required">
               <span data-i18n="form.package">Package</span>
-              <select name="package" class="input-select">
+              <select name="package" class="input-select" required>
                 <option
                   value=""
                   disabled
@@ -406,13 +409,14 @@
                 autocomplete="off"
               />
             </label>
-            <label>
+            <label class="required">
               <span data-i18n="form.city">City</span>
               <input
                 type="text"
                 name="city"
                 data-i18n-placeholder="ph.city"
                 autocomplete="address-level2"
+                required
               />
             </label>
             <label>
@@ -448,6 +452,9 @@
             >
               Get a Quote
             </button>
+            <p class="form-note req-hint" data-i18n="form.required_hint">
+              Fields marked with * are required.
+            </p>
             <p class="form-note" data-i18n="form.note">
               By sending the form, you agree to our privacy policy.
             </p>
