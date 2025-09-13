@@ -368,8 +368,16 @@
                 data-i18n-placeholder="ph.phone"
                 inputmode="tel"
                 autocomplete="tel"
-                pattern="^\+?[0-9\s-]{8,20}$"
-                title="Valid formats: +420 777 123 456"
+                required
+              />
+            </label>
+            <label class="required">
+              <span data-i18n="form.city">City</span>
+              <input
+                type="text"
+                name="city"
+                data-i18n-placeholder="ph.city"
+                autocomplete="address-level2"
                 required
               />
             </label>
@@ -398,6 +406,48 @@
                 </option>
               </select>
             </label>
+            <label class="required">
+              <span data-i18n="form.service">Service</span>
+              <select name="service" class="input-select" required>
+                <option value="" selected data-i18n="form.service_placeholder">
+                  Choose a service
+                </option>
+                <optgroup label="Photo" data-i18n-label="group.photo">
+                  <option value="photo_birthday" data-i18n="svc.photo_birthday">
+                    Birthday photography
+                  </option>
+                  <option value="photo_wedding" data-i18n="svc.photo_wedding">
+                    Wedding photography
+                  </option>
+                  <option
+                    value="photo_corporate"
+                    data-i18n="svc.photo_corporate"
+                  >
+                    Corporate photography
+                  </option>
+                  <option value="photo_studio" data-i18n="svc.photo_studio">
+                    Studio photo session
+                  </option>
+                </optgroup>
+                <optgroup label="Video" data-i18n-label="group.video">
+                  <option value="video_birthday" data-i18n="svc.video_birthday">
+                    Birthday video
+                  </option>
+                  <option value="video_wedding" data-i18n="svc.video_wedding">
+                    Wedding video
+                  </option>
+                  <option
+                    value="video_corporate"
+                    data-i18n="svc.video_corporate"
+                  >
+                    Corporate video
+                  </option>
+                  <option value="video_misc" data-i18n="svc.video_misc">
+                    Other video
+                  </option>
+                </optgroup>
+              </select>
+            </label>
             <label>
               <span data-i18n="form.contact"
                 >Additional connection (Telegram/Viber)</span
@@ -409,16 +459,7 @@
                 autocomplete="off"
               />
             </label>
-            <label class="required">
-              <span data-i18n="form.city">City</span>
-              <input
-                type="text"
-                name="city"
-                data-i18n-placeholder="ph.city"
-                autocomplete="address-level2"
-                required
-              />
-            </label>
+
             <label>
               <span data-i18n="form.street">Street</span>
               <input

@@ -19,6 +19,20 @@ if (headerEl) {
     window.addEventListener('scroll', onScroll, { passive: true });
 }
 
+// Phone validation helper: allow spaces, dashes, parentheses; 9–15 digits; optional leading +
+function isValidPhoneNumber(input) {
+    const raw = String(input || '').trim();
+    // keep only digits and leading plus
+    const cleaned = raw
+        .replace(/[^\d+]/g, '')       // remove everything except digits and plus
+        .replace(/(?!^)\+/g, '');     // ensure only one leading +
+    if (!cleaned) return false;
+    // E.164: + and 9–15 digits, or national: 9–15 digits
+    const e164 = /^\+[1-9]\d{8,14}$/;
+    const national = /^\d{9,15}$/;
+    return e164.test(cleaned) || national.test(cleaned);
+}
+
 // Close mobile menu when a nav item is clicked
 document.querySelectorAll('.nav a').forEach((link) => {
     link.addEventListener('click', () => {
@@ -39,6 +53,7 @@ if (leadForm) {
         const surname = (formData.get('surname') || '').toString().trim();
         const phone = (formData.get('phone') || '').toString().trim();
         const contact = (formData.get('contact') || '').toString().trim();
+        const service = (formData.get('service') || '').toString().trim();
         const city = (formData.get('city') || '').toString().trim();
         const street = (formData.get('street') || '').toString().trim();
         const house = (formData.get('house') || '').toString().trim();
@@ -49,25 +64,34 @@ if (leadForm) {
         leadForm.querySelectorAll('.field-error').forEach(el => el.remove());
         leadForm.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
         const errors = [];
-        const markError = (selectorKey) => {
+        const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+        const markError = (selectorKey, messageKey) => {
             const field = leadForm.querySelector(`[name="${selectorKey}"]`);
             if (field) {
                 field.classList.add('error');
                 const msg = document.createElement('div');
                 msg.className = 'field-error';
-                msg.textContent = 'This field is required';
+                msg.textContent = dict[messageKey] || dict['err.required'];
                 field.parentElement.appendChild(msg);
             }
         };
-        if (!name) { errors.push('name'); markError('name'); }
-        if (!surname) { errors.push('surname'); markError('surname'); }
-        if (!city) { errors.push('city'); markError('city'); }
-        if (!packageName) { errors.push('package'); markError('package'); }
-        const phoneValid = /^\+?[0-9\s-]{8,20}$/.test(phone);
-        if (!phoneValid) { errors.push('phone'); markError('phone'); }
+        if (!name) { errors.push('name'); markError('name', 'err.required'); }
+        if (!surname) { errors.push('surname'); markError('surname', 'err.required'); }
+        if (!city) { errors.push('city'); markError('city', 'err.required'); }
+        if (!packageName) { errors.push('package'); markError('package', 'err.required'); }
+        const phoneValid = isValidPhoneNumber(phone);
+        console.log("🚀 ~ phoneValid:", phoneValid)
+        if (!phone) {
+            errors.push('phone');
+            markError('phone', 'err.required');
+        } else if (!phoneValid) {
+            errors.push('phone');
+            markError('phone', 'err.phone');
+        }
+        if (!service) { errors.push('service'); markError('service', 'err.required'); }
         if (errors.length) return;
         const url = 'https://script.google.com/macros/s/AKfycbw5rkSkBRpG4MejP6yIZfEDKy_Zl_zRYklByB4XLOjsDeyq0MOIH1X9s-BblH160zhgyQ/exec'
-        const qs = new URLSearchParams({ name, surname, phone, contact, city, street, house, comment, package: packageName });
+        const qs = new URLSearchParams({ name, surname, phone, contact, city, street, house, comment, package: packageName, service });
         fetch(`${url}?${qs.toString()}`, { method: 'GET' })
             .then(async (r) => {
                 const data = await r.json().catch(() => ({}));
@@ -111,6 +135,8 @@ const translations = {
         'svc.video_corporate': 'Corporate video',
         'svc.photo_studio': 'Studio photo session',
         'svc.video_misc': 'Other video',
+        'group.photo': 'Photo',
+        'group.video': 'Video',
         'dark.title': 'Photography Services in Your City',
         'dark.desc': 'Experienced team, clear pricing, fast delivery. Submit your request and we’ll call you back within 15 minutes.',
         'form.name': 'Your name',
@@ -123,7 +149,11 @@ const translations = {
         'form.comment': 'Comment',
         'form.package': 'Package',
         'form.package_placeholder': 'Choose a package',
+        'form.service': 'Service',
+        'form.service_placeholder': 'Choose a service',
         'form.required_hint': 'Fields marked with * are required.',
+        'err.required': 'This field is required',
+        'err.phone': 'Enter a valid phone number',
         'form.submit': 'Get a Quote',
         'form.note': 'By sending the form, you agree to our privacy policy.',
         'ph.name': 'Jane',
@@ -149,7 +179,7 @@ const translations = {
         'pkg.basic': 'Basic — 60 min + 25 photos',
         'pkg.standard': 'Standard — 90 min + 40 photos',
         'pkg.premium': 'Premium — 120 min + 60 photos',
-        'pkg.video_hour': 'Video — 1 hour',
+        'pkg.video_hour': 'Video',
         'about.title': 'The story of Memori',
         'about.p1': 'Memori is a team that preserves what matters most in life — your moments. We shoot professional photo and video, create custom clips and slide shows, print photos, and make sure no important event gets lost in time.',
         'about.p2': 'Our videographers and photographers do everything to make your moment unforgettable. We put not only technology but also soul into every project so images convey genuine emotions.',
@@ -180,6 +210,8 @@ const translations = {
         'svc.video_corporate': 'Video na korporátní akce',
         'svc.photo_studio': 'Ateliérové focení',
         'svc.video_misc': 'Ostatní video',
+        'group.photo': 'Foto',
+        'group.video': 'Video',
         'dark.title': 'Fotografické služby ve vašem městě',
         'dark.desc': 'Zkušený tým, férové ceny, rychlé dodání. Zanechte žádost a do 15 minut se vám ozveme.',
         'form.name': 'Jméno',
@@ -192,7 +224,11 @@ const translations = {
         'form.comment': 'Komentář',
         'form.package': 'Balíček',
         'form.package_placeholder': 'Vyberte balíček',
+        'form.service': 'Služba',
+        'form.service_placeholder': 'Vyberte službu',
         'form.required_hint': 'Povinná pole jsou označena *.',
+        'err.required': 'Toto pole je povinné',
+        'err.phone': 'Zadejte platné telefonní číslo',
         'form.submit': 'Získat nabídku',
         'form.note': 'Odesláním formuláře souhlasíte se zásadami ochrany osobních údajů.',
         'ph.name': 'Jan',
@@ -218,7 +254,7 @@ const translations = {
         'pkg.basic': 'Basic — 60 min + 25 fotografií',
         'pkg.standard': 'Standard — 90 min + 40 fotografií',
         'pkg.premium': 'Premium — 120 min + 60 fotografií',
-        'pkg.video_hour': 'Video — 1 hodina',
+        'pkg.video_hour': 'Video',
         'about.title': 'Příběh Memori',
         'about.p1': 'Memori je tým, který uchovává to nejcennější v životě — vaše momenty. Děláme profesionální foto a video, vytváříme individuální klipy a slideshow, tiskneme fotografie a dbáme na to, aby se žádná důležitá událost neztratila v čase.',
         'about.p2': 'Naši kameramani a fotografové udělají vše pro to, aby se váš moment zapsal do paměti. Do každé práce dáváme nejen techniku, ale i srdce, aby záběry přenesly skutečné emoce.',
@@ -249,6 +285,8 @@ const translations = {
         'svc.video_wedding': 'Відео на весілля',
         'svc.video_corporate': 'Відео для корпоративів',
         'svc.video_misc': 'Інше відео',
+        'group.photo': 'Фото',
+        'group.video': 'Відео',
         'dark.title': 'Фото- та відеопослуги у вашому місті',
         'dark.desc': 'Досвідчена команда, чесні ціни, швидкі терміни. Залишайте заявку — ми передзвонимо протягом 15 хвилин.',
         'form.name': "Ваше ім'я",
@@ -261,7 +299,11 @@ const translations = {
         'form.comment': 'Коментар',
         'form.package': 'Пакет',
         'form.package_placeholder': 'Оберіть пакет',
+        'form.service': 'Послуга',
+        'form.service_placeholder': 'Оберіть послугу',
         'form.required_hint': 'Поля, позначені *, є обов’язковими.',
+        'err.required': 'Це поле є обов’язковим',
+        'err.phone': 'Введіть коректний номер телефону.',
         'form.submit': 'Отримати пропозицію',
         'form.note': 'Надсилаючи форму, ви погоджуєтесь з політикою конфіденційності.',
         'ph.name': 'Іван',
@@ -287,7 +329,7 @@ const translations = {
         'pkg.basic': 'Базовий — 60 хв + 25 фото',
         'pkg.standard': 'Стандарт — 90 хв + 40 фото',
         'pkg.premium': 'Преміум — 120 хв + 60 фото',
-        'pkg.video_hour': 'Відео — 1 година',
+        'pkg.video_hour': 'Відео',
         'about.title': 'Історія компанії Memori',
         'about.p1': 'Memori – це команда, яка зберігає найцінніше у житті – ваші моменти. Ми займаємось професійною фото- та відеозйомкою, створюємо індивідуальні кліпи, слайд-шоу, друкуємо фотографії та допомагаємо зробити так, щоб жодна важлива подія не загубилася у потоці часу.',
         'about.p2': 'Наша команда операторів і фотографів зробить усе, щоб твій момент запам’ятався. Ми вкладаємо у кожну роботу не тільки техніку, а й душу, щоб знімки передавали справжні емоції.',
@@ -302,6 +344,11 @@ function applyI18n(lang) {
     document.querySelectorAll('[data-i18n]').forEach((el) => {
         const key = el.getAttribute('data-i18n');
         if (dict[key]) el.textContent = dict[key];
+    });
+    // translate optgroup labels
+    document.querySelectorAll('[data-i18n-label]').forEach((el) => {
+        const key = el.getAttribute('data-i18n-label');
+        if (dict[key]) el.setAttribute('label', dict[key]);
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
         const key = el.getAttribute('data-i18n-placeholder');
