@@ -33,6 +33,28 @@ function isValidPhoneNumber(input) {
     return e164.test(cleaned) || national.test(cleaned);
 }
 
+// Toast helper (centered notification)
+function showToast(message, variant = 'success', timeoutMs = 5000) {
+    const root = document.getElementById('toast-root');
+    if (!root) return;
+    const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+    const ariaClose = dict['toast.close'] || 'Close';
+    const toast = document.createElement('div');
+    toast.className = 'toast' + (variant === 'error' ? ' toast--error' : '');
+    toast.innerHTML = '<span>' + message + '</span><button class="toast__close" aria-label="' + ariaClose + '">×</button>';
+    root.appendChild(toast);
+    root.classList.add('is-active');
+    const close = () => toast.remove();
+    toast.querySelector('.toast__close').addEventListener('click', close);
+    setTimeout(close, timeoutMs);
+    const observer = new MutationObserver(() => {
+        if (!root.querySelector('.toast')) {
+            root.classList.remove('is-active');
+        }
+    });
+    observer.observe(root, { childList: true });
+}
+
 // Close mobile menu when a nav item is clicked
 document.querySelectorAll('.nav a').forEach((link) => {
     link.addEventListener('click', () => {
@@ -80,7 +102,6 @@ if (leadForm) {
         if (!city) { errors.push('city'); markError('city', 'err.required'); }
         if (!packageName) { errors.push('package'); markError('package', 'err.required'); }
         const phoneValid = isValidPhoneNumber(phone);
-        console.log("🚀 ~ phoneValid:", phoneValid)
         if (!phone) {
             errors.push('phone');
             markError('phone', 'err.required');
@@ -96,12 +117,18 @@ if (leadForm) {
             .then(async (r) => {
                 const data = await r.json().catch(() => ({}));
                 if (!r.ok) throw new Error(data.error || 'Request failed');
-                alert('Thank you! We will contact you shortly.');
+                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                if (typeof showToast === 'function') {
+                    showToast(dict['toast.success'] || 'Thank you! We will contact you shortly.');
+                }
                 leadForm.reset();
             })
             .catch((err) => {
                 console.error(err);
-                alert('Sorry, something went wrong. Please try again later.');
+                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                if (typeof showToast === 'function') {
+                    showToast(dict['toast.error'] || 'Sorry, something went wrong. Please try again later.', 'error');
+                }
             });
     });
 }
@@ -186,6 +213,9 @@ const translations = {
         'about.p3': 'Our goal is simple — to give people the chance to return to their memories whenever they wish. A wedding, a birthday, a baby’s first smile, a concert, a performance, or just an ordinary day that became special — all this can be relived by opening an album or pressing play.',
         'about.p4': 'We do this because we believe moments are true wealth. Things can be replaced, but feelings, emotions, and memories are priceless. That’s why Memori was created — to stop time in a frame and give people a memory that does not fade.',
         'about.p5': 'Our philosophy is simple: life is made of moments — and we make them timeless.',
+        'toast.success': 'Thank you! We received your request. Our team will reach out shortly to clarify details and confirm the time.',
+        'toast.error': 'Sorry, something went wrong. Please try again later or contact us directly.',
+        'toast.close': 'Close',
     },
     cs: {
         'nav.services': 'Služby',
@@ -261,6 +291,9 @@ const translations = {
         'about.p3': 'Naším cílem je jednoduché — dát lidem možnost vracet se ke svým vzpomínkám, kdykoli budou chtít. Svatba, narozeniny, první dětský úsměv, koncert, vystoupení nebo obyčejný den, který se stal výjimečným — to vše lze prožít znovu otevřením alba nebo stisknutím tlačítka přehrát.',
         'about.p4': 'Děláme to proto, že věříme: momenty jsou skutečným bohatstvím. Věci lze nahradit, ale pocity, emoce a vzpomínky jsou nevyčíslitelné. Proto vzniklo Memori — abychom zastavili čas v záběru a darovali lidem paměť, která nevyhasíná.',
         'about.p5': 'Naše filozofie je jednoduchá: život se skládá z momentů — a my je děláme věčnými.',
+        'toast.success': 'Děkujeme! Vaši poptávku jsme přijali. Brzy se vám ozveme, upřesníme detaily a potvrdíme termín.',
+        'toast.error': 'Omlouváme se, něco se nepovedlo. Zkuste to prosím později nebo nás kontaktujte přímo.',
+        'toast.close': 'Zavřít',
     },
     uk: {
         'nav.services': 'Послуги',
@@ -336,11 +369,14 @@ const translations = {
         'about.p3': 'Наша мета проста – подарувати людям можливість повертатися у свої спогади тоді, коли цього найбільше хочеться. Весілля, день народження, перша дитяча усмішка, концерт, виступ чи навіть звичайний день, який став особливим – усе це можна прожити знову, відкривши альбом чи ввімкнувши відео.',
         'about.p4': 'Ми робимо це тому, що віримо: моменти – це справжнє багатство. Речі можна замінити, але почуття, емоції та спогади безцінні. Саме тому Memori створена для того, щоб зупиняти час у кадрі й дарувати людям пам’ять, яка не згасає.',
         'about.p5': 'Наша філософія проста: життя складається з моментів – і ми робимо їх вічними.',
+        'toast.success': 'Дякуємо! Ми отримали вашу заявку. Найближчим часом зв’яжемося, щоб уточнити деталі та підтвердити час.',
+        'toast.error': 'Вибачте, сталася помилка. Спробуйте пізніше або зв’яжіться з нами напряму.',
+        'toast.close': 'Закрити',
     }
 };
 
 function applyI18n(lang) {
-    const dict = translations[lang] || translations.sc;
+    const dict = translations[lang] || translations.en;
     document.querySelectorAll('[data-i18n]').forEach((el) => {
         const key = el.getAttribute('data-i18n');
         if (dict[key]) el.textContent = dict[key];
