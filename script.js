@@ -101,6 +101,8 @@ if (leadForm) {
         if (!surname) { errors.push('surname'); markError('surname', 'err.required'); }
         if (!city) { errors.push('city'); markError('city', 'err.required'); }
         if (!packageName) { errors.push('package'); markError('package', 'err.required'); }
+        if (!street) { errors.push('street'); markError('street', 'err.required'); }
+        if (!house) { errors.push('house'); markError('house', 'err.required'); }
         const phoneValid = isValidPhoneNumber(phone);
         if (!phone) {
             errors.push('phone');
