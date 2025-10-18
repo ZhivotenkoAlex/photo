@@ -66,8 +66,32 @@ document.querySelectorAll('.nav a').forEach((link) => {
     });
 });
 
+// Scroll helper to account for sticky header offset
+function getHeaderOffset() {
+    try {
+        const v = getComputedStyle(document.documentElement).getPropertyValue('--header-offset');
+        const n = parseInt(String(v).replace(/[^\d.-]/g, ''), 10);
+        return isFinite(n) ? n : 0;
+    } catch (_) {
+        return 0;
+    }
+}
+function scrollToWithOffset(target) {
+    if (!target) return;
+    try {
+        const offset = Math.max(0, getHeaderOffset() + 100); // a bit larger than menu anchor
+        const rect = target.getBoundingClientRect();
+        const top = rect.top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+        if (typeof target.focus === 'function') target.focus({ preventScroll: true });
+    } catch (_) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (typeof target.focus === 'function') target.focus();
+    }
+}
+
 // Simple form handling (lead form on index)
-const leadForm = document.querySelector('.lead-form');
+const leadForm = document.querySelector('.lead-form:not(.coop-form)');
 if (leadForm) {
     leadForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -113,7 +137,11 @@ if (leadForm) {
             markError('phone', 'err.phone');
         }
         if (!service) { errors.push('service'); markError('service', 'err.required'); }
-        if (errors.length) return;
+        if (errors.length) {
+            const firstErrorEl = leadForm.querySelector('.error');
+            if (firstErrorEl) scrollToWithOffset(firstErrorEl);
+            return;
+        }
         const url = emailUrl
         const qs = new URLSearchParams({ name, surname, phone, contact, city, street, house, comment, package: packageName, service });
         fetch(`${url}?${qs.toString()}`, { method: 'GET' })
@@ -176,7 +204,11 @@ if (coopForm) {
         if (!phone) { errors.push('phone'); markError('phone', 'err.required'); }
         else if (!phoneValid) { errors.push('phone'); markError('phone', 'err.phone'); }
         if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errors.push('email'); markError('email', 'err.email'); }
-        if (errors.length) return;
+        if (errors.length) {
+            const firstErrorEl = coopForm.querySelector('.error');
+            if (firstErrorEl) scrollToWithOffset(firstErrorEl);
+            return;
+        }
 
         const url = emailUrl
         const qs = new URLSearchParams({
