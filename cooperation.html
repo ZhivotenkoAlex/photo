@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Memori — Cooperation</title>
+    <meta
+      name="description"
+      content="Work with Memori — photographers and videographers cooperation form."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="topbar">
+        <div class="container">
+          <span>+420 702 140 083</span>
+          <span>fotovideopraga@gmail.com</span>
+          <nav class="social">
+            <a
+              aria-label="Instagram"
+              href="https://www.instagram.com/foto_video_praha?igsh=NGUzYThvcXBvMXZv"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect x="2.75" y="2.75" width="18.5" height="18.5" rx="5" />
+                <circle cx="12" cy="12" r="4.25" />
+                <circle cx="17.5" cy="6.5" r="1.25" />
+              </svg>
+            </a>
+            <a
+              aria-label="TikTok"
+              href="https://www.tiktok.com/@foto_video_praha?_t=ZM-8zf0pLSAuhh&_r=1"
+              title="TikTok"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  d="M13.5 2h3.2c.2 1.2.9 2.3 1.9 3 1 .7 2.1 1 3.4 1.1v3.2c-1.7 0-3.3-.4-4.8-1.2v6.8c0 3.8-3.1 7-7 7s-7-3.2-7-7 3.1-7 7-7c.5 0 1 .1 1.5.2V12c-.4-.1-.9-.2-1.4-.2-2.1 0-3.8 1.7-3.8 3.8S8.2 19.4 10.3 19.4s3.8-1.7 3.8-3.8V2z"
+                />
+              </svg>
+            </a>
+          </nav>
+        </div>
+      </div>
+      <div class="container navbar">
+        <a class="logo" href="./index.html"
+          ><img width="140" src="./images/logoMemory.png" alt="Memori"
+        /></a>
+        <button
+          class="nav-toggle"
+          aria-label="Toggle navigation"
+          aria-expanded="false"
+        >
+          ☰
+        </button>
+        <nav class="nav">
+          <a href="./index.html#services" data-i18n="nav.services">Services</a>
+          <a href="./index.html#pricing" data-i18n="nav.price">Price</a>
+
+          <a href="./index.html#contact" data-i18n="nav.contact">Contact</a>
+          <a href="./index.html#about" data-i18n="nav.about">About</a>
+          <a href="#" data-i18n="nav.coop">Cooperation</a>
+          <div id="lang-dd" class="lang-dd" aria-label="Language selector">
+            <button
+              type="button"
+              class="lang-dd__btn"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            >
+              <span id="lang-dd-label">EN</span>
+              <span aria-hidden="true">▾</span>
+            </button>
+            <ul class="lang-dd__list" role="listbox">
+              <li role="option" data-lang="cs">CS</li>
+              <li role="option" data-lang="en">EN</li>
+              <li role="option" data-lang="uk">UA</li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <section id="cooperation" class="section hero-dark">
+      <div id="toast-root" class="toast-wrap" aria-live="polite"></div>
+      <div class="container dark-content">
+        <div class="dark-left">
+          <div class="dark-text">
+            <h2 data-i18n="coop.title">Work with Memori</h2>
+            <p data-i18n="coop.desc">
+              Photographers and videographers — send your application to
+              collaborate with our team.
+            </p>
+          </div>
+          <form class="lead-form coop-form" novalidate>
+            <label class="required">
+              <span data-i18n="form.name">Your name</span>
+              <input
+                type="text"
+                name="name"
+                data-i18n-placeholder="ph.name"
+                autocomplete="name"
+                required
+              />
+            </label>
+            <label class="required">
+              <span data-i18n="form.phone">Phone number</span>
+              <input
+                type="tel"
+                name="phone"
+                data-i18n-placeholder="ph.phone"
+                inputmode="tel"
+                autocomplete="tel"
+                required
+              />
+            </label>
+            <label>
+              <span data-i18n="form.email">Email</span>
+              <input
+                type="email"
+                name="email"
+                data-i18n-placeholder="ph.email"
+                autocomplete="email"
+              />
+            </label>
+            <label class="required">
+              <span data-i18n="form.city">City</span>
+              <input
+                type="text"
+                name="city"
+                data-i18n-placeholder="ph.city"
+                autocomplete="address-level2"
+                required
+              />
+            </label>
+            <label class="required">
+              <span data-i18n="form.role">Role</span>
+              <select name="role" class="input-select" required>
+                <option value="" selected data-i18n="form.role_placeholder">
+                  Choose a role
+                </option>
+                <option value="photographer" data-i18n="role.photographer">
+                  Photographer
+                </option>
+                <option value="videographer" data-i18n="role.videographer">
+                  Videographer
+                </option>
+                <option value="both" data-i18n="role.both">Both</option>
+              </select>
+            </label>
+            <label class="required full">
+              <span data-i18n="form.portfolio">Portfolio link</span>
+              <input
+                type="url"
+                name="portfolio"
+                data-i18n-placeholder="ph.portfolio"
+                autocomplete="url"
+                required
+              />
+            </label>
+            <label>
+              <span data-i18n="form.experience">Experience (years)</span>
+              <input
+                type="number"
+                name="experience"
+                min="0"
+                max="60"
+                inputmode="numeric"
+              />
+            </label>
+            <label>
+              <span data-i18n="form.equipment">Equipment</span>
+              <input
+                type="text"
+                name="equipment"
+                data-i18n-placeholder="ph.equipment"
+              />
+            </label>
+            <label class="full">
+              <span data-i18n="form.comment">Comment</span>
+              <textarea
+                name="comment"
+                rows="4"
+                data-i18n-placeholder="ph.comment"
+              ></textarea>
+            </label>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              data-i18n="form.submit"
+            >
+              Get a Quote
+            </button>
+            <p class="form-note req-hint" data-i18n="form.required_hint">
+              Fields marked with * are required.
+            </p>
+          </form>
+        </div>
+        <div class="dark-visual" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <section class="bottom-divider"></section>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-left">
+          <img width="70" src="./images/logoMemory.png" alt="Memori" />
+          <span>© <span id="year"></span></span>
+        </div>
+        <nav class="footer-nav">
+          <a href="#" data-i18n="footer.privacy">Privacy</a>
+          <a href="#" data-i18n="footer.terms">Terms</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

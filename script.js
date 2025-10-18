@@ -1,5 +1,6 @@
 const navToggleButton = document.querySelector('.nav-toggle');
 const navMenu = document.querySelector('.nav');
+const emailUrl = 'https://script.google.com/macros/s/AKfycbzE_QVqPa2TeKJjQtW1wTQYYEB-qseNf_9Op74biEpUu2Wj1q53a_KjlQ04nt6y4c9e2Q/exec'
 
 if (navToggleButton) {
     navToggleButton.addEventListener('click', () => {
@@ -65,7 +66,7 @@ document.querySelectorAll('.nav a').forEach((link) => {
     });
 });
 
-// Simple form handling
+// Simple form handling (lead form on index)
 const leadForm = document.querySelector('.lead-form');
 if (leadForm) {
     leadForm.addEventListener('submit', (e) => {
@@ -113,7 +114,7 @@ if (leadForm) {
         }
         if (!service) { errors.push('service'); markError('service', 'err.required'); }
         if (errors.length) return;
-        const url = 'https://script.google.com/macros/s/AKfycbw5rkSkBRpG4MejP6yIZfEDKy_Zl_zRYklByB4XLOjsDeyq0MOIH1X9s-BblH160zhgyQ/exec'
+        const url = emailUrl
         const qs = new URLSearchParams({ name, surname, phone, contact, city, street, house, comment, package: packageName, service });
         fetch(`${url}?${qs.toString()}`, { method: 'GET' })
             .then(async (r) => {
@@ -135,6 +136,72 @@ if (leadForm) {
     });
 }
 
+// Cooperation form handling (on cooperation.html)
+const coopForm = document.querySelector('.coop-form');
+if (coopForm) {
+    coopForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(coopForm);
+        const name = (formData.get('name') || '').toString().trim();
+        const phone = (formData.get('phone') || '').toString().trim();
+        const email = (formData.get('email') || '').toString().trim();
+        const city = (formData.get('city') || '').toString().trim();
+        const role = (formData.get('role') || '').toString().trim();
+        const portfolio = (formData.get('portfolio') || '').toString().trim();
+        const experience = (formData.get('experience') || '').toString().trim();
+        const equipment = (formData.get('equipment') || '').toString().trim();
+        const comment = (formData.get('comment') || '').toString().trim();
+
+        // clear previous errors
+        coopForm.querySelectorAll('.field-error').forEach(el => el.remove());
+        coopForm.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+        const errors = [];
+        const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+        const markError = (selectorKey, messageKey) => {
+            const field = coopForm.querySelector(`[name="${selectorKey}"]`);
+            if (field) {
+                field.classList.add('error');
+                const msg = document.createElement('div');
+                msg.className = 'field-error';
+                msg.textContent = dict[messageKey] || dict['err.required'];
+                field.parentElement.appendChild(msg);
+            }
+        };
+
+        if (!name) { errors.push('name'); markError('name', 'err.required'); }
+        if (!city) { errors.push('city'); markError('city', 'err.required'); }
+        if (!role) { errors.push('role'); markError('role', 'err.required'); }
+        if (!portfolio) { errors.push('portfolio'); markError('portfolio', 'err.required'); }
+        const phoneValid = isValidPhoneNumber(phone);
+        if (!phone) { errors.push('phone'); markError('phone', 'err.required'); }
+        else if (!phoneValid) { errors.push('phone'); markError('phone', 'err.phone'); }
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errors.push('email'); markError('email', 'err.email'); }
+        if (errors.length) return;
+
+        const url = emailUrl
+        const qs = new URLSearchParams({
+            type: 'cooperation', name, phone, email, city, role, portfolio, experience, equipment, comment
+        });
+        fetch(`${url}?${qs.toString()}`, { method: 'GET' })
+            .then(async (r) => {
+                const data = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(data.error || 'Request failed');
+                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                if (typeof showToast === 'function') {
+                    showToast(dict['toast.success'] || 'Thank you! We will contact you shortly.');
+                }
+                coopForm.reset();
+            })
+            .catch((err) => {
+                console.error(err);
+                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                if (typeof showToast === 'function') {
+                    showToast(dict['toast.error'] || 'Sorry, something went wrong. Please try again later.', 'error');
+                }
+            });
+    });
+}
+
 // Year in footer
 const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = String(new Date().getFullYear());
@@ -142,6 +209,9 @@ if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 // Simple i18n (EN, CS)
 const translations = {
     en: {
+        'footer.privacy': 'Privacy',
+        'footer.terms': 'Terms',
+        'nav.coop': 'Cooperation',
         'nav.services': 'Services',
         'nav.portfolio': 'Portfolio',
         'nav.about': 'About',
@@ -183,8 +253,22 @@ const translations = {
         'form.required_hint': 'Fields marked with * are required.',
         'err.required': 'This field is required',
         'err.phone': 'Enter a valid phone number',
-        'form.submit': 'Get a Quote',
+        'form.submit': 'Send',
         'form.note': 'By sending the form, you agree to our privacy policy.',
+        // Cooperation page
+        'coop.title': 'Work with Memori',
+        'coop.desc': 'Photographers and videographers — send your application to collaborate with our team.',
+        'form.email': 'Email',
+        'form.role': 'Role',
+        'form.role_placeholder': 'Choose a role',
+        'role.photographer': 'Photographer',
+        'role.videographer': 'Videographer',
+        'role.both': 'Both',
+        'form.portfolio': 'Portfolio link',
+        'form.experience': 'Experience (years)',
+        'form.equipment': 'Equipment',
+        'ph.email': 'name@example.com',
+        'ph.portfolio': 'https://portfolio.example.com',
         'ph.name': 'Jane',
         'ph.surname': 'Doe',
         'ph.phone': '+420 777 123 456',
@@ -220,6 +304,9 @@ const translations = {
         'toast.close': 'Close',
     },
     cs: {
+        'footer.privacy': 'Soukromí',
+        'footer.terms': 'Podmínky',
+        'nav.coop': 'Spolupráce',
         'nav.services': 'Služby',
         'nav.portfolio': 'Portfolio',
         'nav.about': 'O nás',
@@ -261,8 +348,22 @@ const translations = {
         'form.required_hint': 'Povinná pole jsou označena *.',
         'err.required': 'Toto pole je povinné',
         'err.phone': 'Zadejte platné telefonní číslo',
-        'form.submit': 'Získat nabídku',
+        'form.submit': 'Odeslat',
         'form.note': 'Odesláním formuláře souhlasíte se zásadami ochrany osobních údajů.',
+        // Cooperation page
+        'coop.title': 'Spolupráce s Memori',
+        'coop.desc': 'Fotografové a kameramani — pošlete žádost o spolupráci s naším týmem.',
+        'form.email': 'E-mail',
+        'form.role': 'Role',
+        'form.role_placeholder': 'Vyberte roli',
+        'role.photographer': 'Fotograf',
+        'role.videographer': 'Kameraman',
+        'role.both': 'Obojí',
+        'form.portfolio': 'Odkaz na portfolio',
+        'form.experience': 'Zkušenosti (roky)',
+        'form.equipment': 'Vybavení',
+        'ph.email': 'name@example.com',
+        'ph.portfolio': 'https://portfolio.example.com',
         'ph.name': 'Jan',
         'ph.surname': 'Novák',
         'ph.phone': '+420 777 123 456',
@@ -298,6 +399,9 @@ const translations = {
         'toast.close': 'Zavřít',
     },
     uk: {
+        'footer.privacy': 'Приватність',
+        'footer.terms': 'Умови',
+        'nav.coop': 'Співпраця',
         'nav.services': 'Послуги',
         'nav.portfolio': 'Портфоліо',
         'nav.about': 'Про нас',
@@ -339,8 +443,22 @@ const translations = {
         'form.required_hint': 'Поля, позначені *, є обов’язковими.',
         'err.required': 'Це поле є обов’язковим',
         'err.phone': 'Введіть коректний номер телефону.',
-        'form.submit': 'Отримати пропозицію',
+        'form.submit': 'Надіслати',
         'form.note': 'Надсилаючи форму, ви погоджуєтесь з політикою конфіденційності.',
+        // Cooperation page
+        'coop.title': 'Працюйте з Memori',
+        'coop.desc': 'Фотографи та відеооператори — надішліть заявку на співпрацю з нашою командою.',
+        'form.email': 'Email',
+        'form.role': 'Роль',
+        'form.role_placeholder': 'Оберіть роль',
+        'role.photographer': 'Фотограф',
+        'role.videographer': 'Відеооператор',
+        'role.both': 'Обидві',
+        'form.portfolio': 'Посилання на портфоліо',
+        'form.experience': 'Досвід (роки)',
+        'form.equipment': 'Обладнання',
+        'ph.email': 'name@example.com',
+        'ph.portfolio': 'https://portfolio.example.com',
         'ph.name': 'Іван',
         'ph.surname': 'Іваненко',
         'ph.phone': '+ 420 777 123 456',
