@@ -1,6 +1,6 @@
 const navToggleButton = document.querySelector('.nav-toggle');
 const navMenu = document.querySelector('.nav');
-const emailUrl = 'https://script.google.com/macros/s/AKfycbzE_QVqPa2TeKJjQtW1wTQYYEB-qseNf_9Op74biEpUu2Wj1q53a_KjlQ04nt6y4c9e2Q/exec'
+const emailUrl = 'https://script.google.com/macros/s/AKfycbyTs5M0E_DNRt5xVgUUpzH422yaroOlw4AarYOqwXBuyj0IJzWMwP62nYs0sF521Egf2g/exec'
 
 if (navToggleButton) {
     navToggleButton.addEventListener('click', () => {
@@ -179,6 +179,7 @@ if (coopForm) {
         const experience = (formData.get('experience') || '').toString().trim();
         const equipment = (formData.get('equipment') || '').toString().trim();
         const comment = (formData.get('comment') || '').toString().trim();
+        const drivingB = formData.get('driving_b') ? 'yes' : 'no';
 
         // clear previous errors
         coopForm.querySelectorAll('.field-error').forEach(el => el.remove());
@@ -212,7 +213,7 @@ if (coopForm) {
 
         const url = emailUrl
         const qs = new URLSearchParams({
-            type: 'cooperation', name, phone, email, city, role, portfolio, experience, equipment, comment
+            type: 'cooperation', name, phone, email, city, role, portfolio, experience, driving_b: drivingB, comment
         });
         fetch(`${url}?${qs.toString()}`, { method: 'GET' })
             .then(async (r) => {
@@ -293,12 +294,16 @@ const translations = {
         'form.email': 'Email',
         'form.role': 'Role',
         'form.role_placeholder': 'Choose a role',
+        'role.empty': 'Empty',
         'role.photographer': 'Photographer',
         'role.videographer': 'Videographer',
-        'role.both': 'Both',
+        'role.admin': 'Administrator',
         'form.portfolio': 'Portfolio link',
         'form.experience': 'Experience (years)',
         'form.equipment': 'Equipment',
+        'form.driving_b': "Having a category B driver's license",
+        'toggle.yes': 'Yes',
+        'toggle.no': 'No',
         'ph.email': 'name@example.com',
         'ph.portfolio': 'https://portfolio.example.com',
         'ph.name': 'Jane',
@@ -388,12 +393,16 @@ const translations = {
         'form.email': 'E-mail',
         'form.role': 'Role',
         'form.role_placeholder': 'Vyberte roli',
+        'role.empty': 'Prázdný',
         'role.photographer': 'Fotograf',
         'role.videographer': 'Kameraman',
-        'role.both': 'Obojí',
+        'role.admin': 'Administrátor',
         'form.portfolio': 'Odkaz na portfolio',
         'form.experience': 'Zkušenosti (roky)',
         'form.equipment': 'Vybavení',
+        'form.driving_b': 'Vlastnit řidičský průkaz kategorie B',
+        'toggle.yes': 'Ano',
+        'toggle.no': 'Ne',
         'ph.email': 'name@example.com',
         'ph.portfolio': 'https://portfolio.example.com',
         'ph.name': 'Jan',
@@ -483,12 +492,16 @@ const translations = {
         'form.email': 'Email',
         'form.role': 'Роль',
         'form.role_placeholder': 'Оберіть роль',
+        'role.empty': 'Пусто',
         'role.photographer': 'Фотограф',
         'role.videographer': 'Відеооператор',
-        'role.both': 'Обидві',
+        'role.admin': 'Адміністратор',
         'form.portfolio': 'Посилання на портфоліо',
         'form.experience': 'Досвід (роки)',
         'form.equipment': 'Обладнання',
+        'form.driving_b': 'Володіння водійським посвідченням категорії B',
+        'toggle.yes': 'Так',
+        'toggle.no': 'Ні',
         'ph.email': 'name@example.com',
         'ph.portfolio': 'https://portfolio.example.com',
         'ph.name': 'Іван',

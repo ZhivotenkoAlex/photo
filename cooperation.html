@@ -152,27 +152,25 @@
             <label class="required">
               <span data-i18n="form.role">Role</span>
               <select name="role" class="input-select" required>
-                <option value="" selected data-i18n="form.role_placeholder">
+                <option
+                  value=""
+                  disabled
+                  selected
+                  data-i18n="form.role_placeholder"
+                >
                   Choose a role
                 </option>
+                <!-- <option value="" data-i18n="role.empty">Empty</option> -->
                 <option value="photographer" data-i18n="role.photographer">
                   Photographer
                 </option>
                 <option value="videographer" data-i18n="role.videographer">
                   Videographer
                 </option>
-                <option value="both" data-i18n="role.both">Both</option>
+                <option value="admin" data-i18n="role.admin">
+                  Administrator
+                </option>
               </select>
-            </label>
-            <label class="required full">
-              <span data-i18n="form.portfolio">Portfolio link</span>
-              <input
-                type="url"
-                name="portfolio"
-                data-i18n-placeholder="ph.portfolio"
-                autocomplete="url"
-                required
-              />
             </label>
             <label>
               <span data-i18n="form.experience">Experience (years)</span>
@@ -184,14 +182,35 @@
                 inputmode="numeric"
               />
             </label>
-            <label>
+            <label class="toggle">
+              <span data-i18n="form.driving_b"
+                >Availability of category B rights</span
+              >
+              <input type="checkbox" name="driving_b" class="toggle-input" />
+              <span class="toggle-track" aria-hidden="true">
+                <span class="toggle-text on" data-i18n="toggle.yes">Yes</span>
+                <span class="toggle-text off" data-i18n="toggle.no">No</span>
+              </span>
+            </label>
+
+            <label class="required">
+              <span data-i18n="form.portfolio">Portfolio link</span>
+              <input
+                type="url"
+                name="portfolio"
+                data-i18n-placeholder="ph.portfolio"
+                autocomplete="url"
+                required
+              />
+            </label>
+            <!-- <label>
               <span data-i18n="form.equipment">Equipment</span>
               <input
                 type="text"
                 name="equipment"
                 data-i18n-placeholder="ph.equipment"
               />
-            </label>
+            </label> -->
             <label class="full">
               <span data-i18n="form.comment">Comment</span>
               <textarea
