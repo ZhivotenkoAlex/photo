@@ -34,6 +34,9 @@ body {
   line-height: 1.6;
   background: #f6f7f9;
   overflow-x: hidden; /* prevent horizontal scroll bleed */
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* header, main section, footer */
 }
 
 .container {
@@ -544,6 +547,7 @@ body {
   background: #0f1318;
   color: #e8edf5;
   padding: 56px 0;
+  min-height: calc(80vh - var(--header-offset));
 }
 .about h2 {
   margin: 0 0 10px;

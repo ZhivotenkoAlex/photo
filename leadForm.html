@@ -97,18 +97,18 @@
       </div>
     </header>
 
-    <section id="cooperation" class="section hero-dark">
+    <section id="contact" class="section hero-dark">
       <div id="toast-root" class="toast-wrap" aria-live="polite"></div>
       <div class="container dark-content">
         <div class="dark-left">
           <div class="dark-text">
-            <h2 data-i18n="coop.title">Work with Memori</h2>
-            <p data-i18n="coop.desc">
-              Photographers and videographers — send your application to
-              collaborate with our team.
+            <h2 data-i18n="dark.title">Photography Services in Your City</h2>
+            <p data-i18n="dark.desc">
+              Experienced team, clear pricing, fast delivery. Submit your
+              request and we’ll call you back within 15 minutes.
             </p>
           </div>
-          <form class="lead-form coop-form" novalidate>
+          <form class="lead-form" novalidate>
             <label class="required">
               <span data-i18n="form.name">Your name</span>
               <input
@@ -116,6 +116,16 @@
                 name="name"
                 data-i18n-placeholder="ph.name"
                 autocomplete="name"
+                required
+              />
+            </label>
+            <label class="required">
+              <span data-i18n="form.surname">Surname</span>
+              <input
+                type="text"
+                name="surname"
+                data-i18n-placeholder="ph.surname"
+                autocomplete="family-name"
                 required
               />
             </label>
@@ -130,15 +140,6 @@
                 required
               />
             </label>
-            <label>
-              <span data-i18n="form.email">Email</span>
-              <input
-                type="email"
-                name="email"
-                data-i18n-placeholder="ph.email"
-                autocomplete="email"
-              />
-            </label>
             <label class="required">
               <span data-i18n="form.city">City</span>
               <input
@@ -150,70 +151,101 @@
               />
             </label>
             <label class="required">
-              <span data-i18n="form.role">Role</span>
-              <select name="role" class="input-select" required>
+              <span data-i18n="form.street">Street</span>
+              <input
+                type="text"
+                name="street"
+                data-i18n-placeholder="ph.street"
+                autocomplete="address-line1"
+              />
+            </label>
+            <label class="required">
+              <span data-i18n="form.house">House number</span>
+              <input
+                type="text"
+                name="house"
+                data-i18n-placeholder="ph.house"
+                autocomplete="address-line2"
+              />
+            </label>
+            <label class="required">
+              <span data-i18n="form.package">Package</span>
+              <select name="package" class="input-select" required>
                 <option
                   value=""
                   disabled
                   selected
-                  data-i18n="form.role_placeholder"
+                  data-i18n="form.package_placeholder"
                 >
-                  Choose a role
+                  Choose a package
                 </option>
-                <!-- <option value="" data-i18n="role.empty">Empty</option> -->
-                <option value="photographer" data-i18n="role.photographer">
-                  Photographer
+                <option value="basic" data-i18n="pkg.basic">
+                  Basic — 60 min + 25 photos
                 </option>
-                <option value="videographer" data-i18n="role.videographer">
-                  Videographer
+                <option value="standard" data-i18n="pkg.standard">
+                  Standard — 90 min + 40 photos
                 </option>
-                <option value="call_agent" data-i18n="role.call_agent">
-                  Call agent
+                <option value="premium" data-i18n="pkg.premium">
+                  Premium — 120 min + 60 photos
                 </option>
-                <option value="admin" data-i18n="role.admin">
-                  Administrator
+                <option value="video_hour" data-i18n="pkg.video_hour">
+                  Video — 1 hour
                 </option>
               </select>
             </label>
-            <label>
-              <span data-i18n="form.experience">Experience (years)</span>
-              <input
-                type="number"
-                name="experience"
-                min="0"
-                max="60"
-                inputmode="numeric"
-              />
-            </label>
-            <label class="toggle">
-              <span data-i18n="form.driving_b"
-                >Availability of category B rights</span
-              >
-              <input type="checkbox" name="driving_b" class="toggle-input" />
-              <span class="toggle-track" aria-hidden="true">
-                <span class="toggle-text on" data-i18n="toggle.yes">Yes</span>
-                <span class="toggle-text off" data-i18n="toggle.no">No</span>
-              </span>
-            </label>
-
             <label class="required">
-              <span data-i18n="form.portfolio">Portfolio link</span>
-              <input
-                type="url"
-                name="portfolio"
-                data-i18n-placeholder="ph.portfolio"
-                autocomplete="url"
-                required
-              />
+              <span data-i18n="form.service">Service</span>
+              <select name="service" class="input-select" required>
+                <option value="" selected data-i18n="form.service_placeholder">
+                  Choose a service
+                </option>
+                <optgroup label="Photo" data-i18n-label="group.photo">
+                  <option value="photo_birthday" data-i18n="svc.photo_birthday">
+                    Birthday photography
+                  </option>
+                  <option value="photo_wedding" data-i18n="svc.photo_wedding">
+                    Wedding photography
+                  </option>
+                  <option
+                    value="photo_corporate"
+                    data-i18n="svc.photo_corporate"
+                  >
+                    Corporate photography
+                  </option>
+                  <option value="photo_studio" data-i18n="svc.photo_studio">
+                    Studio photo session
+                  </option>
+                </optgroup>
+                <optgroup label="Video" data-i18n-label="group.video">
+                  <option value="video_birthday" data-i18n="svc.video_birthday">
+                    Birthday video
+                  </option>
+                  <option value="video_wedding" data-i18n="svc.video_wedding">
+                    Wedding video
+                  </option>
+                  <option
+                    value="video_corporate"
+                    data-i18n="svc.video_corporate"
+                  >
+                    Corporate video
+                  </option>
+                  <option value="video_misc" data-i18n="svc.video_misc">
+                    Other video
+                  </option>
+                </optgroup>
+              </select>
             </label>
-            <!-- <label>
-              <span data-i18n="form.equipment">Equipment</span>
+            <label>
+              <span data-i18n="form.contact"
+                >Additional connection (Telegram/Viber)</span
+              >
               <input
                 type="text"
-                name="equipment"
-                data-i18n-placeholder="ph.equipment"
+                name="contact"
+                data-i18n-placeholder="ph.contact"
+                autocomplete="off"
               />
-            </label> -->
+            </label>
             <label class="full">
               <span data-i18n="form.comment">Comment</span>
               <textarea
@@ -231,6 +263,12 @@
             </button>
             <p class="form-note req-hint" data-i18n="form.required_hint">
               Fields marked with * are required.
+            </p>
+            <p class="form-note" data-i18n="form.note">
+              By sending the form, you agree to our privacy policy.
+            </p>
+            <p class="form-note" data-i18n="form.location">
+              We are currently working in Prague and the surrounding areas.
             </p>
           </form>
         </div>
