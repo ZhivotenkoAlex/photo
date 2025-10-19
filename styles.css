@@ -33,6 +33,7 @@ body {
   color: var(--text);
   line-height: 1.6;
   background: #f6f7f9;
+  overflow-x: hidden; /* prevent horizontal scroll bleed */
 }
 
 .container {
