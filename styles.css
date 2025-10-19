@@ -1,3 +1,93 @@
+/* Portfolio */
+.portfolio {
+  background: #0f1318;
+  color: #e8edf5;
+  padding: 56px 0;
+  min-height: calc(80vh - var(--header-offset));
+}
+.portfolio h2 {
+  margin: 0 0 8px;
+  font-size: clamp(24px, 4vw, 34px);
+}
+.portfolio-sub {
+  margin: 0 0 18px;
+  color: #cbd5e1;
+}
+
+.portfolio-image {
+  cursor: pointer;
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.gallery-grid img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+.team-title {
+  margin: 26px 0 12px;
+}
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.team-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+}
+.team-card .avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #1f2732;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 8px;
+  overflow: hidden; /* crop image to circle */
+}
+.team-card .avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+}
+.team-card .name {
+  font-weight: 700;
+}
+.team-card .role {
+  color: #9aa3ad;
+  font-size: 13px;
+}
+.team-card .desc {
+  color: #cbd5e1;
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+
+@media (max-width: 1024px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .team-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 680px) {
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+}
 /* Design tokens */
 :root {
   --bg: #0b0d10;

@@ -66,6 +66,16 @@ document.querySelectorAll('.nav a').forEach((link) => {
     });
 });
 
+// Portfolio: clicking any image navigates to contact
+const portfolioGrid = document.querySelector('.gallery-grid');
+if (portfolioGrid) {
+    portfolioGrid.querySelectorAll('img').forEach((img) => {
+        img.addEventListener('click', () => {
+            window.location.href = './leadForm.html';
+        });
+    });
+}
+
 // Scroll helper to account for sticky header offset
 function getHeaderOffset() {
     try {
@@ -247,6 +257,14 @@ const translations = {
         'nav.coop': 'Cooperation',
         'nav.services': 'Services',
         'nav.portfolio': 'Portfolio',
+        // Portfolio
+        'portfolio.title': 'Selected Works',
+        'portfolio.subtitle': 'A glimpse into our photography and video projects.',
+        'team.title': 'Our Team',
+        'team.owner_desc': 'Founder and coordinator of projects and quality.',
+        'team.photographer_desc': 'Portraits, events and product shoots.',
+        'team.videographer_desc': 'Wedding and corporate video production.',
+        'team.agent_desc': 'Friendly first contact who confirms details and timing.',
         'nav.about': 'About',
         'nav.contact': 'Contact',
         'nav.price': 'Price',
@@ -294,6 +312,7 @@ const translations = {
         'form.email': 'Email',
         'form.role': 'Role',
         'form.role_placeholder': 'Choose a role',
+        'role.founder': 'Founder',
         'role.empty': 'Empty',
         'role.photographer': 'Photographer',
         'role.videographer': 'Videographer',
@@ -347,6 +366,14 @@ const translations = {
         'nav.coop': 'Spolupráce',
         'nav.services': 'Služby',
         'nav.portfolio': 'Portfolio',
+        // Portfolio
+        'portfolio.title': 'Ukázky prací',
+        'portfolio.subtitle': 'Nahlédněte do našich foto a video projektů.',
+        'team.title': 'Náš tým',
+        'team.owner_desc': 'Zakladatel a koordinátor projektů a kvality.',
+        'team.photographer_desc': 'Portréty, akce a produktové focení.',
+        'team.videographer_desc': 'Svatby a firemní video produkce.',
+        'team.agent_desc': 'Přátelský první kontakt, který potvrdí detaily a čas.',
         'nav.about': 'O nás',
         'nav.contact': 'Kontakt',
         'nav.price': 'Ceny',
@@ -398,6 +425,7 @@ const translations = {
         'role.photographer': 'Fotograf',
         'role.videographer': 'Kameraman',
         'role.call_agent': 'Call agent',
+        'role.founder': 'Zakladatel',
         'role.admin': 'Administrátor',
         'form.portfolio': 'Odkaz na portfolio',
         'form.experience': 'Zkušenosti (roky)',
@@ -447,6 +475,14 @@ const translations = {
         'nav.coop': 'Співпраця',
         'nav.services': 'Послуги',
         'nav.portfolio': 'Портфоліо',
+        // Portfolio
+        'portfolio.title': 'Обрані роботи',
+        'portfolio.subtitle': 'Трохи наших фото- та відеопроєктів.',
+        'team.title': 'Наша команда',
+        'team.owner_desc': 'Засновник і координатор проєктів та якості.',
+        'team.photographer_desc': 'Портрети, івенти та предметна зйомка.',
+        'team.videographer_desc': 'Весільне та корпоративне відео.',
+        'team.agent_desc': 'Перший контакт, який підтверджує деталі та час.',
         'nav.about': 'Про нас',
         'nav.contact': 'Контакти',
         'nav.price': 'Ціни',
@@ -495,6 +531,7 @@ const translations = {
         'form.role': 'Роль',
         'form.role_placeholder': 'Оберіть роль',
         'role.empty': 'Пусто',
+        'role.founder': 'Засновник',
         'role.photographer': 'Фотограф',
         'role.videographer': 'Відеооператор',
         'role.call_agent': 'Кол-агент',
