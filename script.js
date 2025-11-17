@@ -322,7 +322,7 @@ const translations = {
         // Cooperation page
         'coop.title': 'Work with Memori',
         'coop.desc': 'Photographers and videographers — send your application to collaborate with our team.',
-        'coop.note': 'We will contact you within 24 hours.',
+        'coop.note': 'A Memory manager will contact you within 24 hours.',
         'form.email': 'Email',
         'form.role': 'Role',
         'form.role_placeholder': 'Choose a role',
@@ -468,7 +468,7 @@ const translations = {
         // Cooperation page
         'coop.title': 'Spolupráce s Memori',
         'coop.desc': 'Fotografové a kameramani — pošlete žádost o spolupráci s naším týmem.',
-        'coop.note': 'Kontaktujeme vás do 24 hodin.',
+        'coop.note': 'Správce paměti vás bude kontaktovat do 24 hodin.',
         'form.email': 'E-mail',
         'form.role': 'Role',
         'form.role_placeholder': 'Vyberte roli',
@@ -602,7 +602,7 @@ const translations = {
         // Cooperation page
         'coop.title': 'Працюйте з Memori',
         'coop.desc': 'Фотографи та відеооператори — надішліть заявку на співпрацю з нашою командою.',
-        'coop.note': 'Ми зв’яжемося з вами до 24 годин.',
+        'coop.note': 'Керівник Memori зв’яжеться з вами протягом 24 годин.',
         'form.email': 'Email',
         'form.role': 'Роль',
         'form.role_placeholder': 'Оберіть роль',
