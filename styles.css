@@ -1093,7 +1093,10 @@ body {
     padding: 5px 0 0 0;
   }
   .nav a {
-    padding: 10px 0;
+    padding: 12px 0;
+    width: 100%;
+    display: block;
+    text-align: center;
   }
   .nav.is-open {
     display: flex;
