@@ -66,6 +66,21 @@ document.querySelectorAll('.nav a').forEach((link) => {
     });
 });
 
+// Close mobile menu when clicking outside
+document.addEventListener('click', (e) => {
+    if (navMenu && navMenu.classList.contains('is-open')) {
+        const navbar = document.querySelector('.navbar');
+        const isClickInsideNav = navMenu.contains(e.target) ||
+            (navToggleButton && navToggleButton.contains(e.target)) ||
+            (navbar && navbar.contains(e.target));
+
+        if (!isClickInsideNav) {
+            navMenu.classList.remove('is-open');
+            if (navToggleButton) navToggleButton.setAttribute('aria-expanded', 'false');
+        }
+    }
+});
+
 // Portfolio: clicking any image navigates to contact
 const portfolioGrid = document.querySelector('.gallery-grid');
 if (portfolioGrid) {
