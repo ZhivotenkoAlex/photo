@@ -373,6 +373,15 @@ const translations = {
         'pricing.print_all': 'Printing all package photos',
         'pricing.video_disc': 'Video on disc',
         'pricing.prepaid': 'If agreed, there is a pre-payment of 40% of the amount.',
+        'pricing.page_title': 'Packages and Pricing',
+        'pricing.page_note': 'Prices are indicative and may vary depending on location, timing and specific requirements. We\'ll confirm the final quote after a quick chat.',
+        'pricing.products': 'Photo Products',
+        'pricing.photo_tshirt': 'Photo on t-shirt',
+        'pricing.photo_hoodie': 'Photo on hoodie',
+        'pricing.photo_mug': 'Photo on mug',
+        'pricing.photo_case': 'Photo on phone case',
+        'pricing.photo_pillow': 'Photo on pillow',
+        'pricing.photo_bear': 'Photo on teddy bear',
         'form.location': 'We are currently working in Prague and the surrounding areas.',
         'pkg.basic': 'Basic — 60 min + 25 photos',
         'pkg.standard': 'Standard — 90 min + 40 photos',
@@ -511,6 +520,15 @@ const translations = {
         'pricing.print_all': 'Tisk všech fotografií z balíčku',
         'pricing.video_disc': 'Video na disku',
         'pricing.prepaid': 'Při souhlasu je předplacení 40% z částky.',
+        'pricing.page_title': 'Balíčky a ceny',
+        'pricing.page_note': 'Ceny jsou orientační a mohou se lišit podle místa, termínu a konkrétních požadavků. Konečnou nabídku potvrdíme po krátké konzultaci.',
+        'pricing.products': 'Fotoprodukty',
+        'pricing.photo_tshirt': 'Fotografie na tričku',
+        'pricing.photo_hoodie': 'Fotografie na mikině',
+        'pricing.photo_mug': 'Fotografie na hrníčku',
+        'pricing.photo_case': 'Fotografie na obalu telefonu',
+        'pricing.photo_pillow': 'Fotografie na polštáři',
+        'pricing.photo_bear': 'Fotografie na medvídkovi',
         'form.location': 'Momentálně pracujeme v Praze a jejím okolí.',
         'pkg.basic': 'Basic — 60 min + 25 fotografií',
         'pkg.standard': 'Standard — 90 min + 40 fotografií',
@@ -646,6 +664,16 @@ const translations = {
         'pricing.extras': 'Додатково',
         'pricing.print_all': 'Друк усіх фото з пакету',
         'pricing.video_disc': 'Відео на диску',
+        'pricing.prepaid': 'За домовленістю передплата становить 40% від суми.',
+        'pricing.page_title': 'Пакети та ціни',
+        'pricing.page_note': 'Ціни орієнтовні та можуть змінюватись залежно від локації, часу та вимог. Остаточну вартість підтвердимо після короткої консультації.',
+        'pricing.products': 'Фотопродукти',
+        'pricing.photo_tshirt': 'Фото на футболці',
+        'pricing.photo_hoodie': 'Фото на худі',
+        'pricing.photo_mug': 'Фото на чашці',
+        'pricing.photo_case': 'Фото на чехлі',
+        'pricing.photo_pillow': 'Фото на подушці',
+        'pricing.photo_bear': 'Фото на ведмедику',
         'form.location': 'Ми в даний момент працюємо в містах Прага та її околицях.',
         'pkg.basic': 'Базовий — 60 хв + 25 фото',
         'pkg.standard': 'Стандарт — 90 хв + 40 фото',
@@ -715,6 +743,59 @@ if (langDd) {
         if (!langDd.contains(e.target)) {
             langDd.classList.remove('is-open');
             btn.setAttribute('aria-expanded', 'false');
+        }
+    });
+}
+
+// Product popup for pricing page
+const productPopup = document.getElementById('product-popup');
+if (productPopup) {
+    const popupImage = document.getElementById('popup-image');
+    const popupTitle = document.getElementById('popup-title');
+    const popupPrice = document.getElementById('popup-price');
+    const popupClose = productPopup.querySelector('.product-popup-close');
+    const popupOverlay = productPopup.querySelector('.product-popup-overlay');
+
+    const openPopup = (imageSrc, title, price) => {
+        popupImage.src = imageSrc;
+        popupImage.alt = title;
+        popupTitle.textContent = title;
+        popupPrice.textContent = price;
+        productPopup.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closePopup = () => {
+        productPopup.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    };
+
+    // Open popup on product card click
+    const productCards = document.querySelectorAll('.pricing-products-grid .pricing-card');
+    productCards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            const img = card.querySelector('.pricing-card-icon img');
+            const label = card.querySelector('.pricing-card-label');
+            const price = card.querySelector('.pricing-card-price');
+
+            if (img && label && price) {
+                openPopup(img.src, label.textContent, price.textContent);
+            }
+        });
+    });
+
+    // Close popup
+    if (popupClose) {
+        popupClose.addEventListener('click', closePopup);
+    }
+    if (popupOverlay) {
+        popupOverlay.addEventListener('click', closePopup);
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && productPopup.getAttribute('aria-hidden') === 'false') {
+            closePopup();
         }
     });
 }

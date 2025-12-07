@@ -451,9 +451,7 @@ body {
   border-radius: var(--radius);
   padding: 16px;
 }
-.coop-form {
-  /* Inherit all lead-form visuals; this class is only for targeting JS if needed */
-}
+/* coop-form inherits lead-form styles */
 .lead-form label {
   display: grid;
   gap: 6px;
@@ -674,6 +672,242 @@ body {
   letter-spacing: 0.3px;
 }
 
+/* Pricing Page */
+.pricing-page {
+  background: linear-gradient(180deg, #f7f8fb 0%, #ffffff 100%);
+  padding: 56px 0;
+  min-height: calc(100vh - var(--header-offset));
+  position: relative;
+  overflow: hidden;
+}
+.pricing-media {
+  position: absolute;
+  inset: 0;
+  background: url("./images/image1.jpg") center/cover no-repeat;
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+  z-index: 0;
+}
+.pricing-content {
+  position: relative;
+  z-index: 1;
+}
+.pricing-page-title {
+  margin: 0 0 20px;
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 700;
+  color: #0f1318;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9),
+    0 0 8px rgba(255, 255, 255, 0.5);
+}
+.pricing-page-note {
+  margin: 0 0 16px;
+  color: #1e293b;
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 500;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9),
+    0 0 8px rgba(255, 255, 255, 0.5);
+}
+.pricing-section-title {
+  margin: 48px 0 24px;
+  font-size: clamp(22px, 4vw, 28px);
+  font-weight: 600;
+  color: #0f1318;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9),
+    0 0 8px rgba(255, 255, 255, 0.5);
+}
+.pricing-section-title:first-of-type {
+  margin-top: 32px;
+}
+.pricing-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+.pricing-card {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+.pricing-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+.pricing-card-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff6a3d;
+  flex-shrink: 0;
+}
+.pricing-card-icon svg {
+  width: 100%;
+  height: 100%;
+}
+.pricing-card-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  object-fit: scale-down;
+}
+.pricing-products-grid .pricing-card-icon {
+  width: 140px;
+  height: 140px;
+}
+.pricing-products-grid .pricing-card {
+  cursor: pointer;
+}
+
+/* Product Popup Modal */
+.product-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.product-popup[aria-hidden="false"] {
+  display: flex;
+}
+.product-popup-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+}
+.product-popup-content {
+  position: relative;
+  background: #ffffff;
+  border-radius: 20px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: popup-fade-in 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  padding-top: 0;
+}
+@keyframes popup-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+.product-popup-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f1318;
+  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.product-popup-close:hover {
+  background: #ffffff;
+  transform: rotate(90deg);
+}
+.product-popup-image {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+@media (min-width: 681px) {
+  .product-popup-image {
+    padding-top: 32px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+  }
+}
+.product-popup-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.product-popup-info {
+  padding: 24px;
+  text-align: center;
+}
+.product-popup-title {
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #0f1318;
+}
+.product-popup-price {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ff6a3d;
+}
+@media (max-width: 680px) {
+  .product-popup-content {
+    max-width: 90%;
+  }
+  .product-popup-title {
+    font-size: 20px;
+  }
+  .product-popup-price {
+    font-size: 28px;
+  }
+  .product-popup-info {
+    padding: 20px;
+  }
+  .product-popup-image {
+    padding: 16px;
+    padding-top: 16px;
+  }
+}
+.pricing-card-label {
+  font-weight: 600;
+  font-size: 16px;
+  color: #0f1318;
+  text-align: center;
+  line-height: 1.4;
+}
+.pricing-card-price {
+  font-weight: 700;
+  font-size: 24px;
+  color: #ff6a3d;
+  margin-top: auto;
+}
+
 /* About */
 .about {
   background: #0f1318;
@@ -748,9 +982,41 @@ body {
     grid-template-columns: 1fr 1fr;
   }
 }
+@media (max-width: 1024px) {
+  .pricing-media {
+    opacity: 0.35;
+    background-position: center center;
+  }
+}
 @media (max-width: 680px) {
   .price-grid {
     grid-template-columns: 1fr;
+  }
+  .pricing-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .pricing-card {
+    padding: 20px;
+  }
+  .pricing-card-icon {
+    width: 64px;
+    height: 64px;
+  }
+  .pricing-products-grid .pricing-card-icon {
+    width: 120px;
+    height: 120px;
+  }
+  .pricing-card-price {
+    font-size: 20px;
+  }
+  .pricing-media {
+    opacity: 0.3;
+    background-size: cover;
+    background-position: center center;
+  }
+  .pricing-page-title,
+  .pricing-section-title {
+    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9);
   }
 }
 
