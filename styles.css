@@ -901,6 +901,13 @@ body {
   text-align: center;
   line-height: 1.4;
 }
+.pricing-card-desc {
+  font-size: 13px;
+  color: #6b7280;
+  text-align: center;
+  line-height: 1.4;
+  margin-top: 4px;
+}
 .pricing-card-price {
   font-weight: 700;
   font-size: 24px;
