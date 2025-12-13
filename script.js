@@ -385,6 +385,9 @@ const translations = {
         'pricing.basic': 'Basic — 60 min + 25 photos',
         'pricing.premium': 'Premium — 120 min + 60 photos',
         'pricing.studio_session': 'Studio photo session',
+        'pkg.wedding_platinum': 'Platinum — 12 hours of photography, USB flash drive, 400 processed photos',
+        'pkg.wedding_gold': 'Gold — 8 hours of photography, 300 processed photos, USB flash drive',
+        'pkg.wedding_silver': 'Silver — 4 hours of photography, 150 processed photos',
         'pricing.video': 'Videography',
         'pricing.video_hour': '1 hour',
         'pricing.extras': 'Extras',
@@ -535,6 +538,9 @@ const translations = {
         'pricing.basic': 'Basic — 60 min + 25 fotografií',
         'pricing.premium': 'Premium — 120 min + 60 fotografií',
         'pricing.studio_session': 'Ateliérové focení',
+        'pkg.wedding_platinum': 'Platina — 12 hodin focení, USB flash disk, 400 upravených fotografií',
+        'pkg.wedding_gold': 'Zlato — 8 hodin focení, 300 upravených fotografií, USB flash disk',
+        'pkg.wedding_silver': 'Stříbro — 4 hodiny focení, 150 upravených fotografií',
         'pricing.video': 'Video',
         'pricing.video_hour': '1 hodina',
         'pricing.extras': 'Doplňky',
@@ -683,6 +689,9 @@ const translations = {
         'pricing.basic': 'Базовий — 60 хв + 25 фото',
         'pricing.premium': 'Преміум — 120 хв + 60 фото',
         'pricing.studio_session': 'Студійна фотосесія',
+        'pkg.wedding_platinum': 'Платина — 12 годин фотозйомки, флешка, 400 оброблених фотографій',
+        'pkg.wedding_gold': 'Золото — 8 годин фотозйомки, 300 оброблених фотографій, флешка',
+        'pkg.wedding_silver': 'Срібло — 4 години фотозйомки, 150 оброблених фотографій',
         'pricing.video': 'Відео',
         'pricing.video_hour': '1 година',
         'pricing.extras': 'Додатково',
@@ -832,37 +841,37 @@ function createTeamModal() {
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-modal', 'true');
     overlay.setAttribute('aria-hidden', 'true');
-    
+
     // Create modal content
     const modal = document.createElement('div');
     modal.className = 'modal';
-    
+
     const closeBtn = document.createElement('button');
     closeBtn.className = 'modal__close';
     closeBtn.setAttribute('aria-label', 'Close modal');
     closeBtn.innerHTML = '×';
     closeBtn.addEventListener('click', () => closeTeamModal(overlay));
-    
+
     const content = document.createElement('div');
     content.className = 'modal__content';
-    
+
     modal.appendChild(closeBtn);
     modal.appendChild(content);
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
-    
+
     return { overlay, content, closeBtn };
 }
 
 function openTeamModal(photoSrc, name, role, description) {
     let modal = document.querySelector('.modal-overlay[data-team-modal]');
-    
+
     if (!modal) {
         const { overlay } = createTeamModal();
         overlay.setAttribute('data-team-modal', 'true');
         modal = overlay;
     }
-    
+
     const content = modal.querySelector('.modal__content');
     content.innerHTML = `
         <img src="${photoSrc}" alt="${name}" class="modal__photo">
@@ -870,11 +879,11 @@ function openTeamModal(photoSrc, name, role, description) {
         <div class="modal__role">${role}</div>
         <div class="modal__description">${description}</div>
     `;
-    
+
     modal.setAttribute('aria-hidden', 'false');
     modal.classList.add('is-open');
     document.body.style.overflow = 'hidden';
-    
+
     // Focus management
     const closeBtn = modal.querySelector('.modal__close');
     if (closeBtn) closeBtn.focus();
@@ -883,7 +892,7 @@ function openTeamModal(photoSrc, name, role, description) {
 function closeTeamModal(overlay) {
     if (!overlay) overlay = document.querySelector('.modal-overlay[data-team-modal]');
     if (!overlay) return;
-    
+
     overlay.setAttribute('aria-hidden', 'true');
     overlay.classList.remove('is-open');
     document.body.style.overflow = '';
@@ -895,19 +904,19 @@ let teamModalsInitialized = false;
 function initTeamModals() {
     if (teamModalsInitialized) return;
     teamModalsInitialized = true;
-    
+
     const teamCards = document.querySelectorAll('.team-card[data-team-photo]');
-    
+
     teamCards.forEach(card => {
         card.addEventListener('click', () => {
             const photoSrc = card.getAttribute('data-team-photo');
             const name = card.querySelector('.name')?.textContent || '';
             const role = card.querySelector('.role')?.textContent || '';
-            
+
             // Get description from translation key or direct HTML
             const descriptionKey = card.getAttribute('data-team-description-key');
             let description = '';
-            
+
             if (descriptionKey) {
                 const lang = localStorage.getItem('lang') || 'en';
                 const dict = translations[lang] || translations.en;
@@ -915,13 +924,13 @@ function initTeamModals() {
             } else {
                 description = card.getAttribute('data-team-description') || '';
             }
-            
+
             if (photoSrc && name) {
                 openTeamModal(photoSrc, name, role, description);
             }
         });
     });
-    
+
     // Close modal on overlay click (event delegation)
     document.addEventListener('click', (e) => {
         const modal = document.querySelector('.modal-overlay[data-team-modal].is-open');
@@ -929,7 +938,7 @@ function initTeamModals() {
             closeTeamModal(modal);
         }
     });
-    
+
     // Close modal on Escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
