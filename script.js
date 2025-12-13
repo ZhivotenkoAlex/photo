@@ -350,13 +350,15 @@ const translations = {
         'role.call_agent': 'Call agent',
         'role.admin': 'Administrator',
         'team.founder_name': 'Eugene',
-        'team.worker_name_1': 'Dart',
+        'team.worker_name_1': 'Dmytro',
         'team.worker_name_2': 'Obiwan',
         'team.worker_name_3': '3CPO',
         'team.worker_name_4': 'R2D2',
         'team.worker_name_5': 'Chubaka',
         'team.photo_editor_desc': 'Photo editing.',
         'team.video_editor_desc': 'Video editing.',
+        'team.worker_1_role': 'Photographer & Videographer',
+        'team.worker_1_description': '<p>I am a professional videographer and photographer with extensive experience working in television and over 40 filmed wedding ceremonies. I specialize in shooting various events: concerts, corporate events, presentations, educational and cultural projects.</p><p>I have deep experience in live content shooting, reportage photography, visual storytelling, and working with people on camera. My goal is to capture genuine emotions and create quality visual content that conveys the atmosphere of the event.</p><p>I have completed professional courses in video editing in Adobe Premiere Pro and photo processing in Adobe Lightroom. I work with modern digital photo and video cameras in HD format, using a stabilizer for smooth camera movements and a lapel microphone for quality sound.</p>',
         'form.portfolio': 'Portfolio link',
         'form.experience': 'Experience (years)',
         'form.equipment': 'Equipment',
@@ -431,13 +433,15 @@ const translations = {
         'team.label_name': 'Jméno',
         'team.label_experience': 'Zkušenosti',
         'team.founder_name': 'Evgen',
-        'team.worker_name_1': 'Dart',
+        'team.worker_name_1': 'Dmytro',
         'team.worker_name_2': 'Obiwan',
         'team.worker_name_3': '3CPO',
         'team.worker_name_4': 'R2D2',
         'team.worker_name_5': 'Chubaka',
         'team.photo_editor_desc': 'Úprava fotografií.',
         'team.video_editor_desc': 'Střih videa.',
+        'team.worker_1_role': 'Fotograf a videograf',
+        'team.worker_1_description': '<p>Jsem profesionální videograf a fotograf s rozsáhlými zkušenostmi z práce v televizi a více než 40 natočenými svatebními obřady. Specializuji se na natáčení různých akcí: koncertů, firemních akcí, prezentací, vzdělávacích a kulturních projektů.</p><p>Mám hluboké zkušenosti s natáčením živého obsahu, reportážní fotografií, vizuálním storytellingem a prací s lidmi před kamerou. Mým cílem je zachytit skutečné emoce a vytvořit kvalitní vizuální obsah, který přenáší atmosféru události.</p><p>Absolvoval jsem profesionální kurzy střihu videa v Adobe Premiere Pro a zpracování fotografií v Adobe Lightroom. Pracuji s moderními digitálními fotoaparáty a videokamerami ve formátu HD, používám stabilizátor pro plynulé pohyby kamery a náhrdelníkový mikrofon pro kvalitní zvuk.</p>',
         // Team values
         'team.name_owner': 'Memori',
         'team.exp_owner': '4+ let',
@@ -589,7 +593,9 @@ const translations = {
         'team.worker_name_4': 'R2D2',
         'team.worker_name_5': 'Чубaka',
         'team.founder_name': 'Євген',
-        'team.worker_name_1': 'Дарт',
+        'team.worker_name_1': 'Дмитро',
+        'team.worker_1_role': 'Фотограф та відеооператор',
+        'team.worker_1_description': '<p>Я — професійний відеограф та фотограф з багаторічним досвідом роботи на телебаченні та понад 40 відзнятими весільними церемоніями. Спеціалізуюся на зйомці різноманітних подій: концертів, корпоративних заходів, презентацій, освітніх та культурних проєктів.</p><p>Маю глибокий досвід у зйомці живого контенту, репортажної фотографії, візуального сторітелінгу та роботи з людьми в кадрі. Моя мета — зафіксувати справжні емоції та створити якісний візуальний контент, який передає атмосферу події.</p><p>Пройшов професійні курси відеомонтажу в Adobe Premiere Pro та обробки фотографій в Adobe Lightroom. Працюю з сучасними цифровими фото- та відеокамерами у форматі HD, використовую стабілізатор для плавних рухів камери та петличний мікрофон для якісного звуку.</p>',
         'team.exp_agent': '2+ роки',
         'team.photo_editor_desc': 'Редагування фотографій.',
         'team.video_editor_desc': 'Редагування відео.',
@@ -816,4 +822,128 @@ if (productPopup) {
             closePopup();
         }
     });
+}
+
+// Reusable Team Member Modal Component
+function createTeamModal() {
+    // Create modal overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-hidden', 'true');
+    
+    // Create modal content
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'modal__close';
+    closeBtn.setAttribute('aria-label', 'Close modal');
+    closeBtn.innerHTML = '×';
+    closeBtn.addEventListener('click', () => closeTeamModal(overlay));
+    
+    const content = document.createElement('div');
+    content.className = 'modal__content';
+    
+    modal.appendChild(closeBtn);
+    modal.appendChild(content);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    
+    return { overlay, content, closeBtn };
+}
+
+function openTeamModal(photoSrc, name, role, description) {
+    let modal = document.querySelector('.modal-overlay[data-team-modal]');
+    
+    if (!modal) {
+        const { overlay } = createTeamModal();
+        overlay.setAttribute('data-team-modal', 'true');
+        modal = overlay;
+    }
+    
+    const content = modal.querySelector('.modal__content');
+    content.innerHTML = `
+        <img src="${photoSrc}" alt="${name}" class="modal__photo">
+        <h3 class="modal__name">${name}</h3>
+        <div class="modal__role">${role}</div>
+        <div class="modal__description">${description}</div>
+    `;
+    
+    modal.setAttribute('aria-hidden', 'false');
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus management
+    const closeBtn = modal.querySelector('.modal__close');
+    if (closeBtn) closeBtn.focus();
+}
+
+function closeTeamModal(overlay) {
+    if (!overlay) overlay = document.querySelector('.modal-overlay[data-team-modal]');
+    if (!overlay) return;
+    
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+}
+
+// Initialize team member modals
+let teamModalsInitialized = false;
+
+function initTeamModals() {
+    if (teamModalsInitialized) return;
+    teamModalsInitialized = true;
+    
+    const teamCards = document.querySelectorAll('.team-card[data-team-photo]');
+    
+    teamCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const photoSrc = card.getAttribute('data-team-photo');
+            const name = card.querySelector('.name')?.textContent || '';
+            const role = card.querySelector('.role')?.textContent || '';
+            
+            // Get description from translation key or direct HTML
+            const descriptionKey = card.getAttribute('data-team-description-key');
+            let description = '';
+            
+            if (descriptionKey) {
+                const lang = localStorage.getItem('lang') || 'en';
+                const dict = translations[lang] || translations.en;
+                description = dict[descriptionKey] || '';
+            } else {
+                description = card.getAttribute('data-team-description') || '';
+            }
+            
+            if (photoSrc && name) {
+                openTeamModal(photoSrc, name, role, description);
+            }
+        });
+    });
+    
+    // Close modal on overlay click (event delegation)
+    document.addEventListener('click', (e) => {
+        const modal = document.querySelector('.modal-overlay[data-team-modal].is-open');
+        if (modal && e.target === modal) {
+            closeTeamModal(modal);
+        }
+    });
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const modal = document.querySelector('.modal-overlay[data-team-modal].is-open');
+            if (modal) {
+                closeTeamModal(modal);
+            }
+        }
+    });
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTeamModals);
+} else {
+    initTeamModals();
 }
