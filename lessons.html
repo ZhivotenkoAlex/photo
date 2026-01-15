@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Memori — Lessons</title>
+    <meta
+      name="description"
+      content="Memori Učitel — photography lessons, guitar lessons, Czech language lessons in Prague."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="topbar">
+        <div class="container">
+          <span>+420 702 140 083</span>
+          <span>fotovideopraga@gmail.com</span>
+          <nav class="social">
+            <a
+              aria-label="Instagram"
+              href="https://www.instagram.com/foto_video_praha?igsh=NGUzYThvcXBvMXZv"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect x="2.75" y="2.75" width="18.5" height="18.5" rx="5" />
+                <circle cx="12" cy="12" r="4.25" />
+                <circle cx="17.5" cy="6.5" r="1.25" />
+              </svg>
+            </a>
+            <a
+              aria-label="TikTok"
+              href="https://www.tiktok.com/@foto_video_praha?_t=ZM-8zf0pLSAuhh&_r=1"
+              title="TikTok"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  d="M13.5 2h3.2c.2 1.2.9 2.3 1.9 3 1 .7 2.1 1 3.4 1.1v3.2c-1.7 0-3.3-.4-4.8-1.2v6.8c0 3.8-3.1 7-7 7s-7-3.2-7-7 3.1-7 7-7c.5 0 1 .1 1.5.2V12c-.4-.1-.9-.2-1.4-.2-2.1 0-3.8 1.7-3.8 3.8S8.2 19.4 10.3 19.4s3.8-1.7 3.8-3.8V2z"
+                />
+              </svg>
+            </a>
+          </nav>
+        </div>
+      </div>
+      <div class="container navbar">
+        <a class="logo" href="./index.html"
+          ><img width="140" src="./images/logoMemory.png" alt="Memori"
+        /></a>
+        <button
+          class="nav-toggle"
+          aria-label="Toggle navigation"
+          aria-expanded="false"
+        >
+          ☰
+        </button>
+        <nav class="nav">
+          <a href="./index.html#services" data-i18n="nav.services">Services</a>
+          <a href="./portfolio.html" data-i18n="nav.portfolio">Portfolio</a>
+          <a href="./pricing.html" data-i18n="nav.price">Price</a>
+          <a href="./leadForm.html" data-i18n="nav.contact">Contact</a>
+          <a href="./about.html" data-i18n="nav.about">About</a>
+          <a href="./lessons.html" data-i18n="nav.lessons">Lessons</a>
+          <a href="./cooperation.html" data-i18n="nav.coop">Cooperation</a>
+          <div id="lang-dd" class="lang-dd" aria-label="Language selector">
+            <button
+              type="button"
+              class="lang-dd__btn"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            >
+              <span id="lang-dd-label">EN</span>
+              <span aria-hidden="true">▾</span>
+            </button>
+            <ul class="lang-dd__list" role="listbox">
+              <li role="option" data-lang="cs">CS</li>
+              <li role="option" data-lang="en">EN</li>
+              <li role="option" data-lang="uk">UA</li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <section class="section pricing-page lessons-page">
+      <div class="pricing-media" aria-hidden="true"></div>
+      <div class="container pricing-content">
+        <h1 class="pricing-page-title" data-i18n="lessons.title">
+          Memori Učitel — Lessons
+        </h1>
+        <p class="pricing-page-note" data-i18n="lessons.subtitle">
+          Learn new skills with our experienced teachers in Prague. Individual approach, flexible schedule, practical focus.
+        </p>
+
+        <h2 class="pricing-section-title" data-i18n="lessons.photo_title">
+          📷 Photography Lessons
+        </h2>
+        <div class="pricing-cards-grid">
+          <div class="pricing-card">
+            <div class="pricing-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="7" width="14" height="10" rx="2" />
+                <path d="M17 9l4-2v10l-4-2z" />
+                <circle cx="10" cy="12" r="2.5" />
+              </svg>
+            </div>
+            <div class="pricing-card-label" data-i18n="lessons.photo_basics">Photography Basics</div>
+            <div class="pricing-card-desc" data-i18n="lessons.photo_basics_desc">Camera settings, composition, lighting basics. For beginners.</div>
+            <div class="pricing-card-price">500 Kč/h</div>
+          </div>
+          <div class="pricing-card">
+            <div class="pricing-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/>
+              </svg>
+            </div>
+            <div class="pricing-card-label" data-i18n="lessons.photo_portrait">Portrait Photography</div>
+            <div class="pricing-card-desc" data-i18n="lessons.photo_portrait_desc">Working with people, posing, natural and studio lighting.</div>
+            <div class="pricing-card-price">600 Kč/h</div>
+          </div>
+          <div class="pricing-card">
+            <div class="pricing-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <path d="M21 15l-5-5L5 21"/>
+              </svg>
+            </div>
+            <div class="pricing-card-label" data-i18n="lessons.photo_editing">Photo Editing</div>
+            <div class="pricing-card-desc" data-i18n="lessons.photo_editing_desc">Lightroom, Photoshop basics, color grading, retouching.</div>
+            <div class="pricing-card-price">500 Kč/h</div>
+          </div>
+          <div class="pricing-card">
+            <div class="pricing-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+              </svg>
+            </div>
+            <div class="pricing-card-label" data-i18n="lessons.photo_package">Package: 5 lessons</div>
+            <div class="pricing-card-desc" data-i18n="lessons.photo_package_desc">Complete course from basics to advanced. Save 500 Kč!</div>
+            <div class="pricing-card-price">2 000 Kč</div>
+          </div>
+        </div>
+
+        <h2 class="pricing-section-title" data-i18n="lessons.guitar_title">
+          🎸 Guitar Lessons
+        </h2>
+        <div class="pricing-cards-grid">
+          <div class="pricing-card">
+            <div class="pricing-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 18V5l12-2v13"/>
+                <circle cx="6" cy="18" r="3"/>
+                <circle cx="18" cy="16" r="3"/>
+              </svg>
+            </div>
+            <div class="pricing-card-label" data-i18n="lessons.guitar_basics">Guitar for Beginners</div>
+            <div class="pricing-card-desc" data-i18n="lessons.guitar_basics_desc">Chords, strumming, first songs. Acoustic or electric.</div>
+            <div class="pricing-card-price">400 Kč/h</div>
+          </div>
+          <div class="pricing-card">
+            <div class="pricing-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v6l4 2"/>
+              </svg>
+            </div>
+            <div class="pricing-card-label" data-i18n="lessons.guitar_intermediate">Intermediate Level</div>
+            <div class="pricing-card-desc" data-i18n="lessons.guitar_intermediate_desc">Fingerstyle, barre chords, music theory, improvisation.</div>
+            <div class="pricing-card-price">500 Kč/h</div>
+          </div>
+          <div class="pricing-card">
+            <div class="pricing-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </div>
+            <div class="pricing-card-label" data-i18n="lessons.guitar_songs">Learn Your Favorite Songs</div>
+            <div class="pricing-card-desc" data-i18n="lessons.guitar_songs_desc">We'll learn the songs you want to play. Any genre!</div>
+            <div class="pricing-card-price">450 Kč/h</div>
+          </div>
+          <div class="pricing-card">
+            <div class="pricing-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+              </svg>
+            </div>
+            <div class="pricing-card-label" data-i18n="lessons.guitar_package">Package: 8 lessons</div>
+            <div class="pricing-card-desc" data-i18n="lessons.guitar_package_desc">From zero to confident playing. Save 700 Kč!</div>
+            <div class="pricing-card-price">2 500 Kč</div>
+          </div>
+        </div>
+
+        <h2 class="pricing-section-title" data-i18n="lessons.czech_title">
+          🇨🇿 Czech Language Lessons
+        </h2>
+        <div class="pricing-cards-grid">
+          <div class="pricing-card">
+            <div class="pricing-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+            </div>
+            <div class="pricing-card-label" data-i18n="lessons.czech_basics">Czech for Beginners (A1-A2)</div>
+            <div class="pricing-card-desc" data-i18n="lessons.czech_basics_desc">Basics, everyday phrases, grammar foundations.</div>
+            <div class="pricing-card-price">350 Kč/h</div>
+          </div>
+          <div class="pricing-card">
+            <div class="pricing-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+            <div class="pricing-card-label" data-i18n="lessons.czech_conversation">Conversational Czech</div>
+            <div class="pricing-card-desc" data-i18n="lessons.czech_conversation_desc">Practice speaking, real-life situations, fluency building.</div>
+            <div class="pricing-card-price">400 Kč/h</div>
+          </div>
+          <div class="pricing-card">
+            <div class="pricing-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="7" width="20" height="14" rx="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+            </div>
+            <div class="pricing-card-label" data-i18n="lessons.czech_business">Czech for Work</div>
+            <div class="pricing-card-desc" data-i18n="lessons.czech_business_desc">Business vocabulary, formal communication, documents.</div>
+            <div class="pricing-card-price">450 Kč/h</div>
+          </div>
+          <div class="pricing-card">
+            <div class="pricing-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+              </svg>
+            </div>
+            <div class="pricing-card-label" data-i18n="lessons.czech_package">Package: 10 lessons</div>
+            <div class="pricing-card-desc" data-i18n="lessons.czech_package_desc">Intensive course for fast progress. Save 1 000 Kč!</div>
+            <div class="pricing-card-price">2 500 Kč</div>
+          </div>
+        </div>
+
+        <p class="pricing-page-note" style="margin-top: 32px;" data-i18n="lessons.note">
+          All lessons are individual. Online lessons available via Zoom/Google Meet. First lesson — introductory price!
+        </p>
+      </div>
+    </section>
+
+    <section class="bottom-divider"></section>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-left">
+          <img width="70" src="./images/logoMemory.png" alt="Memori" />
+          <span>© <span id="year"></span></span>
+        </div>
+        <nav class="footer-nav">
+          <a href="#" data-i18n="footer.privacy">Privacy</a>
+          <a href="#" data-i18n="footer.terms">Terms</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
+
