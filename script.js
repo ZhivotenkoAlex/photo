@@ -469,6 +469,13 @@ const translations = {
         'pricing.photo_case': 'Photo on phone case',
         'pricing.photo_pillow': 'Photo on pillow',
         'pricing.photo_bear': 'Photo on teddy bear',
+        'pricing.gift_certificates': '🎁 Gift Certificates',
+        'voucher.basic': 'Basic Package',
+        'voucher.basic_short': '60 min session + 25 edited photos',
+        'voucher.basic_desc': '<p><strong>Perfect gift for any occasion!</strong></p><p>The Basic package includes:</p><ul><li>60 minutes of professional photo session</li><li>25 professionally edited photos</li><li>Prague and surrounding areas</li><li>Valid for 6 months from purchase</li></ul>',
+        'voucher.standard': 'Standard Package',
+        'voucher.standard_short': '90 min session + 40 edited photos',
+        'voucher.standard_desc': '<p><strong>The ideal gift for capturing special moments!</strong></p><p>The Standard package includes:</p><ul><li>90 minutes of professional photo session</li><li>40 professionally edited photos</li><li>Prague and surrounding areas</li><li>Valid for 6 months from purchase</li></ul>',
         'form.location': 'We are currently working in Prague and the surrounding areas.',
         'pkg.basic': 'Basic — 60 min + 25 photos',
         'pkg.standard': 'Standard — 90 min + 40 photos',
@@ -688,6 +695,13 @@ const translations = {
         'pricing.photo_case': 'Fotografie na obalu telefonu',
         'pricing.photo_pillow': 'Fotografie na polštáři',
         'pricing.photo_bear': 'Fotografie na medvídkovi',
+        'pricing.gift_certificates': '🎁 Dárkové poukazy',
+        'voucher.basic': 'Základní balíček',
+        'voucher.basic_short': '60 min focení + 25 upravených fotografií',
+        'voucher.basic_desc': '<p><strong>Ideální dárek pro každou příležitost!</strong></p><p>Základní balíček obsahuje:</p><ul><li>60 minut profesionálního focení</li><li>25 profesionálně upravených fotografií</li><li>Praha a okolí</li><li>Platnost 6 měsíců od nákupu</li></ul>',
+        'voucher.standard': 'Standardní balíček',
+        'voucher.standard_short': '90 min focení + 40 upravených fotografií',
+        'voucher.standard_desc': '<p><strong>Ideální dárek pro zachycení výjimečných okamžiků!</strong></p><p>Standardní balíček obsahuje:</p><ul><li>90 minut profesionálního focení</li><li>40 profesionálně upravených fotografií</li><li>Praha a okolí</li><li>Platnost 6 měsíců od nákupu</li></ul>',
         'form.location': 'Momentálně pracujeme v Praze a jejím okolí.',
         'pkg.basic': 'Basic — 60 min + 25 fotografií',
         'pkg.standard': 'Standard — 90 min + 40 fotografií',
@@ -905,6 +919,13 @@ const translations = {
         'pricing.photo_case': 'Фото на чехлі',
         'pricing.photo_pillow': 'Фото на подушці',
         'pricing.photo_bear': 'Фото на ведмедику',
+        'pricing.gift_certificates': '🎁 Подарункові сертифікати',
+        'voucher.basic': 'Базовий набір',
+        'voucher.basic_short': '60 хв зйомки + 25 оброблених фото',
+        'voucher.basic_desc': '<p><strong>Ідеальний подарунок на будь-яку нагоду!</strong></p><p>Базовий набір включає:</p><ul><li>60 хвилин професійної фотосесії</li><li>25 професійно оброблених фотографій</li><li>Прага та околиці</li><li>Дійсний 6 місяців з моменту придбання</li></ul>',
+        'voucher.standard': 'Стандартний набір',
+        'voucher.standard_short': '90 хв зйомки + 40 оброблених фото',
+        'voucher.standard_desc': '<p><strong>Ідеальний подарунок для збереження особливих моментів!</strong></p><p>Стандартний набір включає:</p><ul><li>90 хвилин професійної фотосесії</li><li>40 професійно оброблених фотографій</li><li>Прага та околиці</li><li>Дійсний 6 місяців з моменту придбання</li></ul>',
         'form.location': 'Ми в даний момент працюємо в містах Прага та її околицях.',
         'pkg.basic': 'Базовий — 60 хв + 25 фото',
         'pkg.standard': 'Стандарт — 90 хв + 40 фото',
@@ -936,6 +957,15 @@ function applyI18n(lang) {
     document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
         const key = el.getAttribute('data-i18n-placeholder');
         if (dict[key]) el.setAttribute('placeholder', dict[key]);
+    });
+    // Update voucher images based on language
+    document.querySelectorAll('.voucher-card').forEach((card) => {
+        const img = card.querySelector('.voucher-img');
+        if (img) {
+            const imgUa = card.getAttribute('data-img-ua');
+            const imgOther = card.getAttribute('data-img-other');
+            img.src = lang === 'uk' ? imgUa : imgOther;
+        }
     });
     localStorage.setItem('lang', lang);
     document.querySelectorAll('.lang-switch button').forEach(btn => {
@@ -1153,4 +1183,78 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initTeamModals);
 } else {
     initTeamModals();
+}
+
+// ===============================
+// Voucher Modal Functionality
+// ===============================
+function initVoucherModals() {
+    const voucherCards = document.querySelectorAll('.voucher-card');
+    const modal = document.getElementById('voucher-modal');
+
+    if (!modal || voucherCards.length === 0) return;
+
+    const modalImg = document.getElementById('voucher-modal-img');
+    const modalTitle = document.getElementById('voucher-modal-title');
+    const modalPrice = document.getElementById('voucher-modal-price');
+    const modalDesc = document.getElementById('voucher-modal-desc');
+    const closeBtn = modal.querySelector('.modal__close');
+
+    voucherCards.forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', () => {
+            const lang = localStorage.getItem('lang') || 'en';
+            const dict = translations[lang] || translations.en;
+
+            const imgSrc = lang === 'uk'
+                ? card.getAttribute('data-img-ua')
+                : card.getAttribute('data-img-other');
+            const descKey = card.getAttribute('data-description-key');
+            const titleEl = card.querySelector('[data-i18n]');
+            const priceEl = card.querySelector('.pricing-card-price');
+
+            modalImg.src = imgSrc;
+            modalTitle.textContent = titleEl ? titleEl.textContent : '';
+            modalPrice.textContent = priceEl ? priceEl.textContent : '';
+            modalDesc.innerHTML = dict[descKey] || '';
+
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    // Close on button click
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        });
+    }
+
+    // Close on overlay click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+    });
+}
+
+// Initialize voucher modals
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVoucherModals);
+} else {
+    initVoucherModals();
 }

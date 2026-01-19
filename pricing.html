@@ -614,6 +614,44 @@
           </div>
         </div>
 
+                <h2 class="pricing-section-title" data-i18n="pricing.gift_certificates">
+          🎁 Gift Certificates
+        </h2>
+        <div class="pricing-cards-grid voucher-grid">
+          <div class="pricing-card voucher-card" 
+               data-voucher="basic"
+               data-img-ua="./images/vaucher-base-ua.jpg"
+               data-img-other="./images/vauchet-base-cz.jpg"
+               data-description-key="voucher.basic_desc">
+            <div class="pricing-card-icon voucher-icon">
+              <img class="voucher-img" src="./images/vauchet-base-cz.jpg" alt="Basic voucher" />
+            </div>
+            <div class="pricing-card-label" data-i18n="voucher.basic">
+              Basic Package
+            </div>
+            <div class="pricing-card-desc" data-i18n="voucher.basic_short">
+              60 min session + 25 edited photos
+            </div>
+            <div class="pricing-card-price">3 000 Kč</div>
+          </div>
+          <div class="pricing-card voucher-card"
+               data-voucher="standard"
+               data-img-ua="./images/vaucher-standart-ua.jpg"
+               data-img-other="./images/vaucher-standard-cz.jpg"
+               data-description-key="voucher.standard_desc">
+            <div class="pricing-card-icon voucher-icon">
+              <img class="voucher-img" src="./images/vaucher-standard-cz.jpg" alt="Standard voucher" />
+            </div>
+            <div class="pricing-card-label" data-i18n="voucher.standard">
+              Standard Package
+            </div>
+            <div class="pricing-card-desc" data-i18n="voucher.standard_short">
+              90 min session + 40 edited photos
+            </div>
+            <div class="pricing-card-price">4 500 Kč</div>
+          </div>
+        </div>
+
         <h2 class="pricing-section-title" data-i18n="pricing.products">
           Photo Products
         </h2>
@@ -675,6 +713,19 @@
         </div>
       </div>
     </section>
+
+    <!-- Voucher Modal -->
+    <div id="voucher-modal" class="modal-overlay" aria-hidden="true">
+      <div class="modal">
+        <button class="modal__close" aria-label="Close">×</button>
+        <div class="modal__content">
+          <img id="voucher-modal-img" class="modal__photo voucher-modal-img" src="" alt="" />
+          <h3 id="voucher-modal-title" class="modal__name"></h3>
+          <div id="voucher-modal-price" class="modal__role"></div>
+          <div id="voucher-modal-desc" class="modal__description"></div>
+        </div>
+      </div>
+    </div>
 
     <!-- Product Popup Modal -->
     <div id="product-popup" class="product-popup" aria-hidden="true">
