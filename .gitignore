@@ -22,3 +22,6 @@ yarn-error.log*
 .vercel/
 .netlify/
 
+# Deploy script with credentials
+deploy.sh
+
