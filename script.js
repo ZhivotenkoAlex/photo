@@ -150,7 +150,6 @@ if (leadForm) {
         if (!name) { errors.push('name'); markError('name', 'err.required'); }
         if (!surname) { errors.push('surname'); markError('surname', 'err.required'); }
         if (!city) { errors.push('city'); markError('city', 'err.required'); }
-        if (!packageName) { errors.push('package'); markError('package', 'err.required'); }
         if (!street) { errors.push('street'); markError('street', 'err.required'); }
         if (!house) { errors.push('house'); markError('house', 'err.required'); }
         const phoneValid = isValidPhoneNumber(phone);
@@ -161,7 +160,13 @@ if (leadForm) {
             errors.push('phone');
             markError('phone', 'err.phone');
         }
-        if (!service) { errors.push('service'); markError('service', 'err.required'); }
+        // At least one of package or service must be selected
+        if (!packageName && !service) {
+            errors.push('package');
+            errors.push('service');
+            markError('package', 'err.package_or_service');
+            markError('service', 'err.package_or_service');
+        }
         if (errors.length) {
             const firstErrorEl = leadForm.querySelector('.error');
             if (firstErrorEl) scrollToWithOffset(firstErrorEl);
@@ -364,6 +369,7 @@ const translations = {
         'form.required_hint': 'Fields marked with * are required.',
         'err.required': 'This field is required',
         'err.phone': 'Enter a valid phone number',
+        'err.package_or_service': 'Please select either a package or a service',
         'form.submit': 'Send',
         'form.note': 'By sending the form, you agree to our privacy policy.',
         // Cooperation page
@@ -419,6 +425,7 @@ const translations = {
         'pricing.title': 'Packages and pricing (CZK)',
         'pricing.discount': 'Grand Opening Special: 30% discount on all packages until 21.05.2026!',
         'pricing.note': "Prices are indicative and may vary depending on location, timing and specific requirements.",
+        'pricing.order': 'Order',
         'pricing.note_confirm': 'We will confirm the final quote after a quick chat.',
         'pricing.photo': 'Photography',
         'pricing.standard': 'Standard — 90 min + 40 photos',
@@ -469,6 +476,10 @@ const translations = {
         'pricing.photo_case': 'Photo on phone case',
         'pricing.photo_pillow': 'Photo on pillow',
         'pricing.photo_bear': 'Photo on teddy bear',
+        'pricing.photo_metal_15x20': 'Photo on metal 15×20 cm',
+        'pricing.photo_metal_30x40': 'Photo on metal 30×40 cm',
+        'pricing.photo_calendar': 'Calendar',
+        'pricing.photo_car_pendant': 'Car pendant with photo',
         'pricing.gift_certificates': '🎁 Gift Certificates',
         'voucher.basic': 'Basic Package',
         'voucher.basic_short': '60 min session + 25 edited photos',
@@ -608,6 +619,7 @@ const translations = {
         'form.required_hint': 'Povinná pole jsou označena *.',
         'err.required': 'Toto pole je povinné',
         'err.phone': 'Zadejte platné telefonní číslo',
+        'err.package_or_service': 'Prosím vyberte buď balíček nebo službu',
         'form.submit': 'Odeslat',
         'form.note': 'Odesláním formuláře souhlasíte se zásadami ochrany osobních údajů.',
         'form.agreed': 'Při souhlasu je předplacení 40% z částky.',
@@ -645,6 +657,7 @@ const translations = {
         'pricing.title': 'Balíčky a ceny (Kč)',
         'pricing.discount': 'Speciální akce k otevření: 30% sleva na všechny balíčky do 21.05.2026!',
         'pricing.note': 'Ceny jsou orientační a mohou se lišit podle místa, termínu a konkrétních požadavků.',
+        'pricing.order': 'Objednat',
         'pricing.note_confirm': 'Konečnou nabídku potvrdíme po krátké konzultaci.',
         'pricing.photo': 'Fotografie',
         'pricing.standard': 'Standard — 90 min + 40 fotografií',
@@ -695,6 +708,10 @@ const translations = {
         'pricing.photo_case': 'Fotografie na obalu telefonu',
         'pricing.photo_pillow': 'Fotografie na polštáři',
         'pricing.photo_bear': 'Fotografie na medvídkovi',
+        'pricing.photo_metal_15x20': 'Fotografie na kovu 15×20 cm',
+        'pricing.photo_metal_30x40': 'Fotografie na kovu 30×40 cm',
+        'pricing.photo_calendar': 'Kalendář',
+        'pricing.photo_car_pendant': 'Přívěsek do auta s fotografií',
         'pricing.gift_certificates': '🎁 Dárkové poukazy',
         'voucher.basic': 'Základní balíček',
         'voucher.basic_short': '60 min focení + 25 upravených fotografií',
@@ -829,8 +846,9 @@ const translations = {
         'form.service': 'Послуга',
         'form.service_placeholder': 'Оберіть послугу',
         'form.required_hint': 'Поля, позначені *, є обов’язковими.',
-        'err.required': 'Це поле є обов’язковим',
+        'err.required': 'Це поле є обов\'язковим',
         'err.phone': 'Введіть коректний номер телефону.',
+        'err.package_or_service': 'Будь ласка, оберіть або пакет, або послугу',
         'form.submit': 'Надіслати',
         'form.note': 'Надсилаючи форму, ви погоджуєтесь з політикою конфіденційності.',
         'form.agreed': 'При договориності є передплатня 40% від суми.',
@@ -868,6 +886,7 @@ const translations = {
         'pricing.title': 'Пакети та ціни (CZK)',
         'pricing.discount': 'Акція на відкриття: знижка 30% на всі пакети до 21.05.2026!',
         'pricing.note': 'Ціни орієнтовні та можуть змінюватись залежно від локації, часу та вимог.',
+        'pricing.order': 'Замовити',
         'pricing.note_confirm': 'Остаточну вартість підтвердимо після короткої консультації.',
         'pricing.prepaid': 'При договориності є передплатня 40% від суми.',
         'pricing.photo': 'Фотографія',
@@ -919,6 +938,10 @@ const translations = {
         'pricing.photo_case': 'Фото на чехлі',
         'pricing.photo_pillow': 'Фото на подушці',
         'pricing.photo_bear': 'Фото на ведмедику',
+        'pricing.photo_metal_15x20': 'Фото на металі 15×20 см',
+        'pricing.photo_metal_30x40': 'Фото на металі 30×40 см',
+        'pricing.photo_calendar': 'Календар',
+        'pricing.photo_car_pendant': 'Кулон для машини',
         'pricing.gift_certificates': '🎁 Подарункові сертифікати',
         'voucher.basic': 'Базовий набір',
         'voucher.basic_short': '60 хв зйомки + 25 оброблених фото',
@@ -1035,6 +1058,10 @@ if (productPopup) {
     const productCards = document.querySelectorAll('.pricing-products-grid .pricing-card');
     productCards.forEach(card => {
         card.addEventListener('click', (e) => {
+            // Don't open popup if clicking on order button
+            if (e.target.closest('.pricing-order-btn')) {
+                return;
+            }
             const img = card.querySelector('.pricing-card-icon img');
             const label = card.querySelector('.pricing-card-label');
             const price = card.querySelector('.pricing-card-price');
@@ -1257,4 +1284,148 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initVoucherModals);
 } else {
     initVoucherModals();
+}
+
+// Pricing order buttons - redirect to leadForm with pre-selected service/package
+function initPricingOrderButtons() {
+    const orderButtons = document.querySelectorAll('.pricing-order-btn');
+    orderButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const card = btn.closest('.pricing-card');
+            if (!card) return;
+
+            const service = card.getAttribute('data-service');
+            const packageValue = card.getAttribute('data-package');
+
+            let url = './leadForm.html';
+            if (service) {
+                url += `?service=${encodeURIComponent(service)}`;
+            } else if (packageValue) {
+                url += `?package=${encodeURIComponent(packageValue)}`;
+            }
+
+            window.location.href = url;
+        });
+    });
+}
+
+// Lessons page - make cards clickable to redirect to leadForm
+function initLessonsCards() {
+    const lessonsPage = document.querySelector('.lessons-page');
+    if (!lessonsPage) return;
+
+    const lessonCards = lessonsPage.querySelectorAll('.pricing-card');
+    lessonCards.forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', () => {
+            const label = card.querySelector('.pricing-card-label');
+            if (!label) return;
+
+            const labelText = label.textContent.trim();
+            let serviceValue = '';
+
+            // Map lesson labels to service values
+            const lessonMap = {
+                'Photography Basics': 'lesson_photo_basics',
+                'Portrait Photography': 'lesson_photo_portrait',
+                'Photo Editing': 'lesson_photo_editing',
+                'Guitar for Beginners': 'lesson_guitar_basics',
+                'Intermediate Level': 'lesson_guitar_intermediate',
+                'Learn Your Favorite Songs': 'lesson_guitar_songs',
+                'Czech for Beginners (A1-A2)': 'lesson_czech_basics',
+                'Conversational Czech': 'lesson_czech_conversation',
+                'Czech for Work': 'lesson_czech_business',
+                'Package: 5 lessons': 'photo_lessons_5',
+                'Package: 8 lessons': 'guitar_lessons_8',
+                'Package: 10 lessons': 'czech_lessons_10'
+            };
+
+            // Check if it's a package
+            if (labelText.includes('Package:')) {
+                if (labelText.includes('5')) {
+                    window.location.href = './leadForm.html?package=photo_lessons_5';
+                    return;
+                } else if (labelText.includes('8')) {
+                    window.location.href = './leadForm.html?package=guitar_lessons_8';
+                    return;
+                } else if (labelText.includes('10')) {
+                    window.location.href = './leadForm.html?package=czech_lessons_10';
+                    return;
+                }
+            }
+
+            // Check data-i18n attribute for more reliable matching
+            const i18nKey = label.getAttribute('data-i18n');
+            if (i18nKey) {
+                const i18nMap = {
+                    'lessons.photo_basics': 'lesson_photo_basics',
+                    'lessons.photo_portrait': 'lesson_photo_portrait',
+                    'lessons.photo_editing': 'lesson_photo_editing',
+                    'lessons.guitar_basics': 'lesson_guitar_basics',
+                    'lessons.guitar_intermediate': 'lesson_guitar_intermediate',
+                    'lessons.guitar_songs': 'lesson_guitar_songs',
+                    'lessons.czech_basics': 'lesson_czech_basics',
+                    'lessons.czech_conversation': 'lesson_czech_conversation',
+                    'lessons.czech_business': 'lesson_czech_business',
+                    'lessons.photo_package': 'photo_lessons_5',
+                    'lessons.guitar_package': 'guitar_lessons_8',
+                    'lessons.czech_package': 'czech_lessons_10'
+                };
+                serviceValue = i18nMap[i18nKey];
+            } else {
+                serviceValue = lessonMap[labelText];
+            }
+
+            if (serviceValue) {
+                if (serviceValue.startsWith('lesson_')) {
+                    window.location.href = `./leadForm.html?service=${encodeURIComponent(serviceValue)}`;
+                } else {
+                    window.location.href = `./leadForm.html?package=${encodeURIComponent(serviceValue)}`;
+                }
+            }
+        });
+    });
+}
+
+// URL parameter parsing - pre-select form fields on leadForm page
+function initFormPreSelection() {
+    const leadForm = document.querySelector('.lead-form');
+    if (!leadForm) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const service = urlParams.get('service');
+    const packageValue = urlParams.get('package');
+
+    if (service) {
+        const serviceSelect = leadForm.querySelector('select[name="service"]');
+        if (serviceSelect) {
+            serviceSelect.value = service;
+            // Trigger change event to ensure form validation works
+            serviceSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+
+    if (packageValue) {
+        const packageSelect = leadForm.querySelector('select[name="package"]');
+        if (packageSelect) {
+            packageSelect.value = packageValue;
+            // Trigger change event to ensure form validation works
+            packageSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+}
+
+// Initialize pricing order buttons
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        initPricingOrderButtons();
+        initLessonsCards();
+        initFormPreSelection();
+    });
+} else {
+    initPricingOrderButtons();
+    initLessonsCards();
+    initFormPreSelection();
 }

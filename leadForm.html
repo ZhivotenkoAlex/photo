@@ -169,9 +169,9 @@
                 autocomplete="address-line2"
               />
             </label>
-            <label class="required">
+            <label>
               <span data-i18n="form.package">Package</span>
-              <select name="package" class="input-select" required>
+              <select name="package" class="input-select">
                 <option
                   value=""
                   disabled
@@ -206,6 +206,12 @@
                 <option value="video_hour" data-i18n="pkg.video_hour">
                   Video — 1 hour
                 </option>
+                <option value="voucher_basic" data-i18n="voucher.basic">
+                  Basic Package
+                </option>
+                <option value="voucher_standard" data-i18n="voucher.standard">
+                  Standard Package
+                </option>
                 <option
                   value="photo_lessons_5"
                   data-i18n="lessons.photo_package"
@@ -226,9 +232,9 @@
                 </option>
               </select>
             </label>
-            <label class="required">
+            <label>
               <span data-i18n="form.service">Service</span>
-              <select name="service" class="input-select" required>
+              <select name="service" class="input-select">
                 <option value="" selected data-i18n="form.service_placeholder">
                   Choose a service
                 </option>
@@ -370,6 +376,46 @@
                     data-i18n="lessons.czech_business"
                   >
                     Czech for Work
+                  </option>
+                </optgroup>
+                <optgroup label="Photo Products" data-i18n-label="pricing.products">
+                  <option value="photo_tshirt" data-i18n="pricing.photo_tshirt">
+                    Photo on t-shirt
+                  </option>
+                  <option value="photo_hoodie" data-i18n="pricing.photo_hoodie">
+                    Photo on hoodie
+                  </option>
+                  <option value="photo_mug" data-i18n="pricing.photo_mug">
+                    Photo on mug
+                  </option>
+                  <option value="photo_case" data-i18n="pricing.photo_case">
+                    Photo on phone case
+                  </option>
+                  <option value="photo_pillow" data-i18n="pricing.photo_pillow">
+                    Photo on pillow
+                  </option>
+                  <option value="photo_bear" data-i18n="pricing.photo_bear">
+                    Photo on teddy bear
+                  </option>
+                  <option value="photo_metal_15x20" data-i18n="pricing.photo_metal_15x20">
+                    Photo on metal 15×20 cm
+                  </option>
+                  <option value="photo_metal_30x40" data-i18n="pricing.photo_metal_30x40">
+                    Photo on metal 30×40 cm
+                  </option>
+                  <option value="photo_calendar" data-i18n="pricing.photo_calendar">
+                    Calendar
+                  </option>
+                  <option value="photo_car_pendant" data-i18n="pricing.photo_car_pendant">
+                    Car pendant with photo
+                  </option>
+                </optgroup>
+                <optgroup label="Extras" data-i18n-label="pricing.extras">
+                  <option value="print_all" data-i18n="pricing.print_all">
+                    Printing all package photos
+                  </option>
+                  <option value="video_disc" data-i18n="pricing.video_disc">
+                    Video on disc
                   </option>
                 </optgroup>
               </select>
