@@ -1,6 +1,7 @@
 const navToggleButton = document.querySelector('.nav-toggle');
 const navMenu = document.querySelector('.nav');
-const emailUrl = 'https://script.google.com/macros/s/AKfycbyTs5M0E_DNRt5xVgUUpzH422yaroOlw4AarYOqwXBuyj0IJzWMwP62nYs0sF521Egf2g/exec'
+// const emailUrl = 'https://script.google.com/macros/s/AKfycbyTs5M0E_DNRt5xVgUUpzH422yaroOlw4AarYOqwXBuyj0IJzWMwP62nYs0sF521Egf2g/exec'
+const emailUrl = 'https://script.google.com/macros/s/AKfycbwLOu4lVKPeiH6gHnBkMiN22cwAwdQL1JNxa3TlcLghneewoB8jR5EsswmGlTEkuo_u-w/exec'
 
 if (navToggleButton) {
     navToggleButton.addEventListener('click', () => {
