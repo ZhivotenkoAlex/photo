@@ -173,12 +173,61 @@ if (leadForm) {
             if (firstErrorEl) scrollToWithOffset(firstErrorEl);
             return;
         }
-        const url = emailUrl
-        const qs = new URLSearchParams({ name, surname, phone, contact, city, street, house, comment, package: packageName, service });
-        fetch(`${url}?${qs.toString()}`, { method: 'GET' })
+        const url = 'https://pracovnik.memoripraha.cz/api/submit-order';
+        const payload = {
+            name,
+            surname,
+            phone,
+            city,
+            street,
+            house,
+            package: packageName || ''
+        };
+        // Only include optional fields that have values
+        if (contact && contact.trim()) payload.contact = contact;
+        if (service && service.trim()) payload.service = service;
+        if (comment && comment.trim()) payload.comment = comment;
+
+        fetch(url, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
             .then(async (r) => {
+                if (!r.ok) {
+                    const errorData = await r.json().catch(() => ({}));
+                    // Handle 422 validation errors
+                    if (r.status === 422 && errorData.errors) {
+                        // Clear previous errors
+                        leadForm.querySelectorAll('.field-error').forEach(el => el.remove());
+                        leadForm.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+
+                        // Show field-specific errors
+                        Object.keys(errorData.errors).forEach(field => {
+                            const fieldName = field === 'package' ? 'package' : field;
+                            markError(fieldName, 'err.required');
+                            const fieldEl = leadForm.querySelector(`[name="${fieldName}"]`);
+                            if (fieldEl) {
+                                const errorMsg = Array.isArray(errorData.errors[field])
+                                    ? errorData.errors[field][0]
+                                    : errorData.errors[field];
+                                const msg = document.createElement('div');
+                                msg.className = 'field-error';
+                                msg.textContent = errorMsg;
+                                fieldEl.parentElement.appendChild(msg);
+                            }
+                        });
+                        const firstErrorEl = leadForm.querySelector('.error');
+                        if (firstErrorEl) scrollToWithOffset(firstErrorEl);
+                        return;
+                    }
+                    throw new Error(errorData.message || `HTTP ${r.status}: ${r.statusText}`);
+                }
                 const data = await r.json().catch(() => ({}));
-                if (!r.ok) throw new Error(data.error || 'Request failed');
                 const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
                 if (typeof showToast === 'function') {
                     showToast(dict['toast.success'] || 'Thank you! We will contact you shortly.');
@@ -186,10 +235,14 @@ if (leadForm) {
                 leadForm.reset();
             })
             .catch((err) => {
-                console.error(err);
+                console.error('Order submission error:', err);
                 const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                let errorMsg = dict['toast.error'] || 'Sorry, something went wrong. Please try again later.';
+                if (err.message && err.message.includes('CORS')) {
+                    errorMsg = 'CORS error: Please contact the administrator.';
+                }
                 if (typeof showToast === 'function') {
-                    showToast(dict['toast.error'] || 'Sorry, something went wrong. Please try again later.', 'error');
+                    showToast(errorMsg, 'error');
                 }
             });
     });
@@ -242,14 +295,60 @@ if (coopForm) {
             return;
         }
 
-        const url = emailUrl
-        const qs = new URLSearchParams({
-            type: 'cooperation', name, phone, email, city, role, portfolio, experience, driving_b: drivingB, comment
-        });
-        fetch(`${url}?${qs.toString()}`, { method: 'GET' })
+        const url = 'https://pracovnik.memoripraha.cz/api/submit-collaboration';
+        const payload = {
+            name,
+            phone,
+            city,
+            role,
+            portfolio,
+            driving_b: drivingB === 'yes'
+        };
+        // Only include fields that have values
+        if (email) payload.email = email;
+        if (experience) payload.experience = experience;
+        if (equipment) payload.equipment = equipment;
+        if (comment) payload.comment = comment;
+
+        fetch(url, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
             .then(async (r) => {
+                if (!r.ok) {
+                    const errorData = await r.json().catch(() => ({}));
+                    // Handle 422 validation errors
+                    if (r.status === 422 && errorData.errors) {
+                        // Clear previous errors
+                        coopForm.querySelectorAll('.field-error').forEach(el => el.remove());
+                        coopForm.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+
+                        // Show field-specific errors
+                        Object.keys(errorData.errors).forEach(field => {
+                            markError(field, 'err.required');
+                            const fieldEl = coopForm.querySelector(`[name="${field}"]`);
+                            if (fieldEl) {
+                                const errorMsg = Array.isArray(errorData.errors[field])
+                                    ? errorData.errors[field][0]
+                                    : errorData.errors[field];
+                                const msg = document.createElement('div');
+                                msg.className = 'field-error';
+                                msg.textContent = errorMsg;
+                                fieldEl.parentElement.appendChild(msg);
+                            }
+                        });
+                        const firstErrorEl = coopForm.querySelector('.error');
+                        if (firstErrorEl) scrollToWithOffset(firstErrorEl);
+                        return;
+                    }
+                    throw new Error(errorData.message || `HTTP ${r.status}: ${r.statusText}`);
+                }
                 const data = await r.json().catch(() => ({}));
-                if (!r.ok) throw new Error(data.error || 'Request failed');
                 const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
                 if (typeof showToast === 'function') {
                     showToast(dict['toast.success'] || 'Thank you! We will contact you shortly.');
@@ -257,10 +356,14 @@ if (coopForm) {
                 coopForm.reset();
             })
             .catch((err) => {
-                console.error(err);
+                console.error('Collaboration submission error:', err);
                 const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                let errorMsg = dict['toast.error'] || 'Sorry, something went wrong. Please try again later.';
+                if (err.message && err.message.includes('CORS')) {
+                    errorMsg = 'CORS error: Please contact the administrator.';
+                }
                 if (typeof showToast === 'function') {
-                    showToast(dict['toast.error'] || 'Sorry, something went wrong. Please try again later.', 'error');
+                    showToast(errorMsg, 'error');
                 }
             });
     });
