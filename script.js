@@ -1287,37 +1287,41 @@ function closeTeamModal(overlay) {
     document.body.style.overflow = '';
 }
 
-// Initialize team member modals
+// Initialize team member modals using event delegation
 let teamModalsInitialized = false;
 
 function initTeamModals() {
     if (teamModalsInitialized) return;
     teamModalsInitialized = true;
 
-    const teamCards = document.querySelectorAll('.team-card[data-team-photo]');
+    // Use event delegation on the team grid container
+    const teamGrid = document.querySelector('.team-grid');
+    if (!teamGrid) return;
 
-    teamCards.forEach(card => {
-        card.addEventListener('click', () => {
-            const photoSrc = card.getAttribute('data-team-photo');
-            const name = card.querySelector('.name')?.textContent || '';
-            const role = card.querySelector('.role')?.textContent || '';
+    teamGrid.addEventListener('click', (e) => {
+        // Find the clicked team card (might be clicked on child element)
+        const card = e.target.closest('.team-card[data-team-photo]');
+        if (!card) return;
 
-            // Get description from translation key or direct HTML
-            const descriptionKey = card.getAttribute('data-team-description-key');
-            let description = '';
+        const photoSrc = card.getAttribute('data-team-photo');
+        const name = card.querySelector('.name')?.textContent || '';
+        const role = card.querySelector('.role')?.textContent || '';
 
-            if (descriptionKey) {
-                const lang = localStorage.getItem('lang') || 'en';
-                const dict = translations[lang] || translations.en;
-                description = dict[descriptionKey] || '';
-            } else {
-                description = card.getAttribute('data-team-description') || '';
-            }
+        // Get description from translation key or direct HTML
+        const descriptionKey = card.getAttribute('data-team-description-key');
+        let description = '';
 
-            if (photoSrc && name) {
-                openTeamModal(photoSrc, name, role, description);
-            }
-        });
+        if (descriptionKey) {
+            const lang = localStorage.getItem('lang') || 'en';
+            const dict = translations[lang] || translations.en;
+            description = dict[descriptionKey] || '';
+        } else {
+            description = card.getAttribute('data-team-description') || '';
+        }
+
+        if (photoSrc && name) {
+            openTeamModal(photoSrc, name, role, description);
+        }
     });
 
     // Close modal on overlay click (event delegation)
