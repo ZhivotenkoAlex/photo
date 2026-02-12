@@ -119,33 +119,119 @@ function scrollToWithOffset(target) {
 // Simple form handling (lead form on index)
 const leadForm = document.querySelector('.lead-form:not(.coop-form)');
 if (leadForm) {
+    // Add multiselect limit handlers
+    const packageSelect = leadForm.querySelector('select[name="package"]');
+    const serviceSelect = leadForm.querySelector('select[name="service"]');
+    
+    if (packageSelect) {
+        packageSelect.addEventListener('change', (e) => {
+            const selected = Array.from(e.target.selectedOptions).filter(opt => opt.value);
+            if (selected.length > 3) {
+                // Deselect the last selected option
+                selected[selected.length - 1].selected = false;
+                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                showToast(dict['err.max_packages'] || 'Maximum 3 packages can be selected', 'error');
+            }
+        });
+    }
+    
+    if (serviceSelect) {
+        serviceSelect.addEventListener('change', (e) => {
+            const selected = Array.from(e.target.selectedOptions).filter(opt => opt.value);
+            if (selected.length > 4) {
+                // Deselect the last selected option
+                selected[selected.length - 1].selected = false;
+                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                showToast(dict['err.max_services'] || 'Maximum 4 services can be selected', 'error');
+            }
+        });
+    }
+    
     leadForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        
+        // Sync custom multiselect checkboxes with hidden select elements before form submission
+        const packageMultiselect = leadForm.querySelector('.custom-multiselect[data-name="package"]');
+        const serviceMultiselect = leadForm.querySelector('.custom-multiselect[data-name="service"]');
+        
+        if (packageMultiselect) {
+            const packageSelect = leadForm.querySelector('select[name="package"]');
+            if (packageSelect) {
+                const checkedBoxes = packageMultiselect.querySelectorAll('.custom-multiselect__checkbox:checked');
+                const selectedValues = Array.from(checkedBoxes).map(cb => cb.value);
+                // Clear all selections first
+                Array.from(packageSelect.options).forEach(opt => {
+                    opt.selected = false;
+                });
+                // Set selected values
+                selectedValues.forEach(value => {
+                    const option = packageSelect.querySelector(`option[value="${value}"]`);
+                    if (option && !option.disabled) option.selected = true;
+                });
+            }
+        }
+        
+        if (serviceMultiselect) {
+            const serviceSelect = leadForm.querySelector('select[name="service"]');
+            if (serviceSelect) {
+                const checkedBoxes = serviceMultiselect.querySelectorAll('.custom-multiselect__checkbox:checked');
+                const selectedValues = Array.from(checkedBoxes).map(cb => cb.value);
+                // Clear all selections first
+                Array.from(serviceSelect.options).forEach(opt => {
+                    opt.selected = false;
+                });
+                // Set selected values
+                selectedValues.forEach(value => {
+                    const option = serviceSelect.querySelector(`option[value="${value}"]`);
+                    if (option && !option.disabled) option.selected = true;
+                });
+            }
+        }
+        
         const formData = new FormData(leadForm);
         const name = (formData.get('name') || '').toString().trim();
         const surname = (formData.get('surname') || '').toString().trim();
         const phone = (formData.get('phone') || '').toString().trim();
         const contact = (formData.get('contact') || '').toString().trim();
-        const service = (formData.get('service') || '').toString().trim();
+        
+        // Get selected values directly from select elements (more reliable than FormData.getAll)
+        const packageSelect = leadForm.querySelector('select[name="package"]');
+        const serviceSelect = leadForm.querySelector('select[name="service"]');
+        const packages = packageSelect ? Array.from(packageSelect.selectedOptions)
+            .filter(opt => !opt.disabled && opt.value)
+            .map(opt => opt.value)
+            .filter(p => p && p.trim()) : [];
+        const services = serviceSelect ? Array.from(serviceSelect.selectedOptions)
+            .filter(opt => !opt.disabled && opt.value)
+            .map(opt => opt.value)
+            .filter(s => s && s.trim()) : [];
+        
         const city = (formData.get('city') || '').toString().trim();
         const street = (formData.get('street') || '').toString().trim();
         const house = (formData.get('house') || '').toString().trim();
         const comment = (formData.get('comment') || '').toString().trim();
-        const packageName = (formData.get('package') || '').toString().trim();
         // Basic validation
         // clear previous errors
         leadForm.querySelectorAll('.field-error').forEach(el => el.remove());
         leadForm.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+        leadForm.querySelectorAll('.custom-multiselect__trigger.error').forEach(el => el.classList.remove('error'));
         const errors = [];
         const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
         const markError = (selectorKey, messageKey) => {
             const field = leadForm.querySelector(`[name="${selectorKey}"]`);
             if (field) {
                 field.classList.add('error');
+                // Also mark custom multiselect trigger if it exists
+                const customMultiselect = leadForm.querySelector(`.custom-multiselect[data-name="${selectorKey}"]`);
+                if (customMultiselect) {
+                    const trigger = customMultiselect.querySelector('.custom-multiselect__trigger');
+                    if (trigger) trigger.classList.add('error');
+                }
                 const msg = document.createElement('div');
                 msg.className = 'field-error';
                 msg.textContent = dict[messageKey] || dict['err.required'];
-                field.parentElement.appendChild(msg);
+                const parent = customMultiselect || field.parentElement;
+                parent.appendChild(msg);
             }
         };
         if (!name) { errors.push('name'); markError('name', 'err.required'); }
@@ -161,8 +247,18 @@ if (leadForm) {
             errors.push('phone');
             markError('phone', 'err.phone');
         }
+        // Validate multiselect limits
+        if (packages.length > 3) {
+            errors.push('package');
+            markError('package', 'err.max_packages');
+        }
+        if (services.length > 4) {
+            errors.push('service');
+            markError('service', 'err.max_services');
+        }
+        
         // At least one of package or service must be selected
-        if (!packageName && !service) {
+        if (packages.length === 0 && services.length === 0) {
             errors.push('package');
             errors.push('service');
             markError('package', 'err.package_or_service');
@@ -181,11 +277,11 @@ if (leadForm) {
             city,
             street,
             house,
-            package: packageName || ''
+            package: packages, // Always send as array (empty if none selected)
+            service: services   // Always send as array (empty if none selected)
         };
         // Only include optional fields that have values
         if (contact && contact.trim()) payload.contact = contact;
-        if (service && service.trim()) payload.service = service;
         if (comment && comment.trim()) payload.comment = comment;
 
         fetch(url, {
@@ -474,6 +570,9 @@ const translations = {
         'err.required': 'This field is required',
         'err.phone': 'Enter a valid phone number',
         'err.package_or_service': 'Please select either a package or a service',
+        'err.max_packages': 'Maximum 3 packages can be selected',
+        'err.max_services': 'Maximum 4 services can be selected',
+        'form.selected': 'selected',
         'form.submit': 'Send',
         'form.note': 'By sending the form, you agree to our privacy policy.',
         // Cooperation page
@@ -594,11 +693,11 @@ const translations = {
         'pricing.photo_calendar': 'Calendar',
         'pricing.photo_car_pendant': 'Car pendant with photo',
         'pricing.photo_backpack_badge': 'Badge for backpack',
-        'pricing.gift_certificates': '🎁 Gift Certificates',
-        'voucher.basic': 'Basic Package',
+        'pricing.gift_certificates': 'Gift Certificates',
+        'voucher.basic': 'Gift Certificate "Basic Package"',
         'voucher.basic_short': '60 min session + 25 edited photos',
         'voucher.basic_desc': '<p><strong>Perfect gift for any occasion!</strong></p><p>The Basic package includes:</p><ul><li>60 minutes of professional photo session</li><li>25 professionally edited photos</li><li>Prague and surrounding areas</li><li>Valid for 6 months from purchase</li></ul>',
-        'voucher.standard': 'Standard Package',
+        'voucher.standard': 'Gift Certificate "Standard Package"',
         'voucher.standard_short': '90 min session + 40 edited photos',
         'voucher.standard_desc': '<p><strong>The ideal gift for capturing special moments!</strong></p><p>The Standard package includes:</p><ul><li>90 minutes of professional photo session</li><li>40 professionally edited photos</li><li>Prague and surrounding areas</li><li>Valid for 6 months from purchase</li></ul>',
         'form.location': 'We are currently working in Prague and the surrounding areas.',
@@ -743,6 +842,9 @@ const translations = {
         'err.required': 'Toto pole je povinné',
         'err.phone': 'Zadejte platné telefonní číslo',
         'err.package_or_service': 'Prosím vyberte buď balíček nebo službu',
+        'err.max_packages': 'Můžete vybrat maximálně 3 balíčky',
+        'err.max_services': 'Můžete vybrat maximálně 4 služby',
+        'form.selected': 'vybráno',
         'form.submit': 'Odeslat',
         'form.note': 'Odesláním formuláře souhlasíte se zásadami ochrany osobních údajů.',
         'form.agreed': 'Při souhlasu je předplacení 40% z částky.',
@@ -836,11 +938,11 @@ const translations = {
         'pricing.photo_calendar': 'Kalendář',
         'pricing.photo_car_pendant': 'Přívěsek do auta s fotografií',
         'pricing.photo_backpack_badge': 'Odznak na batoh',
-        'pricing.gift_certificates': '🎁 Dárkové poukazy',
-        'voucher.basic': 'Základní balíček',
+        'pricing.gift_certificates': 'Dárkové poukazy',
+        'voucher.basic': 'Dárkový poukaz "Základní balíček"',
         'voucher.basic_short': '60 min focení + 25 upravených fotografií',
         'voucher.basic_desc': '<p><strong>Ideální dárek pro každou příležitost!</strong></p><p>Základní balíček obsahuje:</p><ul><li>60 minut profesionálního focení</li><li>25 profesionálně upravených fotografií</li><li>Praha a okolí</li><li>Platnost 6 měsíců od nákupu</li></ul>',
-        'voucher.standard': 'Standardní balíček',
+        'voucher.standard': ' Dárkový poukaz "Standardní balíček"',
         'voucher.standard_short': '90 min focení + 40 upravených fotografií',
         'voucher.standard_desc': '<p><strong>Ideální dárek pro zachycení výjimečných okamžiků!</strong></p><p>Standardní balíček obsahuje:</p><ul><li>90 minut profesionálního focení</li><li>40 profesionálně upravených fotografií</li><li>Praha a okolí</li><li>Platnost 6 měsíců od nákupu</li></ul>',
         'form.location': 'Momentálně pracujeme v Praze a jejím okolí.',
@@ -982,6 +1084,9 @@ const translations = {
         'err.required': 'Це поле є обов\'язковим',
         'err.phone': 'Введіть коректний номер телефону.',
         'err.package_or_service': 'Будь ласка, оберіть або пакет, або послугу',
+        'err.max_packages': 'Можна вибрати максимум 3 пакети',
+        'err.max_services': 'Можна вибрати максимум 4 послуги',
+        'form.selected': 'вибрано',
         'form.submit': 'Надіслати',
         'form.note': 'Надсилаючи форму, ви погоджуєтесь з політикою конфіденційності.',
         'form.agreed': 'При договориності є передплатня 40% від суми.',
@@ -1076,11 +1181,11 @@ const translations = {
         'pricing.photo_calendar': 'Календар',
         'pricing.photo_car_pendant': 'Кулон для машини',
         'pricing.photo_backpack_badge': 'Значок на рюкзак',
-        'pricing.gift_certificates': '🎁 Подарункові сертифікати',
-        'voucher.basic': 'Базовий набір',
+        'pricing.gift_certificates': 'Подарункові сертифікати',
+        'voucher.basic': 'Подарунковий сертифікат "Набір Базовий"',
         'voucher.basic_short': '60 хв зйомки + 25 оброблених фото',
         'voucher.basic_desc': '<p><strong>Ідеальний подарунок на будь-яку нагоду!</strong></p><p>Базовий набір включає:</p><ul><li>60 хвилин професійної фотосесії</li><li>25 професійно оброблених фотографій</li><li>Прага та околиці</li><li>Дійсний 6 місяців з моменту придбання</li></ul>',
-        'voucher.standard': 'Стандартний набір',
+        'voucher.standard': 'Подарунковий сертифікат "Набір Стандартний"',
         'voucher.standard_short': '90 хв зйомки + 40 оброблених фото',
         'voucher.standard_desc': '<p><strong>Ідеальний подарунок для збереження особливих моментів!</strong></p><p>Стандартний набір включає:</p><ul><li>90 хвилин професійної фотосесії</li><li>40 професійно оброблених фотографій</li><li>Прага та околиці</li><li>Дійсний 6 місяців з моменту придбання</li></ul>',
         'form.location': 'Ми в даний момент працюємо в містах Прага та її околицях.',
@@ -1110,6 +1215,69 @@ function applyI18n(lang) {
     document.querySelectorAll('[data-i18n-label]').forEach((el) => {
         const key = el.getAttribute('data-i18n-label');
         if (dict[key]) el.setAttribute('label', dict[key]);
+    });
+    // Update custom multiselect labels and display text
+    document.querySelectorAll('.custom-multiselect').forEach(ms => {
+        const name = ms.getAttribute('data-name');
+        const placeholderKey = name === 'package' ? 'form.package_placeholder' : 'form.service_placeholder';
+        const displayText = ms.querySelector('.custom-multiselect__display');
+        if (displayText) {
+            const checked = ms.querySelectorAll('.custom-multiselect__checkbox:checked');
+            if (checked.length === 0) {
+                displayText.textContent = dict[placeholderKey] || 'Choose...';
+            } else if (checked.length === 1) {
+                const option = checked[0].closest('.custom-multiselect__option');
+                const span = option.querySelector('span');
+                // Update option text from i18n if available
+                const checkbox = checked[0];
+                const select = document.querySelector(`select[name="${name}"]`);
+                if (select) {
+                    const optionEl = select.querySelector(`option[value="${checkbox.value}"]`);
+                    if (optionEl) {
+                        const i18nKey = optionEl.getAttribute('data-i18n');
+                        if (i18nKey && dict[i18nKey]) {
+                            span.textContent = dict[i18nKey];
+                        }
+                    }
+                }
+                displayText.textContent = span.textContent;
+            } else {
+                displayText.textContent = `${checked.length} ${dict['form.selected'] || 'selected'}`;
+            }
+        }
+        // Update group labels
+        ms.querySelectorAll('.custom-multiselect__group-label').forEach(labelEl => {
+            const group = labelEl.closest('.custom-multiselect__group');
+            const select = document.querySelector(`select[name="${name}"]`);
+            if (select) {
+                const optgroups = select.querySelectorAll('optgroup');
+                optgroups.forEach((optgroup, idx) => {
+                    const groupEls = ms.querySelectorAll('.custom-multiselect__group');
+                    if (groupEls[idx] === group) {
+                        const i18nKey = optgroup.getAttribute('data-i18n-label');
+                        if (i18nKey && dict[i18nKey]) {
+                            labelEl.textContent = dict[i18nKey];
+                        }
+                    }
+                });
+            }
+        });
+        // Update option labels
+        ms.querySelectorAll('.custom-multiselect__option span').forEach(span => {
+            const checkbox = span.previousElementSibling;
+            if (checkbox && checkbox.type === 'checkbox') {
+                const select = document.querySelector(`select[name="${name}"]`);
+                if (select) {
+                    const optionEl = select.querySelector(`option[value="${checkbox.value}"]`);
+                    if (optionEl) {
+                        const i18nKey = optionEl.getAttribute('data-i18n');
+                        if (i18nKey && dict[i18nKey]) {
+                            span.textContent = dict[i18nKey];
+                        }
+                    }
+                }
+            }
+        });
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
         const key = el.getAttribute('data-i18n-placeholder');
@@ -1527,28 +1695,295 @@ function initLessonsCards() {
     });
 }
 
+// Custom multiselect dropdown component
+function initCustomMultiselect() {
+    const selects = document.querySelectorAll('select[name="package"], select[name="service"]');
+    selects.forEach(select => {
+        if (select.hasAttribute('data-custom-multiselect')) return; // Already initialized
+        
+        const maxSelections = select.name === 'package' ? 3 : 4;
+        const placeholderKey = select.name === 'package' ? 'form.package_placeholder' : 'form.service_placeholder';
+        
+        // Create wrapper
+        const wrapper = document.createElement('div');
+        wrapper.className = 'custom-multiselect';
+        wrapper.setAttribute('data-name', select.name);
+        wrapper.setAttribute('data-max', maxSelections);
+        
+        // Create trigger button
+        const trigger = document.createElement('button');
+        trigger.type = 'button';
+        trigger.className = 'custom-multiselect__trigger input-select';
+        trigger.setAttribute('aria-haspopup', 'listbox');
+        trigger.setAttribute('aria-expanded', 'false');
+        
+        // Create display text
+        const displayText = document.createElement('span');
+        displayText.className = 'custom-multiselect__display';
+        const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+        displayText.textContent = dict[placeholderKey] || 'Choose...';
+        trigger.appendChild(displayText);
+        
+        // Create dropdown arrow
+        const arrow = document.createElement('span');
+        arrow.className = 'custom-multiselect__arrow';
+        arrow.innerHTML = '▼';
+        trigger.appendChild(arrow);
+        
+        // Create dropdown panel
+        const panel = document.createElement('div');
+        panel.className = 'custom-multiselect__panel';
+        panel.setAttribute('role', 'listbox');
+        
+        // Process optgroups first
+        const optgroups = [];
+        const optionsInGroups = new Set();
+        Array.from(select.querySelectorAll('optgroup')).forEach(optgroup => {
+            const groupLabel = optgroup.getAttribute('label') || optgroup.getAttribute('data-i18n-label');
+            const groupI18n = optgroup.getAttribute('data-i18n-label');
+            const groupOptions = [];
+            Array.from(optgroup.querySelectorAll('option')).forEach(opt => {
+                if (opt.disabled || !opt.value) return;
+                optionsInGroups.add(opt.value);
+                groupOptions.push({
+                    value: opt.value,
+                    text: opt.textContent.trim(),
+                    i18n: opt.getAttribute('data-i18n')
+                });
+            });
+            if (groupOptions.length > 0) {
+                optgroups.push({
+                    label: groupLabel,
+                    i18n: groupI18n,
+                    options: groupOptions
+                });
+            }
+        });
+        
+        // Process standalone options (not in optgroups)
+        const options = [];
+        Array.from(select.options).forEach(opt => {
+            if (opt.disabled || !opt.value || optionsInGroups.has(opt.value)) return;
+            options.push({
+                value: opt.value,
+                text: opt.textContent.trim(),
+                i18n: opt.getAttribute('data-i18n')
+            });
+        });
+        
+        // Build panel HTML
+        optgroups.forEach(group => {
+            const groupEl = document.createElement('div');
+            groupEl.className = 'custom-multiselect__group';
+            const groupLabelEl = document.createElement('div');
+            groupLabelEl.className = 'custom-multiselect__group-label';
+            const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+            groupLabelEl.textContent = group.i18n && dict[group.i18n] ? dict[group.i18n] : group.label;
+            groupEl.appendChild(groupLabelEl);
+            
+            group.options.forEach(opt => {
+                const optionEl = document.createElement('label');
+                optionEl.className = 'custom-multiselect__option';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = opt.value;
+                checkbox.className = 'custom-multiselect__checkbox';
+                const span = document.createElement('span');
+                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                span.textContent = opt.i18n && dict[opt.i18n] ? dict[opt.i18n] : opt.text;
+                optionEl.appendChild(checkbox);
+                optionEl.appendChild(span);
+                groupEl.appendChild(optionEl);
+            });
+            panel.appendChild(groupEl);
+        });
+        
+        // Add standalone options
+        options.forEach(opt => {
+            const optionEl = document.createElement('label');
+            optionEl.className = 'custom-multiselect__option';
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = opt.value;
+            checkbox.className = 'custom-multiselect__checkbox';
+            const span = document.createElement('span');
+            const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+            span.textContent = opt.i18n && dict[opt.i18n] ? dict[opt.i18n] : opt.text;
+            optionEl.appendChild(checkbox);
+            optionEl.appendChild(span);
+            panel.appendChild(optionEl);
+        });
+        
+        // Assemble wrapper
+        wrapper.appendChild(trigger);
+        wrapper.appendChild(panel);
+        
+        // Replace select
+        select.setAttribute('data-custom-multiselect', 'true');
+        select.style.display = 'none';
+        select.parentNode.insertBefore(wrapper, select);
+        
+        // Update display text function
+        const updateDisplay = () => {
+            const checked = wrapper.querySelectorAll('.custom-multiselect__checkbox:checked');
+            const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+            if (checked.length === 0) {
+                displayText.textContent = dict[placeholderKey] || 'Choose...';
+            } else if (checked.length === 1) {
+                displayText.textContent = checked[0].closest('.custom-multiselect__option').querySelector('span').textContent;
+            } else {
+                displayText.textContent = `${checked.length} ${dict['form.selected'] || 'selected'}`;
+            }
+        };
+        
+        // Handle checkbox changes
+        panel.addEventListener('change', (e) => {
+            if (e.target.type === 'checkbox') {
+                const checked = wrapper.querySelectorAll('.custom-multiselect__checkbox:checked');
+                if (checked.length > maxSelections) {
+                    e.target.checked = false;
+                    const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                    const errorKey = select.name === 'package' ? 'err.max_packages' : 'err.max_services';
+                    showToast(dict[errorKey] || `Maximum ${maxSelections} can be selected`, 'error');
+                    return;
+                }
+                updateDisplay();
+                // Sync with hidden select
+                const selectedValues = Array.from(checked).map(cb => cb.value);
+                Array.from(select.options).forEach(opt => {
+                    opt.selected = selectedValues.includes(opt.value);
+                });
+            }
+        });
+        
+        // Handle trigger click
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = wrapper.classList.contains('is-open');
+            document.querySelectorAll('.custom-multiselect').forEach(ms => {
+                if (ms !== wrapper) ms.classList.remove('is-open');
+            });
+            wrapper.classList.toggle('is-open', !isOpen);
+            trigger.setAttribute('aria-expanded', !isOpen ? 'true' : 'false');
+        });
+        
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (!wrapper.contains(e.target)) {
+                wrapper.classList.remove('is-open');
+                trigger.setAttribute('aria-expanded', 'false');
+            }
+        });
+        
+        updateDisplay();
+    });
+}
+
 // URL parameter parsing - pre-select form fields on leadForm page
 function initFormPreSelection() {
     const leadForm = document.querySelector('.lead-form');
     if (!leadForm) return;
 
     const urlParams = new URLSearchParams(window.location.search);
-    const service = urlParams.get('service');
-    const packageValue = urlParams.get('package');
+    // Support both single values and comma-separated values
+    const serviceParam = urlParams.get('service');
+    const packageParam = urlParams.get('package');
+    
+    // Get all values for service (support multiple parameters or comma-separated)
+    const services = [];
+    if (serviceParam) {
+        // Check if comma-separated
+        if (serviceParam.includes(',')) {
+            services.push(...serviceParam.split(',').map(s => s.trim()));
+        } else {
+            services.push(serviceParam);
+        }
+    }
+    // Also check for multiple parameters with same name
+    urlParams.getAll('service').forEach(s => {
+        if (!services.includes(s)) services.push(s);
+    });
+    
+    // Get all values for package
+    const packages = [];
+    if (packageParam) {
+        if (packageParam.includes(',')) {
+            packages.push(...packageParam.split(',').map(p => p.trim()));
+        } else {
+            packages.push(packageParam);
+        }
+    }
+    urlParams.getAll('package').forEach(p => {
+        if (!packages.includes(p)) packages.push(p);
+    });
 
-    if (service) {
+    if (services.length > 0) {
         const serviceSelect = leadForm.querySelector('select[name="service"]');
         if (serviceSelect) {
-            serviceSelect.value = service;
+            // Select multiple options in hidden select
+            services.forEach(serviceValue => {
+                const option = serviceSelect.querySelector(`option[value="${serviceValue}"]`);
+                if (option) {
+                    option.selected = true;
+                }
+            });
+            // Update custom multiselect checkboxes
+            const customMultiselect = leadForm.querySelector(`.custom-multiselect[data-name="service"]`);
+            if (customMultiselect) {
+                services.forEach(serviceValue => {
+                    const checkbox = customMultiselect.querySelector(`.custom-multiselect__checkbox[value="${serviceValue}"]`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+                // Update display
+                const checked = customMultiselect.querySelectorAll('.custom-multiselect__checkbox:checked');
+                const displayText = customMultiselect.querySelector('.custom-multiselect__display');
+                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                if (checked.length === 0) {
+                    displayText.textContent = dict['form.service_placeholder'] || 'Choose...';
+                } else if (checked.length === 1) {
+                    displayText.textContent = checked[0].closest('.custom-multiselect__option').querySelector('span').textContent;
+                } else {
+                    displayText.textContent = `${checked.length} ${dict['form.selected'] || 'selected'}`;
+                }
+            }
             // Trigger change event to ensure form validation works
             serviceSelect.dispatchEvent(new Event('change', { bubbles: true }));
         }
     }
 
-    if (packageValue) {
+    if (packages.length > 0) {
         const packageSelect = leadForm.querySelector('select[name="package"]');
         if (packageSelect) {
-            packageSelect.value = packageValue;
+            // Select multiple options in hidden select
+            packages.forEach(packageValue => {
+                const option = packageSelect.querySelector(`option[value="${packageValue}"]`);
+                if (option) {
+                    option.selected = true;
+                }
+            });
+            // Update custom multiselect checkboxes
+            const customMultiselect = leadForm.querySelector(`.custom-multiselect[data-name="package"]`);
+            if (customMultiselect) {
+                packages.forEach(packageValue => {
+                    const checkbox = customMultiselect.querySelector(`.custom-multiselect__checkbox[value="${packageValue}"]`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+                // Update display
+                const checked = customMultiselect.querySelectorAll('.custom-multiselect__checkbox:checked');
+                const displayText = customMultiselect.querySelector('.custom-multiselect__display');
+                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                if (checked.length === 0) {
+                    displayText.textContent = dict['form.package_placeholder'] || 'Choose...';
+                } else if (checked.length === 1) {
+                    displayText.textContent = checked[0].closest('.custom-multiselect__option').querySelector('span').textContent;
+                } else {
+                    displayText.textContent = `${checked.length} ${dict['form.selected'] || 'selected'}`;
+                }
+            }
             // Trigger change event to ensure form validation works
             packageSelect.dispatchEvent(new Event('change', { bubbles: true }));
         }
@@ -1558,11 +1993,13 @@ function initFormPreSelection() {
 // Initialize pricing order buttons
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
+        initCustomMultiselect();
         initPricingOrderButtons();
         initLessonsCards();
         initFormPreSelection();
     });
 } else {
+    initCustomMultiselect();
     initPricingOrderButtons();
     initLessonsCards();
     initFormPreSelection();

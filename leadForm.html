@@ -171,14 +171,9 @@
             </label>
             <label>
               <span data-i18n="form.package">Package</span>
-              <select name="package" class="input-select">
-                <option
-                  value=""
-                  disabled
-                  selected
-                  data-i18n="form.package_placeholder"
-                >
-                  Choose a package
+              <select name="package" class="input-select" multiple>
+                <option disabled data-i18n="form.package_placeholder">
+                  Choose a package (max 3)
                 </option>
                 <option value="basic" data-i18n="pkg.basic">
                   Basic — 60 min + 25 photos
@@ -205,38 +200,6 @@
                 </option>
                 <option value="video_hour" data-i18n="pkg.video_hour">
                   Video — 1 hour
-                </option>
-                <option value="voucher_basic" data-i18n="voucher.basic">
-                  Basic Package
-                </option>
-                <option value="voucher_standard" data-i18n="voucher.standard">
-                  Standard Package
-                </option>
-                <option
-                  value="photo_lessons_5"
-                  data-i18n="lessons.photo_package"
-                >
-                  Package: 5 photography lessons
-                </option>
-                <option
-                  value="guitar_lessons_8"
-                  data-i18n="lessons.guitar_package"
-                >
-                  Package: 8 guitar lessons
-                </option>
-                <option
-                  value="czech_lessons_10"
-                  data-i18n="lessons.czech_package"
-                >
-                  Package: 10 Czech lessons
-                </option>
-              </select>
-            </label>
-            <label>
-              <span data-i18n="form.service">Service</span>
-              <select name="service" class="input-select">
-                <option value="" selected data-i18n="form.service_placeholder">
-                  Choose a service
                 </option>
                 <optgroup label="Photo" data-i18n-label="group.photo">
                   <option value="photo_birthday" data-i18n="svc.photo_birthday">
@@ -322,6 +285,32 @@
                     Artist Mini Clip
                   </option>
                 </optgroup>
+                <option
+                  value="photo_lessons_5"
+                  data-i18n="lessons.photo_package"
+                >
+                  Package: 5 photography lessons
+                </option>
+                <option
+                  value="guitar_lessons_8"
+                  data-i18n="lessons.guitar_package"
+                >
+                  Package: 8 guitar lessons
+                </option>
+                <option
+                  value="czech_lessons_10"
+                  data-i18n="lessons.czech_package"
+                >
+                  Package: 10 Czech lessons
+                </option>
+              </select>
+            </label>
+            <label>
+              <span data-i18n="form.service">Service</span>
+              <select name="service" class="input-select" multiple>
+                <option disabled data-i18n="form.service_placeholder">
+                  Choose a service (max 4)
+                </option>
                 <optgroup label="Lessons" data-i18n-label="group.lessons">
                   <option
                     value="lesson_photo_basics"
@@ -419,6 +408,14 @@
                   </option>
                   <option value="video_disc" data-i18n="pricing.video_disc">
                     Video on disc
+                  </option>
+                </optgroup>
+                <optgroup label="Gift Certificates" data-i18n-label="pricing.gift_certificates">
+                  <option value="voucher_basic" data-i18n="voucher.basic">
+                    Basic Package
+                  </option>
+                  <option value="voucher_standard" data-i18n="voucher.standard">
+                    Standard Package
                   </option>
                 </optgroup>
               </select>
