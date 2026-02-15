@@ -3,6 +3,91 @@ const navMenu = document.querySelector('.nav');
 // const emailUrl = 'https://script.google.com/macros/s/AKfycbyTs5M0E_DNRt5xVgUUpzH422yaroOlw4AarYOqwXBuyj0IJzWMwP62nYs0sF521Egf2g/exec'
 const emailUrl = 'https://script.google.com/macros/s/AKfycbwLOu4lVKPeiH6gHnBkMiN22cwAwdQL1JNxa3TlcLghneewoB8jR5EsswmGlTEkuo_u-w/exec'
 
+// API Configuration
+const API_BASE_URL = 'https://pracovnik.memoripraha.cz/api';
+
+// API Helper Functions
+async function fetchAPI(endpoint, params = {}) {
+    const lang = getCurrentLang(); // Use consistent function
+    const queryParams = new URLSearchParams({ lang, ...params });
+    const url = `${API_BASE_URL}${endpoint}?${queryParams}`;
+    
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        
+        if (!data.success) {
+            throw new Error(data.error?.message || 'API request failed');
+        }
+        
+        return data.data;
+    } catch (error) {
+        console.error(`API Error (${endpoint}):`, error);
+        throw error;
+    }
+}
+
+// Get current language for translations
+function getCurrentLang() {
+    const lang = localStorage.getItem('lang');
+    // Validate language code - only allow en, cs, uk
+    if (lang && ['en', 'cs', 'uk'].includes(lang)) {
+        return lang;
+    }
+    // Default to 'cs' to match initialization
+    return 'cs';
+}
+
+// Get translated text from translation object
+function getTranslatedText(textObj, lang = null) {
+    if (!textObj || typeof textObj !== 'object') {
+        return '';
+    }
+    const currentLang = lang || getCurrentLang();
+    
+    // Try current language first, then fallback chain: en -> cs -> uk -> first available
+    let result = textObj[currentLang];
+    if (result !== undefined && result !== null && result !== '') {
+        return String(result);
+    }
+    
+    // Fallback chain
+    result = textObj.en || textObj.cs || textObj.uk;
+    if (result !== undefined && result !== null) {
+        return String(result);
+    }
+    
+    // If still nothing, try to get first available value
+    const keys = Object.keys(textObj);
+    if (keys.length > 0) {
+        const firstValue = textObj[keys[0]];
+        return firstValue !== undefined && firstValue !== null ? String(firstValue) : '';
+    }
+    
+    return '';
+}
+
+// Format price display
+function formatPrice(price, priceRange, priceUnit = 'Kč') {
+    if (priceRange) {
+        return `${priceRange} ${priceUnit}`;
+    }
+    if (price) {
+        return `${parseInt(price).toLocaleString('cs-CZ')} ${priceUnit}`;
+    }
+    return '';
+}
+
 if (navToggleButton) {
     navToggleButton.addEventListener('click', () => {
         const isOpen = navMenu.classList.toggle('is-open');
@@ -39,7 +124,8 @@ function isValidPhoneNumber(input) {
 function showToast(message, variant = 'success', timeoutMs = 5000) {
     const root = document.getElementById('toast-root');
     if (!root) return;
-    const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+    const lang = getCurrentLang();
+    const dict = translations[lang] || translations.cs || translations.en;
     const ariaClose = dict['toast.close'] || 'Close';
     const toast = document.createElement('div');
     toast.className = 'toast' + (variant === 'error' ? ' toast--error' : '');
@@ -129,7 +215,8 @@ if (leadForm) {
             if (selected.length > 3) {
                 // Deselect the last selected option
                 selected[selected.length - 1].selected = false;
-                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                const lang = getCurrentLang();
+                const dict = translations[lang] || translations.cs || translations.en;
                 showToast(dict['err.max_packages'] || 'Maximum 3 packages can be selected', 'error');
             }
         });
@@ -141,7 +228,8 @@ if (leadForm) {
             if (selected.length > 4) {
                 // Deselect the last selected option
                 selected[selected.length - 1].selected = false;
-                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                const lang = getCurrentLang();
+                const dict = translations[lang] || translations.cs || translations.en;
                 showToast(dict['err.max_services'] || 'Maximum 4 services can be selected', 'error');
             }
         });
@@ -216,7 +304,8 @@ if (leadForm) {
         leadForm.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
         leadForm.querySelectorAll('.custom-multiselect__trigger.error').forEach(el => el.classList.remove('error'));
         const errors = [];
-        const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+        const lang = getCurrentLang();
+        const dict = translations[lang] || translations.cs || translations.en;
         const markError = (selectorKey, messageKey) => {
             const field = leadForm.querySelector(`[name="${selectorKey}"]`);
             if (field) {
@@ -324,15 +413,27 @@ if (leadForm) {
                     throw new Error(errorData.message || `HTTP ${r.status}: ${r.statusText}`);
                 }
                 const data = await r.json().catch(() => ({}));
-                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                const lang = getCurrentLang();
+                const dict = translations[lang] || translations.cs || translations.en;
                 if (typeof showToast === 'function') {
                     showToast(dict['toast.success'] || 'Thank you! We will contact you shortly.');
                 }
                 leadForm.reset();
+                // Reset custom multiselect dropdowns
+                leadForm.querySelectorAll('.custom-multiselect').forEach(ms => {
+                    ms.querySelectorAll('.custom-multiselect__checkbox').forEach(cb => cb.checked = false);
+                    const name = ms.getAttribute('data-name');
+                    const placeholderKey = name === 'package' ? 'form.package_placeholder' : 'form.service_placeholder';
+                    const lang = getCurrentLang();
+                    const dict = translations[lang] || translations.cs || translations.en;
+                    const display = ms.querySelector('.custom-multiselect__display');
+                    if (display) display.textContent = dict[placeholderKey] || 'Choose...';
+                });
             })
             .catch((err) => {
                 console.error('Order submission error:', err);
-                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                const lang = getCurrentLang();
+                const dict = translations[lang] || translations.cs || translations.en;
                 let errorMsg = dict['toast.error'] || 'Sorry, something went wrong. Please try again later.';
                 if (err.message && err.message.includes('CORS')) {
                     errorMsg = 'CORS error: Please contact the administrator.';
@@ -365,7 +466,8 @@ if (coopForm) {
         coopForm.querySelectorAll('.field-error').forEach(el => el.remove());
         coopForm.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
         const errors = [];
-        const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+        const lang = getCurrentLang();
+        const dict = translations[lang] || translations.cs || translations.en;
         const markError = (selectorKey, messageKey) => {
             const field = coopForm.querySelector(`[name="${selectorKey}"]`);
             if (field) {
@@ -445,7 +547,8 @@ if (coopForm) {
                     throw new Error(errorData.message || `HTTP ${r.status}: ${r.statusText}`);
                 }
                 const data = await r.json().catch(() => ({}));
-                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                const lang = getCurrentLang();
+                const dict = translations[lang] || translations.cs || translations.en;
                 if (typeof showToast === 'function') {
                     showToast(dict['toast.success'] || 'Thank you! We will contact you shortly.');
                 }
@@ -453,7 +556,8 @@ if (coopForm) {
             })
             .catch((err) => {
                 console.error('Collaboration submission error:', err);
-                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                const lang = getCurrentLang();
+                const dict = translations[lang] || translations.cs || translations.en;
                 let errorMsg = dict['toast.error'] || 'Sorry, something went wrong. Please try again later.';
                 if (err.message && err.message.includes('CORS')) {
                     errorMsg = 'CORS error: Please contact the administrator.';
@@ -1190,8 +1294,9 @@ const translations = {
     }
 };
 
-function applyI18n(lang) {
-    const dict = translations[lang] || translations.en;
+function applyI18n(lang = null) {
+    const currentLang = lang || getCurrentLang();
+    const dict = translations[currentLang] || translations.cs || translations.en;
     document.querySelectorAll('[data-i18n]').forEach((el) => {
         const key = el.getAttribute('data-i18n');
         if (dict[key]) el.textContent = dict[key];
@@ -1274,12 +1379,12 @@ function applyI18n(lang) {
         if (img) {
             const imgUa = card.getAttribute('data-img-ua');
             const imgOther = card.getAttribute('data-img-other');
-            img.src = lang === 'uk' ? imgUa : imgOther;
+            img.src = currentLang === 'uk' ? imgUa : imgOther;
         }
     });
-    localStorage.setItem('lang', lang);
+    localStorage.setItem('lang', currentLang);
     document.querySelectorAll('.lang-switch button').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === currentLang);
     });
 }
 
@@ -1289,7 +1394,7 @@ if (langDd) {
     const btn = langDd.querySelector('.lang-dd__btn');
     const list = langDd.querySelector('.lang-dd__list');
     const label = document.getElementById('lang-dd-label');
-    const saved = localStorage.getItem('lang') || 'cs';
+    const saved = getCurrentLang(); // Use consistent function
     label.textContent = saved.toUpperCase();
     applyI18n(saved);
     // highlight active
@@ -1308,6 +1413,20 @@ if (langDd) {
             list.querySelectorAll('li').forEach(el => el.classList.toggle('active', el === li));
             langDd.classList.remove('is-open');
             btn.setAttribute('aria-expanded', 'false');
+            
+            // Reload dynamic content when language changes
+            if (typeof loadPricingProducts === 'function') {
+                loadPricingProducts();
+            }
+            if (typeof loadLessonsProducts === 'function') {
+                loadLessonsProducts();
+            }
+            if (typeof loadServices === 'function') {
+                loadServices();
+            }
+            if (typeof loadFormOptions === 'function') {
+                loadFormOptions();
+            }
         });
     });
     document.addEventListener('click', (e) => {
@@ -1319,19 +1438,53 @@ if (langDd) {
 }
 
 // Product popup for pricing page
-const productPopup = document.getElementById('product-popup');
-if (productPopup) {
+// Initialize product modals with event delegation
+let productModalsInitialized = false;
+function initProductModals() {
+    const productPopup = document.getElementById('product-popup');
+    if (!productPopup) return; // Only initialize if modal exists on page
+    
+    // Prevent multiple initializations
+    if (productModalsInitialized) return;
+    productModalsInitialized = true;
+    
     const popupImage = document.getElementById('popup-image');
     const popupTitle = document.getElementById('popup-title');
     const popupPrice = document.getElementById('popup-price');
     const popupClose = productPopup.querySelector('.product-popup-close');
     const popupOverlay = productPopup.querySelector('.product-popup-overlay');
 
-    const openPopup = (imageSrc, title, price) => {
-        popupImage.src = imageSrc;
-        popupImage.alt = title;
-        popupTitle.textContent = title;
-        popupPrice.textContent = price;
+    const openPopup = (imageSrc, title, price, description) => {
+        if (popupImage) {
+            popupImage.src = imageSrc || '';
+            popupImage.alt = title;
+        }
+        if (popupTitle) popupTitle.textContent = title;
+        if (popupPrice) popupPrice.textContent = price;
+        
+        // Find or create description element
+        let popupDesc = popupTitle.parentElement.querySelector('.product-popup-description');
+        if (description && description.trim()) {
+            if (!popupDesc) {
+                popupDesc = document.createElement('div');
+                popupDesc.className = 'product-popup-description';
+                popupDesc.style.cssText = 'padding: 0 24px 24px; text-align: center; color: #6b7280; line-height: 1.6;';
+                if (popupPrice) {
+                    popupPrice.after(popupDesc);
+                } else if (popupTitle) {
+                    popupTitle.after(popupDesc);
+                }
+            }
+            // Use innerHTML to render HTML tags
+            popupDesc.innerHTML = description;
+            popupDesc.style.display = 'block';
+        } else {
+            // Hide description if it exists but no description provided
+            if (popupDesc) {
+                popupDesc.style.display = 'none';
+            }
+        }
+        
         productPopup.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
     };
@@ -1341,23 +1494,31 @@ if (productPopup) {
         document.body.style.overflow = '';
     };
 
-    // Open popup on product card click
-    const productCards = document.querySelectorAll('.pricing-products-grid .pricing-card');
-    productCards.forEach(card => {
-        card.addEventListener('click', (e) => {
+    // Use event delegation on pricing container - only on pricing page
+    const pricingContainer = document.getElementById('pricing-products-container');
+    if (pricingContainer) {
+        pricingContainer.addEventListener('click', (e) => {
             // Don't open popup if clicking on order button
             if (e.target.closest('.pricing-order-btn')) {
                 return;
             }
+            
+            const card = e.target.closest('.pricing-card[data-product-description]');
+            if (!card) return;
+            
+            const description = decodeURIComponent(card.getAttribute('data-product-description') || '');
+            if (!description || !description.trim()) return; // Only open if description exists
+            
             const img = card.querySelector('.pricing-card-icon img');
             const label = card.querySelector('.pricing-card-label');
             const price = card.querySelector('.pricing-card-price');
+            const imageSrc = card.getAttribute('data-product-image') || (img ? img.src : '');
 
-            if (img && label && price) {
-                openPopup(img.src, label.textContent, price.textContent);
+            if (label && price) {
+                openPopup(imageSrc, label.textContent, price.textContent, description);
             }
         });
-    });
+    }
 
     // Close popup
     if (popupClose) {
@@ -1465,8 +1626,8 @@ function initTeamModals() {
         let description = '';
 
         if (descriptionKey) {
-            const lang = localStorage.getItem('lang') || 'en';
-            const dict = translations[lang] || translations.en;
+            const lang = getCurrentLang();
+            const dict = translations[lang] || translations.cs || translations.en;
             description = dict[descriptionKey] || '';
         } else {
             description = card.getAttribute('data-team-description') || '';
@@ -1521,8 +1682,8 @@ function initVoucherModals() {
     voucherCards.forEach(card => {
         card.style.cursor = 'pointer';
         card.addEventListener('click', () => {
-            const lang = localStorage.getItem('lang') || 'en';
-            const dict = translations[lang] || translations.en;
+            const lang = getCurrentLang();
+            const dict = translations[lang] || translations.cs || translations.en;
 
             const imgSrc = lang === 'uk'
                 ? card.getAttribute('data-img-ua')
@@ -1705,7 +1866,8 @@ function initCustomMultiselect() {
         // Create display text
         const displayText = document.createElement('span');
         displayText.className = 'custom-multiselect__display';
-        const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+        const lang = getCurrentLang();
+        const dict = translations[lang] || translations.cs || translations.en;
         displayText.textContent = dict[placeholderKey] || 'Choose...';
         trigger.appendChild(displayText);
         
@@ -1762,7 +1924,8 @@ function initCustomMultiselect() {
             groupEl.className = 'custom-multiselect__group';
             const groupLabelEl = document.createElement('div');
             groupLabelEl.className = 'custom-multiselect__group-label';
-            const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+            const lang = getCurrentLang();
+            const dict = translations[lang] || translations.cs || translations.en;
             groupLabelEl.textContent = group.i18n && dict[group.i18n] ? dict[group.i18n] : group.label;
             groupEl.appendChild(groupLabelEl);
             
@@ -1774,7 +1937,8 @@ function initCustomMultiselect() {
                 checkbox.value = opt.value;
                 checkbox.className = 'custom-multiselect__checkbox';
                 const span = document.createElement('span');
-                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                const lang = getCurrentLang();
+                const dict = translations[lang] || translations.cs || translations.en;
                 span.textContent = opt.i18n && dict[opt.i18n] ? dict[opt.i18n] : opt.text;
                 optionEl.appendChild(checkbox);
                 optionEl.appendChild(span);
@@ -1811,7 +1975,8 @@ function initCustomMultiselect() {
         // Update display text function
         const updateDisplay = () => {
             const checked = wrapper.querySelectorAll('.custom-multiselect__checkbox:checked');
-            const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+            const lang = getCurrentLang();
+            const dict = translations[lang] || translations.cs || translations.en;
             if (checked.length === 0) {
                 displayText.textContent = dict[placeholderKey] || 'Choose...';
             } else if (checked.length === 1) {
@@ -1827,7 +1992,8 @@ function initCustomMultiselect() {
                 const checked = wrapper.querySelectorAll('.custom-multiselect__checkbox:checked');
                 if (checked.length > maxSelections) {
                     e.target.checked = false;
-                    const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                    const lang = getCurrentLang();
+                    const dict = translations[lang] || translations.cs || translations.en;
                     const errorKey = select.name === 'package' ? 'err.max_packages' : 'err.max_services';
                     showToast(dict[errorKey] || `Maximum ${maxSelections} can be selected`, 'error');
                     return;
@@ -1924,7 +2090,8 @@ function initFormPreSelection() {
                 // Update display
                 const checked = customMultiselect.querySelectorAll('.custom-multiselect__checkbox:checked');
                 const displayText = customMultiselect.querySelector('.custom-multiselect__display');
-                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                const lang = getCurrentLang();
+                const dict = translations[lang] || translations.cs || translations.en;
                 if (checked.length === 0) {
                     displayText.textContent = dict['form.service_placeholder'] || 'Choose...';
                 } else if (checked.length === 1) {
@@ -1960,7 +2127,8 @@ function initFormPreSelection() {
                 // Update display
                 const checked = customMultiselect.querySelectorAll('.custom-multiselect__checkbox:checked');
                 const displayText = customMultiselect.querySelector('.custom-multiselect__display');
-                const dict = translations[localStorage.getItem('lang') || 'en'] || translations.en;
+                const lang = getCurrentLang();
+                const dict = translations[lang] || translations.cs || translations.en;
                 if (checked.length === 0) {
                     displayText.textContent = dict['form.package_placeholder'] || 'Choose...';
                 } else if (checked.length === 1) {
@@ -1975,17 +2143,429 @@ function initFormPreSelection() {
     }
 }
 
-// Initialize pricing order buttons
+// Load and render products for pricing page
+async function loadPricingProducts() {
+    const container = document.getElementById('pricing-products-container');
+    if (!container) return;
+    
+    try {
+        const data = await fetchAPI('/products', { page: 'pricing' });
+        if (!data || !data.groups) return;
+        
+        const lang = getCurrentLang();
+        let html = '';
+        
+        // Sort groups by order
+        const sortedGroups = [...data.groups].sort((a, b) => (a.order || 0) - (b.order || 0));
+        
+        sortedGroups.forEach(group => {
+            const groupName = getTranslatedText(group.label || group.name, lang);
+            html += `<h2 class="pricing-section-title">${groupName || 'Products'}</h2>`;
+            html += '<div class="pricing-cards-grid">';
+            
+            // Sort products by order
+            const sortedProducts = [...(group.products || [])]
+                .filter(p => p.active !== false)
+                .sort((a, b) => (a.order || 0) - (b.order || 0));
+            
+            sortedProducts.forEach(product => {
+                const productName = getTranslatedText(product.name, lang) || 'Product';
+                // Use short_description for card, description only for modal
+                const shortDesc = product.short_description ? getTranslatedText(product.short_description, lang) : '';
+                const fullDesc = product.description ? getTranslatedText(product.description, lang) : '';
+                const price = formatPrice(product.price, product.priceRange, product.priceUnit || 'Kč');
+                const hasDescription = fullDesc && fullDesc.trim();
+                
+                // Determine icon/image - prioritize imageUrl (from API), then iconImage, then iconSvg
+                let iconHtml = '';
+                // imageUrl is the primary field from API, iconImage is fallback for backward compatibility
+                const imageUrl = (product.imageUrl && product.imageUrl.trim()) || (product.iconImage && product.iconImage.trim()) || null;
+                if (imageUrl && imageUrl.trim()) {
+                    // Ensure image path is correct
+                    const imagePath = imageUrl.startsWith('./') || imageUrl.startsWith('/') || imageUrl.startsWith('http') 
+                        ? imageUrl 
+                        : `./${imageUrl}`;
+                    iconHtml = `<img src="${imagePath}" alt="${productName}" />`;
+                } else if (product.iconSvg && product.iconSvg.trim()) {
+                    iconHtml = product.iconSvg;
+                } else {
+                    // Default SVG placeholder
+                    iconHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="7" width="18" height="13" rx="2" />
+                        <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        <path d="M3 12h18" />
+                    </svg>`;
+                }
+                
+                // Determine data attribute for form redirect
+                const formField = product.formField || (product.type === 'package' ? 'package' : 'service');
+                const dataAttr = formField === 'package' ? `data-package="${product.code}"` : `data-service="${product.code}"`;
+                
+                // Add data attributes for modal if description exists
+                const modalAttrs = hasDescription ? `data-product-code="${product.code}" data-product-description="${encodeURIComponent(fullDesc)}" data-product-image="${imageUrl || ''}"` : '';
+                
+                html += `<div class="pricing-card" ${dataAttr} ${modalAttrs}>`;
+                html += `<div class="pricing-card-icon">${iconHtml}</div>`;
+                html += `<div class="pricing-card-label">${productName}</div>`;
+                // Show short_description on card, not full description
+                if (shortDesc) {
+                    html += `<div class="pricing-card-desc">${shortDesc}</div>`;
+                }
+                html += `<div class="pricing-card-price">${price}</div>`;
+                html += `<button type="button" class="btn btn-primary pricing-order-btn" data-i18n="pricing.order">Order</button>`;
+                html += '</div>';
+            });
+            
+            html += '</div>';
+        });
+        
+        container.innerHTML = html;
+        
+        // Re-initialize order buttons after content is loaded
+        initPricingOrderButtons();
+        
+        // Initialize product modals after content is loaded
+        initProductModals();
+        
+        // Apply i18n translations with current language
+        applyI18n(lang);
+    } catch (error) {
+        console.error('Failed to load pricing products:', error);
+        container.innerHTML = '<p>Failed to load products. Please try again later.</p>';
+    }
+}
+
+// Load and render lessons for lessons page
+async function loadLessonsProducts() {
+    const lessonsPage = document.querySelector('.lessons-page');
+    if (!lessonsPage) return;
+    
+    const container = lessonsPage.querySelector('.pricing-content');
+    if (!container) return;
+    
+    try {
+        const data = await fetchAPI('/products', { page: 'lessons' });
+        if (!data || !data.groups) return;
+        
+        const lang = getCurrentLang();
+        let html = '';
+        
+        // Sort groups by order
+        const sortedGroups = [...data.groups].sort((a, b) => (a.order || 0) - (b.order || 0));
+        
+        sortedGroups.forEach(group => {
+            const groupName = getTranslatedText(group.label || group.name, lang);
+            html += `<h2 class="pricing-section-title">${groupName || 'Lessons'}</h2>`;
+            html += '<div class="pricing-cards-grid">';
+            
+            // Sort products by order
+            const sortedProducts = [...(group.products || [])]
+                .filter(p => p.active !== false)
+                .sort((a, b) => (a.order || 0) - (b.order || 0));
+            
+            sortedProducts.forEach(product => {
+                const productName = getTranslatedText(product.name, lang) || 'Lesson';
+                const shortDesc = product.short_description ? getTranslatedText(product.short_description, lang) : '';
+                const fullDesc = product.description ? getTranslatedText(product.description, lang) : '';
+                const price = formatPrice(product.price, product.priceRange, product.priceUnit || 'Kč');
+                const hasDescription = fullDesc && fullDesc.trim();
+                
+                // Determine icon/image - prioritize imageUrl, then iconImage, then iconSvg
+                let iconHtml = '';
+                const imageUrl = (product.imageUrl && product.imageUrl.trim()) || (product.iconImage && product.iconImage.trim()) || null;
+                if (imageUrl && imageUrl.trim()) {
+                    const imagePath = imageUrl.startsWith('./') || imageUrl.startsWith('/') || imageUrl.startsWith('http') 
+                        ? imageUrl 
+                        : `./${imageUrl}`;
+                    iconHtml = `<img src="${imagePath}" alt="${productName}" />`;
+                } else if (product.iconSvg && product.iconSvg.trim()) {
+                    iconHtml = product.iconSvg;
+                } else {
+                    // Default SVG placeholder
+                    iconHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="7" width="18" height="13" rx="2" />
+                        <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        <path d="M3 12h18" />
+                    </svg>`;
+                }
+                
+                // Determine data attribute for form redirect
+                const formField = product.formField || (product.type === 'package' ? 'package' : 'service');
+                const dataAttr = formField === 'package' ? `data-package="${product.code}"` : `data-service="${product.code}"`;
+                
+                // Add data attributes for modal if description exists
+                const modalAttrs = hasDescription ? `data-product-code="${product.code}" data-product-description="${encodeURIComponent(fullDesc)}" data-product-image="${imageUrl || ''}"` : '';
+                
+                html += `<div class="pricing-card" ${dataAttr} ${modalAttrs}>`;
+                html += `<div class="pricing-card-icon">${iconHtml}</div>`;
+                html += `<div class="pricing-card-label">${productName}</div>`;
+                if (shortDesc) {
+                    html += `<div class="pricing-card-desc">${shortDesc}</div>`;
+                }
+                html += `<div class="pricing-card-price">${price}</div>`;
+                html += '</div>';
+            });
+            
+            html += '</div>';
+        });
+        
+        // Replace static content with dynamic content
+        // Find all static sections (h2 titles and grids)
+        const staticSections = container.querySelectorAll('.pricing-section-title, .pricing-cards-grid');
+        staticSections.forEach(el => el.remove());
+        
+        // Insert new content after the note paragraph
+        const note = container.querySelector('.pricing-page-note');
+        if (note) {
+            note.insertAdjacentHTML('afterend', html);
+        } else {
+            container.insertAdjacentHTML('beforeend', html);
+        }
+        
+        // Re-initialize lessons cards click handlers
+        initLessonsCards();
+        
+        // Initialize product modals if needed
+        initProductModals();
+        
+        // Apply i18n translations with current language
+        applyI18n(lang);
+    } catch (error) {
+        console.error('Failed to load lessons products:', error);
+    }
+}
+
+// Load and render services for services page (index.html)
+async function loadServices() {
+    const servicesSection = document.getElementById('services');
+    if (!servicesSection) return;
+    
+    try {
+        const data = await fetchAPI('/products', { page: 'packages' });
+        if (!data || !data.groups || data.groups.length === 0) {
+            // If no data, keep static content
+            return;
+        }
+        
+        const lang = getCurrentLang();
+        let html = '';
+        
+        // Sort groups by order
+        const sortedGroups = [...data.groups].sort((a, b) => (a.order || 0) - (b.order || 0));
+        
+        sortedGroups.forEach(group => {
+            const groupName = getTranslatedText(group.label || group.name, lang);
+            html += `<h3 class="grid-title">${groupName || 'Services'}</h3>`;
+            html += '<div class="cards-grid cards-2">';
+            
+            // Sort products by order
+            const sortedProducts = [...(group.products || [])]
+                .filter(p => p.active !== false)
+                .sort((a, b) => (a.order || 0) - (b.order || 0));
+            
+            sortedProducts.forEach(product => {
+                const productName = getTranslatedText(product.name, lang) || 'Service';
+                
+                // For service cards, prioritize imageUrl, then iconSvg, then default SVG
+                let iconHtml = '';
+                const imageUrl = (product.imageUrl && product.imageUrl.trim()) || (product.iconImage && product.iconImage.trim()) || null;
+                if (imageUrl && imageUrl.trim()) {
+                    const imagePath = imageUrl.startsWith('./') || imageUrl.startsWith('/') || imageUrl.startsWith('http') 
+                        ? imageUrl 
+                        : `./${imageUrl}`;
+                    iconHtml = `<img src="${imagePath}" alt="${productName}" />`;
+                } else if (product.iconSvg && product.iconSvg.trim()) {
+                    iconHtml = product.iconSvg;
+                } else {
+                    // Default SVG placeholder
+                    iconHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="7" width="18" height="13" rx="2" />
+                        <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        <path d="M3 12h18" />
+                    </svg>`;
+                }
+                
+                // Determine redirect type based on formField or type
+                const formField = product.formField || (product.type === 'package' ? 'package' : 'service');
+                const dataAttr = formField === 'package' ? `data-package="${product.code}"` : `data-service="${product.code}"`;
+                
+                html += `<a class="service-card" href="./leadForm.html" ${dataAttr}>`;
+                html += `<div class="icon" aria-hidden="true">${iconHtml}</div>`;
+                html += `<div class="label">${productName}</div>`;
+                html += '</a>';
+            });
+            
+            html += '</div>';
+        });
+        
+        // Replace static content with dynamic content only if we have HTML to insert
+        if (html) {
+            const heroContent = servicesSection.querySelector('.hero-content');
+            if (heroContent) {
+                // Find all static grid titles and card grids (but keep hero-title and hero-subtitle)
+                const staticContent = heroContent.querySelectorAll('.grid-title, .cards-grid');
+                if (staticContent && staticContent.length > 0) {
+                    staticContent.forEach(el => el.remove());
+                }
+                
+                // Insert new content after subtitle
+                const subtitle = heroContent.querySelector('.hero-subtitle');
+                if (subtitle) {
+                    subtitle.insertAdjacentHTML('afterend', html);
+                } else {
+                    heroContent.insertAdjacentHTML('beforeend', html);
+                }
+            }
+        }
+        
+        // Apply i18n translations with current language
+        applyI18n(lang);
+    } catch (error) {
+        console.error('Failed to load services:', error);
+        // On error, keep static content visible
+    }
+}
+
+// Load form dropdown options from API
+async function loadFormOptions() {
+    const packageSelect = document.querySelector('select[name="package"]');
+    const serviceSelect = document.querySelector('select[name="service"]');
+    if (!packageSelect && !serviceSelect) return;
+
+    try {
+        const data = await fetchAPI('/form-options');
+        if (!data) return;
+
+        const lang = getCurrentLang();
+
+        // Helper: build <option> element
+        function createOption(item) {
+            const opt = document.createElement('option');
+            opt.value = item.code;
+            opt.textContent = item.name
+                ? (typeof item.name === 'object' ? getTranslatedText(item.name, lang) : item.name)
+                : item.code;
+            return opt;
+        }
+
+        // Helper: build <optgroup> from group object
+        function createOptgroup(group) {
+            const og = document.createElement('optgroup');
+            og.label = group.label
+                ? (typeof group.label === 'object' ? getTranslatedText(group.label, lang) : group.label)
+                : group.id || '';
+            const options = group.options || [];
+            options
+                .filter(o => o.active !== false)
+                .sort((a, b) => (a.order || 0) - (b.order || 0))
+                .forEach(item => og.appendChild(createOption(item)));
+            return og;
+        }
+
+        // Populate package select
+        if (packageSelect && data.packages) {
+            // Remember any pre-selected values
+            const preSelected = new Set(
+                Array.from(packageSelect.selectedOptions).map(o => o.value).filter(Boolean)
+            );
+
+            // Clear existing options (keep first disabled placeholder)
+            const placeholder = packageSelect.querySelector('option[disabled]');
+            packageSelect.innerHTML = '';
+            if (placeholder) packageSelect.appendChild(placeholder);
+
+            // Standalone items
+            if (data.packages.standalone && data.packages.standalone.length > 0) {
+                data.packages.standalone
+                    .filter(o => o.active !== false)
+                    .sort((a, b) => (a.order || 0) - (b.order || 0))
+                    .forEach(item => packageSelect.appendChild(createOption(item)));
+            }
+
+            // Groups
+            if (data.packages.groups && data.packages.groups.length > 0) {
+                data.packages.groups
+                    .sort((a, b) => (a.order || 0) - (b.order || 0))
+                    .forEach(group => packageSelect.appendChild(createOptgroup(group)));
+            }
+
+            // Restore pre-selection
+            if (preSelected.size > 0) {
+                Array.from(packageSelect.options).forEach(opt => {
+                    if (preSelected.has(opt.value)) opt.selected = true;
+                });
+            }
+        }
+
+        // Populate service select
+        if (serviceSelect && data.services) {
+            const preSelected = new Set(
+                Array.from(serviceSelect.selectedOptions).map(o => o.value).filter(Boolean)
+            );
+
+            const placeholder = serviceSelect.querySelector('option[disabled]');
+            serviceSelect.innerHTML = '';
+            if (placeholder) serviceSelect.appendChild(placeholder);
+
+            // Services only have groups
+            if (data.services.groups && data.services.groups.length > 0) {
+                data.services.groups
+                    .sort((a, b) => (a.order || 0) - (b.order || 0))
+                    .forEach(group => serviceSelect.appendChild(createOptgroup(group)));
+            }
+
+            // Restore pre-selection
+            if (preSelected.size > 0) {
+                Array.from(serviceSelect.options).forEach(opt => {
+                    if (preSelected.has(opt.value)) opt.selected = true;
+                });
+            }
+        }
+
+        // Re-initialize custom multiselect dropdowns with new options
+        // Remove old custom multiselects
+        document.querySelectorAll('.custom-multiselect').forEach(ms => {
+            const selectEl = ms.parentNode.querySelector('select');
+            if (selectEl) {
+                selectEl.removeAttribute('data-custom-multiselect');
+                selectEl.style.display = '';
+            }
+            ms.remove();
+        });
+        initCustomMultiselect();
+
+        // Re-apply form pre-selection (URL params) after options are loaded
+        initFormPreSelection();
+
+        // Apply translations
+        applyI18n(lang);
+    } catch (error) {
+        console.error('Failed to load form options:', error);
+        // On error, keep static options visible
+    }
+}
+
+// Initialize all components
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         initCustomMultiselect();
         initPricingOrderButtons();
         initLessonsCards();
         initFormPreSelection();
+        initProductModals();
+        loadPricingProducts();
+        loadLessonsProducts();
+        loadServices();
+        loadFormOptions();
     });
 } else {
     initCustomMultiselect();
     initPricingOrderButtons();
     initLessonsCards();
     initFormPreSelection();
+    initProductModals();
+    loadPricingProducts();
+    loadLessonsProducts();
+    loadServices();
+    loadFormOptions();
 }
