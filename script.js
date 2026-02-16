@@ -1490,6 +1490,8 @@ function initProductModals() {
     };
 
     const closePopup = () => {
+        // Move focus out of the modal before hiding it
+        document.activeElement?.blur();
         productPopup.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
     };
@@ -1503,13 +1505,12 @@ function initProductModals() {
                 return;
             }
             
-            const card = e.target.closest('.pricing-card[data-product-description]');
+            const card = e.target.closest('.pricing-card[data-product-code]');
             if (!card) return;
             
             const description = decodeURIComponent(card.getAttribute('data-product-description') || '');
-            if (!description || !description.trim()) return; // Only open if description exists
             
-            const img = card.querySelector('.pricing-card-icon img');
+            const img = card.querySelector('.pricing-card-icon img') || card.querySelector('.pricing-card-image img');
             const label = card.querySelector('.pricing-card-label');
             const price = card.querySelector('.pricing-card-price');
             const imageSrc = card.getAttribute('data-product-image') || (img ? img.src : '');
@@ -2170,18 +2171,17 @@ async function loadPricingProducts() {
             
             sortedProducts.forEach(product => {
                 const productName = getTranslatedText(product.name, lang) || 'Product';
-                // Use short_description for card, description only for modal
-                const shortDesc = product.short_description ? getTranslatedText(product.short_description, lang) : '';
+                const shortDescRaw = product.short_description || product.shortDescription || null;
+                const shortDesc = shortDescRaw ? getTranslatedText(shortDescRaw, lang) : '';
                 const fullDesc = product.description ? getTranslatedText(product.description, lang) : '';
                 const price = formatPrice(product.price, product.priceRange, product.priceUnit || 'Kč');
-                const hasDescription = fullDesc && fullDesc.trim();
+                const isFullWidth = product.isFullWidth === true;
+                const allowModal = product.allowModal === true;
                 
-                // Determine icon/image - prioritize imageUrl (from API), then iconImage, then iconSvg
+                // Determine icon/image
                 let iconHtml = '';
-                // imageUrl is the primary field from API, iconImage is fallback for backward compatibility
                 const imageUrl = (product.imageUrl && product.imageUrl.trim()) || (product.iconImage && product.iconImage.trim()) || null;
                 if (imageUrl && imageUrl.trim()) {
-                    // Ensure image path is correct
                     const imagePath = imageUrl.startsWith('./') || imageUrl.startsWith('/') || imageUrl.startsWith('http') 
                         ? imageUrl 
                         : `./${imageUrl}`;
@@ -2189,7 +2189,6 @@ async function loadPricingProducts() {
                 } else if (product.iconSvg && product.iconSvg.trim()) {
                     iconHtml = product.iconSvg;
                 } else {
-                    // Default SVG placeholder
                     iconHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <rect x="3" y="7" width="18" height="13" rx="2" />
                         <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -2201,13 +2200,19 @@ async function loadPricingProducts() {
                 const formField = product.formField || (product.type === 'package' ? 'package' : 'service');
                 const dataAttr = formField === 'package' ? `data-package="${product.code}"` : `data-service="${product.code}"`;
                 
-                // Add data attributes for modal if description exists
-                const modalAttrs = hasDescription ? `data-product-code="${product.code}" data-product-description="${encodeURIComponent(fullDesc)}" data-product-image="${imageUrl || ''}"` : '';
+                // Add data attributes for modal if allowModal is true
+                const modalAttrs = allowModal ? `data-product-code="${product.code}" data-product-description="${fullDesc ? encodeURIComponent(fullDesc) : ''}" data-product-image="${imageUrl || ''}"` : '';
                 
-                html += `<div class="pricing-card" ${dataAttr} ${modalAttrs}>`;
-                html += `<div class="pricing-card-icon">${iconHtml}</div>`;
+                // Full-width class
+                const fullWidthClass = isFullWidth ? ' pricing-card--full-width' : '';
+                
+                html += `<div class="pricing-card${fullWidthClass}" ${dataAttr} ${modalAttrs}>`;
+                if (isFullWidth && imageUrl) {
+                    html += `<div class="pricing-card-image">${iconHtml}</div>`;
+                } else {
+                    html += `<div class="pricing-card-icon">${iconHtml}</div>`;
+                }
                 html += `<div class="pricing-card-label">${productName}</div>`;
-                // Show short_description on card, not full description
                 if (shortDesc) {
                     html += `<div class="pricing-card-desc">${shortDesc}</div>`;
                 }
@@ -2265,10 +2270,12 @@ async function loadLessonsProducts() {
             
             sortedProducts.forEach(product => {
                 const productName = getTranslatedText(product.name, lang) || 'Lesson';
-                const shortDesc = product.short_description ? getTranslatedText(product.short_description, lang) : '';
+                const shortDescRaw = product.short_description || product.shortDescription || null;
+                const shortDesc = shortDescRaw ? getTranslatedText(shortDescRaw, lang) : '';
                 const fullDesc = product.description ? getTranslatedText(product.description, lang) : '';
                 const price = formatPrice(product.price, product.priceRange, product.priceUnit || 'Kč');
-                const hasDescription = fullDesc && fullDesc.trim();
+                const allowModal = product.allowModal === true;
+                const hasModal = allowModal && fullDesc && fullDesc.trim();
                 
                 // Determine icon/image - prioritize imageUrl, then iconImage, then iconSvg
                 let iconHtml = '';
@@ -2293,8 +2300,8 @@ async function loadLessonsProducts() {
                 const formField = product.formField || (product.type === 'package' ? 'package' : 'service');
                 const dataAttr = formField === 'package' ? `data-package="${product.code}"` : `data-service="${product.code}"`;
                 
-                // Add data attributes for modal if description exists
-                const modalAttrs = hasDescription ? `data-product-code="${product.code}" data-product-description="${encodeURIComponent(fullDesc)}" data-product-image="${imageUrl || ''}"` : '';
+                // Add data attributes for modal if allowModal is true
+                const modalAttrs = allowModal ? `data-product-code="${product.code}" data-product-description="${fullDesc ? encodeURIComponent(fullDesc) : ''}" data-product-image="${imageUrl || ''}"` : '';
                 
                 html += `<div class="pricing-card" ${dataAttr} ${modalAttrs}>`;
                 html += `<div class="pricing-card-icon">${iconHtml}</div>`;

@@ -1001,6 +1001,37 @@ body {
   cursor: pointer;
 }
 
+/* Full-width image card */
+.pricing-card--full-width {
+  padding: 0;
+  overflow: hidden;
+}
+.pricing-card--full-width .pricing-card-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  padding: 5px;
+}
+.pricing-card--full-width .pricing-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.pricing-card--full-width .pricing-card-label,
+.pricing-card--full-width .pricing-card-desc,
+.pricing-card--full-width .pricing-card-price,
+.pricing-card--full-width .pricing-order-btn {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+.pricing-card--full-width .pricing-card-label {
+  padding-top: 16px;
+}
+.pricing-card--full-width .pricing-order-btn {
+  margin-bottom: 24px;
+}
+
 /* Voucher Cards */
 .voucher-grid {
   display: grid;
