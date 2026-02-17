@@ -569,9 +569,23 @@ if (coopForm) {
     });
 }
 
-// Year in footer
-const yearEl = document.getElementById('year');
-if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+// Footer component loader
+async function loadFooter() {
+    const placeholder = document.getElementById('footer-placeholder');
+    if (!placeholder) return;
+    try {
+        const resp = await fetch('./components/footer.html');
+        if (!resp.ok) throw new Error('Footer load failed');
+        const html = await resp.text();
+        placeholder.insertAdjacentHTML('afterend', html);
+        placeholder.remove();
+        const yearEl = document.getElementById('year');
+        if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+        applyI18n(getCurrentLang());
+    } catch (e) {
+        console.error('Failed to load footer:', e);
+    }
+}
 
 // Simple i18n (EN, CS)
 const translations = {
@@ -2561,6 +2575,7 @@ async function loadFormOptions() {
 // Initialize all components
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
+        loadFooter();
         initCustomMultiselect();
         initPricingOrderButtons();
         initLessonsCards();
@@ -2572,6 +2587,7 @@ if (document.readyState === 'loading') {
         loadFormOptions();
     });
 } else {
+    loadFooter();
     initCustomMultiselect();
     initPricingOrderButtons();
     initLessonsCards();
