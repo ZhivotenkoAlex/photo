@@ -11,7 +11,7 @@ async function fetchAPI(endpoint, params = {}) {
     const lang = getCurrentLang(); // Use consistent function
     const queryParams = new URLSearchParams({ lang, ...params });
     const url = `${API_BASE_URL}${endpoint}?${queryParams}`;
-    
+
     try {
         const response = await fetch(url, {
             method: 'GET',
@@ -19,17 +19,17 @@ async function fetchAPI(endpoint, params = {}) {
                 'Accept': 'application/json',
             },
         });
-        
+
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-        
+
         const data = await response.json();
-        
+
         if (!data.success) {
             throw new Error(data.error?.message || 'API request failed');
         }
-        
+
         return data.data;
     } catch (error) {
         console.error(`API Error (${endpoint}):`, error);
@@ -54,26 +54,26 @@ function getTranslatedText(textObj, lang = null) {
         return '';
     }
     const currentLang = lang || getCurrentLang();
-    
+
     // Try current language first, then fallback chain: en -> cs -> uk -> first available
     let result = textObj[currentLang];
     if (result !== undefined && result !== null && result !== '') {
         return String(result);
     }
-    
+
     // Fallback chain
     result = textObj.en || textObj.cs || textObj.uk;
     if (result !== undefined && result !== null) {
         return String(result);
     }
-    
+
     // If still nothing, try to get first available value
     const keys = Object.keys(textObj);
     if (keys.length > 0) {
         const firstValue = textObj[keys[0]];
         return firstValue !== undefined && firstValue !== null ? String(firstValue) : '';
     }
-    
+
     return '';
 }
 
@@ -208,7 +208,7 @@ if (leadForm) {
     // Add multiselect limit handlers
     const packageSelect = leadForm.querySelector('select[name="package"]');
     const serviceSelect = leadForm.querySelector('select[name="service"]');
-    
+
     if (packageSelect) {
         packageSelect.addEventListener('change', (e) => {
             const selected = Array.from(e.target.selectedOptions).filter(opt => opt.value);
@@ -221,7 +221,7 @@ if (leadForm) {
             }
         });
     }
-    
+
     if (serviceSelect) {
         serviceSelect.addEventListener('change', (e) => {
             const selected = Array.from(e.target.selectedOptions).filter(opt => opt.value);
@@ -234,14 +234,14 @@ if (leadForm) {
             }
         });
     }
-    
+
     leadForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         // Sync custom multiselect checkboxes with hidden select elements before form submission
         const packageMultiselect = leadForm.querySelector('.custom-multiselect[data-name="package"]');
         const serviceMultiselect = leadForm.querySelector('.custom-multiselect[data-name="service"]');
-        
+
         if (packageMultiselect) {
             const packageSelect = leadForm.querySelector('select[name="package"]');
             if (packageSelect) {
@@ -258,7 +258,7 @@ if (leadForm) {
                 });
             }
         }
-        
+
         if (serviceMultiselect) {
             const serviceSelect = leadForm.querySelector('select[name="service"]');
             if (serviceSelect) {
@@ -275,13 +275,13 @@ if (leadForm) {
                 });
             }
         }
-        
+
         const formData = new FormData(leadForm);
         const name = (formData.get('name') || '').toString().trim();
         const surname = (formData.get('surname') || '').toString().trim();
         const phone = (formData.get('phone') || '').toString().trim();
         const contact = (formData.get('contact') || '').toString().trim();
-        
+
         // Get selected values directly from select elements (more reliable than FormData.getAll)
         const packageSelect = leadForm.querySelector('select[name="package"]');
         const serviceSelect = leadForm.querySelector('select[name="service"]');
@@ -293,7 +293,7 @@ if (leadForm) {
             .filter(opt => !opt.disabled && opt.value)
             .map(opt => opt.value)
             .filter(s => s && s.trim()) : [];
-        
+
         const city = (formData.get('city') || '').toString().trim();
         const street = (formData.get('street') || '').toString().trim();
         const house = (formData.get('house') || '').toString().trim();
@@ -345,7 +345,7 @@ if (leadForm) {
             errors.push('service');
             markError('service', 'err.max_services');
         }
-        
+
         // At least one of package or service must be selected
         if (packages.length === 0 && services.length === 0) {
             errors.push('package');
@@ -1198,7 +1198,7 @@ const translations = {
         'form.selected': 'вибрано',
         'form.submit': 'Надіслати',
         'form.note': 'Надсилаючи форму, ви погоджуєтесь з політикою конфіденційності.',
-        'form.agreed': 'При договориності є передплатня 40% від суми.',
+        'form.agreed': 'При домовленості є передоплата 40% від суми.',
         // Cooperation page
         'coop.title': 'Працюйте з Memori',
         'coop.desc': 'Фотографи та відеооператори — надішліть заявку на співпрацю з нашою командою.',
@@ -1433,7 +1433,7 @@ if (langDd) {
             list.querySelectorAll('li').forEach(el => el.classList.toggle('active', el === li));
             langDd.classList.remove('is-open');
             btn.setAttribute('aria-expanded', 'false');
-            
+
             // Reload dynamic content when language changes
             if (typeof loadPricingProducts === 'function') {
                 loadPricingProducts();
@@ -1463,11 +1463,11 @@ let productModalsInitialized = false;
 function initProductModals() {
     const productPopup = document.getElementById('product-popup');
     if (!productPopup) return; // Only initialize if modal exists on page
-    
+
     // Prevent multiple initializations
     if (productModalsInitialized) return;
     productModalsInitialized = true;
-    
+
     const popupImage = document.getElementById('popup-image');
     const popupTitle = document.getElementById('popup-title');
     const popupPrice = document.getElementById('popup-price');
@@ -1481,7 +1481,7 @@ function initProductModals() {
         }
         if (popupTitle) popupTitle.textContent = title;
         if (popupPrice) popupPrice.textContent = price;
-        
+
         // Find or create description element
         let popupDesc = popupTitle.parentElement.querySelector('.product-popup-description');
         if (description && description.trim()) {
@@ -1504,7 +1504,7 @@ function initProductModals() {
                 popupDesc.style.display = 'none';
             }
         }
-        
+
         productPopup.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
     };
@@ -1524,12 +1524,12 @@ function initProductModals() {
             if (e.target.closest('.pricing-order-btn')) {
                 return;
             }
-            
+
             const card = e.target.closest('.pricing-card[data-product-code]');
             if (!card) return;
-            
+
             const description = decodeURIComponent(card.getAttribute('data-product-description') || '');
-            
+
             const img = card.querySelector('.pricing-card-icon img') || card.querySelector('.pricing-card-image img');
             const label = card.querySelector('.pricing-card-label');
             const price = card.querySelector('.pricing-card-price');
@@ -1867,23 +1867,23 @@ function initCustomMultiselect() {
     const selects = document.querySelectorAll('select[name="package"], select[name="service"]');
     selects.forEach(select => {
         if (select.hasAttribute('data-custom-multiselect')) return; // Already initialized
-        
+
         const maxSelections = select.name === 'package' ? 3 : 4;
         const placeholderKey = select.name === 'package' ? 'form.package_placeholder' : 'form.service_placeholder';
-        
+
         // Create wrapper
         const wrapper = document.createElement('div');
         wrapper.className = 'custom-multiselect';
         wrapper.setAttribute('data-name', select.name);
         wrapper.setAttribute('data-max', maxSelections);
-        
+
         // Create trigger button
         const trigger = document.createElement('button');
         trigger.type = 'button';
         trigger.className = 'custom-multiselect__trigger input-select';
         trigger.setAttribute('aria-haspopup', 'listbox');
         trigger.setAttribute('aria-expanded', 'false');
-        
+
         // Create display text
         const displayText = document.createElement('span');
         displayText.className = 'custom-multiselect__display';
@@ -1891,18 +1891,18 @@ function initCustomMultiselect() {
         const dict = translations[lang] || translations.cs || translations.en;
         displayText.textContent = dict[placeholderKey] || 'Choose...';
         trigger.appendChild(displayText);
-        
+
         // Create dropdown arrow
         const arrow = document.createElement('span');
         arrow.className = 'custom-multiselect__arrow';
         arrow.innerHTML = '▼';
         trigger.appendChild(arrow);
-        
+
         // Create dropdown panel
         const panel = document.createElement('div');
         panel.className = 'custom-multiselect__panel';
         panel.setAttribute('role', 'listbox');
-        
+
         // Process optgroups first
         const optgroups = [];
         const optionsInGroups = new Set();
@@ -1927,7 +1927,7 @@ function initCustomMultiselect() {
                 });
             }
         });
-        
+
         // Process standalone options (not in optgroups)
         const options = [];
         Array.from(select.options).forEach(opt => {
@@ -1938,7 +1938,7 @@ function initCustomMultiselect() {
                 i18n: opt.getAttribute('data-i18n')
             });
         });
-        
+
         // Build panel HTML
         optgroups.forEach(group => {
             const groupEl = document.createElement('div');
@@ -1949,7 +1949,7 @@ function initCustomMultiselect() {
             const dict = translations[lang] || translations.cs || translations.en;
             groupLabelEl.textContent = group.i18n && dict[group.i18n] ? dict[group.i18n] : group.label;
             groupEl.appendChild(groupLabelEl);
-            
+
             group.options.forEach(opt => {
                 const optionEl = document.createElement('label');
                 optionEl.className = 'custom-multiselect__option';
@@ -1967,7 +1967,7 @@ function initCustomMultiselect() {
             });
             panel.appendChild(groupEl);
         });
-        
+
         // Add standalone options
         options.forEach(opt => {
             const optionEl = document.createElement('label');
@@ -1983,16 +1983,16 @@ function initCustomMultiselect() {
             optionEl.appendChild(span);
             panel.appendChild(optionEl);
         });
-        
+
         // Assemble wrapper
         wrapper.appendChild(trigger);
         wrapper.appendChild(panel);
-        
+
         // Replace select
         select.setAttribute('data-custom-multiselect', 'true');
         select.style.display = 'none';
         select.parentNode.insertBefore(wrapper, select);
-        
+
         // Update display text function
         const updateDisplay = () => {
             const checked = wrapper.querySelectorAll('.custom-multiselect__checkbox:checked');
@@ -2006,7 +2006,7 @@ function initCustomMultiselect() {
                 displayText.textContent = `${checked.length} ${dict['form.selected'] || 'selected'}`;
             }
         };
-        
+
         // Handle checkbox changes
         panel.addEventListener('change', (e) => {
             if (e.target.type === 'checkbox') {
@@ -2027,7 +2027,7 @@ function initCustomMultiselect() {
                 });
             }
         });
-        
+
         // Handle trigger click
         trigger.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -2038,7 +2038,7 @@ function initCustomMultiselect() {
             wrapper.classList.toggle('is-open', !isOpen);
             trigger.setAttribute('aria-expanded', !isOpen ? 'true' : 'false');
         });
-        
+
         // Close on outside click
         document.addEventListener('click', (e) => {
             if (!wrapper.contains(e.target)) {
@@ -2046,7 +2046,7 @@ function initCustomMultiselect() {
                 trigger.setAttribute('aria-expanded', 'false');
             }
         });
-        
+
         updateDisplay();
     });
 }
@@ -2060,7 +2060,7 @@ function initFormPreSelection() {
     // Support both single values and comma-separated values
     const serviceParam = urlParams.get('service');
     const packageParam = urlParams.get('package');
-    
+
     // Get all values for service (support multiple parameters or comma-separated)
     const services = [];
     if (serviceParam) {
@@ -2075,7 +2075,7 @@ function initFormPreSelection() {
     urlParams.getAll('service').forEach(s => {
         if (!services.includes(s)) services.push(s);
     });
-    
+
     // Get all values for package
     const packages = [];
     if (packageParam) {
@@ -2168,27 +2168,27 @@ function initFormPreSelection() {
 async function loadPricingProducts() {
     const container = document.getElementById('pricing-products-container');
     if (!container) return;
-    
+
     try {
         const data = await fetchAPI('/products', { page: 'pricing' });
         if (!data || !data.groups) return;
-        
+
         const lang = getCurrentLang();
         let html = '';
-        
+
         // Sort groups by order
         const sortedGroups = [...data.groups].sort((a, b) => (a.order || 0) - (b.order || 0));
-        
+
         sortedGroups.forEach(group => {
             const groupName = getTranslatedText(group.label || group.name, lang);
             html += `<h2 class="pricing-section-title">${groupName || 'Products'}</h2>`;
             html += '<div class="pricing-cards-grid">';
-            
+
             // Sort products by order
             const sortedProducts = [...(group.products || [])]
                 .filter(p => p.active !== false)
                 .sort((a, b) => (a.order || 0) - (b.order || 0));
-            
+
             sortedProducts.forEach(product => {
                 const productName = getTranslatedText(product.name, lang) || 'Product';
                 const shortDescRaw = product.short_description || product.shortDescription || null;
@@ -2197,13 +2197,13 @@ async function loadPricingProducts() {
                 const price = formatPrice(product.price, product.priceRange, product.priceUnit || 'Kč');
                 const isFullWidth = product.isFullWidth === true;
                 const allowModal = product.allowModal === true;
-                
+
                 // Determine icon/image
                 let iconHtml = '';
                 const imageUrl = (product.imageUrl && product.imageUrl.trim()) || (product.iconImage && product.iconImage.trim()) || null;
                 if (imageUrl && imageUrl.trim()) {
-                    const imagePath = imageUrl.startsWith('./') || imageUrl.startsWith('/') || imageUrl.startsWith('http') 
-                        ? imageUrl 
+                    const imagePath = imageUrl.startsWith('./') || imageUrl.startsWith('/') || imageUrl.startsWith('http')
+                        ? imageUrl
                         : `./${imageUrl}`;
                     iconHtml = `<img src="${imagePath}" alt="${productName}" />`;
                 } else if (product.iconSvg && product.iconSvg.trim()) {
@@ -2215,17 +2215,17 @@ async function loadPricingProducts() {
                         <path d="M3 12h18" />
                     </svg>`;
                 }
-                
+
                 // Determine data attribute for form redirect
                 const formField = product.formField || (product.type === 'package' ? 'package' : 'service');
                 const dataAttr = formField === 'package' ? `data-package="${product.code}"` : `data-service="${product.code}"`;
-                
+
                 // Add data attributes for modal if allowModal is true
                 const modalAttrs = allowModal ? `data-product-code="${product.code}" data-product-description="${fullDesc ? encodeURIComponent(fullDesc) : ''}" data-product-image="${imageUrl || ''}"` : '';
-                
+
                 // Full-width class
                 const fullWidthClass = isFullWidth ? ' pricing-card--full-width' : '';
-                
+
                 html += `<div class="pricing-card${fullWidthClass}" ${dataAttr} ${modalAttrs}>`;
                 if (isFullWidth && imageUrl) {
                     html += `<div class="pricing-card-image">${iconHtml}</div>`;
@@ -2240,18 +2240,18 @@ async function loadPricingProducts() {
                 html += `<button type="button" class="btn btn-primary pricing-order-btn" data-i18n="pricing.order">Order</button>`;
                 html += '</div>';
             });
-            
+
             html += '</div>';
         });
-        
+
         container.innerHTML = html;
-        
+
         // Re-initialize order buttons after content is loaded
         initPricingOrderButtons();
-        
+
         // Initialize product modals after content is loaded
         initProductModals();
-        
+
         // Apply i18n translations with current language
         applyI18n(lang);
     } catch (error) {
@@ -2264,30 +2264,30 @@ async function loadPricingProducts() {
 async function loadLessonsProducts() {
     const lessonsPage = document.querySelector('.lessons-page');
     if (!lessonsPage) return;
-    
+
     const container = lessonsPage.querySelector('.pricing-content');
     if (!container) return;
-    
+
     try {
         const data = await fetchAPI('/products', { page: 'lessons' });
         if (!data || !data.groups) return;
-        
+
         const lang = getCurrentLang();
         let html = '';
-        
+
         // Sort groups by order
         const sortedGroups = [...data.groups].sort((a, b) => (a.order || 0) - (b.order || 0));
-        
+
         sortedGroups.forEach(group => {
             const groupName = getTranslatedText(group.label || group.name, lang);
             html += `<h2 class="pricing-section-title">${groupName || 'Lessons'}</h2>`;
             html += '<div class="pricing-cards-grid">';
-            
+
             // Sort products by order
             const sortedProducts = [...(group.products || [])]
                 .filter(p => p.active !== false)
                 .sort((a, b) => (a.order || 0) - (b.order || 0));
-            
+
             sortedProducts.forEach(product => {
                 const productName = getTranslatedText(product.name, lang) || 'Lesson';
                 const shortDescRaw = product.short_description || product.shortDescription || null;
@@ -2296,13 +2296,13 @@ async function loadLessonsProducts() {
                 const price = formatPrice(product.price, product.priceRange, product.priceUnit || 'Kč');
                 const allowModal = product.allowModal === true;
                 const hasModal = allowModal && fullDesc && fullDesc.trim();
-                
+
                 // Determine icon/image - prioritize imageUrl, then iconImage, then iconSvg
                 let iconHtml = '';
                 const imageUrl = (product.imageUrl && product.imageUrl.trim()) || (product.iconImage && product.iconImage.trim()) || null;
                 if (imageUrl && imageUrl.trim()) {
-                    const imagePath = imageUrl.startsWith('./') || imageUrl.startsWith('/') || imageUrl.startsWith('http') 
-                        ? imageUrl 
+                    const imagePath = imageUrl.startsWith('./') || imageUrl.startsWith('/') || imageUrl.startsWith('http')
+                        ? imageUrl
                         : `./${imageUrl}`;
                     iconHtml = `<img src="${imagePath}" alt="${productName}" />`;
                 } else if (product.iconSvg && product.iconSvg.trim()) {
@@ -2315,14 +2315,14 @@ async function loadLessonsProducts() {
                         <path d="M3 12h18" />
                     </svg>`;
                 }
-                
+
                 // Determine data attribute for form redirect
                 const formField = product.formField || (product.type === 'package' ? 'package' : 'service');
                 const dataAttr = formField === 'package' ? `data-package="${product.code}"` : `data-service="${product.code}"`;
-                
+
                 // Add data attributes for modal if allowModal is true
                 const modalAttrs = allowModal ? `data-product-code="${product.code}" data-product-description="${fullDesc ? encodeURIComponent(fullDesc) : ''}" data-product-image="${imageUrl || ''}"` : '';
-                
+
                 html += `<div class="pricing-card" ${dataAttr} ${modalAttrs}>`;
                 html += `<div class="pricing-card-icon">${iconHtml}</div>`;
                 html += `<div class="pricing-card-label">${productName}</div>`;
@@ -2332,15 +2332,15 @@ async function loadLessonsProducts() {
                 html += `<div class="pricing-card-price">${price}</div>`;
                 html += '</div>';
             });
-            
+
             html += '</div>';
         });
-        
+
         // Replace static content with dynamic content
         // Find all static sections (h2 titles and grids)
         const staticSections = container.querySelectorAll('.pricing-section-title, .pricing-cards-grid');
         staticSections.forEach(el => el.remove());
-        
+
         // Insert new content after the note paragraph
         const note = container.querySelector('.pricing-page-note');
         if (note) {
@@ -2348,13 +2348,13 @@ async function loadLessonsProducts() {
         } else {
             container.insertAdjacentHTML('beforeend', html);
         }
-        
+
         // Re-initialize lessons cards click handlers
         initLessonsCards();
-        
+
         // Initialize product modals if needed
         initProductModals();
-        
+
         // Apply i18n translations with current language
         applyI18n(lang);
     } catch (error) {
@@ -2366,39 +2366,39 @@ async function loadLessonsProducts() {
 async function loadServices() {
     const servicesSection = document.getElementById('services');
     if (!servicesSection) return;
-    
+
     try {
         const data = await fetchAPI('/products', { page: 'packages' });
         if (!data || !data.groups || data.groups.length === 0) {
             // If no data, keep static content
             return;
         }
-        
+
         const lang = getCurrentLang();
         let html = '';
-        
+
         // Sort groups by order
         const sortedGroups = [...data.groups].sort((a, b) => (a.order || 0) - (b.order || 0));
-        
+
         sortedGroups.forEach(group => {
             const groupName = getTranslatedText(group.label || group.name, lang);
             html += `<h3 class="grid-title">${groupName || 'Services'}</h3>`;
             html += '<div class="cards-grid cards-2">';
-            
+
             // Sort products by order
             const sortedProducts = [...(group.products || [])]
                 .filter(p => p.active !== false)
                 .sort((a, b) => (a.order || 0) - (b.order || 0));
-            
+
             sortedProducts.forEach(product => {
                 const productName = getTranslatedText(product.name, lang) || 'Service';
-                
+
                 // For service cards, prioritize imageUrl, then iconSvg, then default SVG
                 let iconHtml = '';
                 const imageUrl = (product.imageUrl && product.imageUrl.trim()) || (product.iconImage && product.iconImage.trim()) || null;
                 if (imageUrl && imageUrl.trim()) {
-                    const imagePath = imageUrl.startsWith('./') || imageUrl.startsWith('/') || imageUrl.startsWith('http') 
-                        ? imageUrl 
+                    const imagePath = imageUrl.startsWith('./') || imageUrl.startsWith('/') || imageUrl.startsWith('http')
+                        ? imageUrl
                         : `./${imageUrl}`;
                     iconHtml = `<img src="${imagePath}" alt="${productName}" />`;
                 } else if (product.iconSvg && product.iconSvg.trim()) {
@@ -2411,20 +2411,20 @@ async function loadServices() {
                         <path d="M3 12h18" />
                     </svg>`;
                 }
-                
+
                 // Determine redirect type based on formField or type
                 const formField = product.formField || (product.type === 'package' ? 'package' : 'service');
                 const dataAttr = formField === 'package' ? `data-package="${product.code}"` : `data-service="${product.code}"`;
-                
+
                 html += `<a class="service-card" href="./leadForm.html" ${dataAttr}>`;
                 html += `<div class="icon" aria-hidden="true">${iconHtml}</div>`;
                 html += `<div class="label">${productName}</div>`;
                 html += '</a>';
             });
-            
+
             html += '</div>';
         });
-        
+
         // Replace static content with dynamic content only if we have HTML to insert
         if (html) {
             const heroContent = servicesSection.querySelector('.hero-content');
@@ -2434,7 +2434,7 @@ async function loadServices() {
                 if (staticContent && staticContent.length > 0) {
                     staticContent.forEach(el => el.remove());
                 }
-                
+
                 // Insert new content after subtitle
                 const subtitle = heroContent.querySelector('.hero-subtitle');
                 if (subtitle) {
@@ -2444,7 +2444,7 @@ async function loadServices() {
                 }
             }
         }
-        
+
         // Apply i18n translations with current language
         applyI18n(lang);
     } catch (error) {
