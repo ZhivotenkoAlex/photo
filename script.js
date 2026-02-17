@@ -578,6 +578,8 @@ const translations = {
     en: {
         'footer.privacy': 'Privacy',
         'footer.terms': 'Terms',
+        'footer.phone': 'Phone',
+        'footer.email': 'Email',
         'nav.coop': 'Cooperation',
         'nav.services': 'Services',
         'nav.portfolio': 'Portfolio',
@@ -817,6 +819,8 @@ const translations = {
     cs: {
         'footer.privacy': 'Soukromí',
         'footer.terms': 'Podmínky',
+        'footer.phone': 'Telefon',
+        'footer.email': 'E-mail',
         'nav.coop': 'Spolupráce',
         'nav.services': 'Služby',
         'nav.portfolio': 'Portfolio',
@@ -1057,6 +1061,8 @@ const translations = {
     uk: {
         'footer.privacy': 'Приватність',
         'footer.terms': 'Умови',
+        'footer.phone': 'Телефон',
+        'footer.email': 'Email',
         'nav.coop': 'Співпраця',
         'nav.services': 'Послуги',
         'nav.portfolio': 'Портфоліо',
