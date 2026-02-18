@@ -1447,6 +1447,9 @@ if (langDd) {
             if (typeof loadServices === 'function') {
                 loadServices();
             }
+            if (typeof loadTeamUsers === 'function') {
+                loadTeamUsers();
+            }
             if (typeof loadFormOptions === 'function') {
                 loadFormOptions();
             }
@@ -2167,6 +2170,120 @@ function initFormPreSelection() {
     }
 }
 
+// Pluralize "years" by number and language
+function formatExperienceYears(value, lang = null) {
+    const l = lang || getCurrentLang();
+    if (!value && value !== 0) return '';
+
+    const str = String(value).trim();
+    const hasPlus = str.includes('+');
+    const numStr = str.replace(/[^\d.,]/g, '').replace(',', '.') || '0';
+    const num = parseFloat(numStr) || 0;
+    const n = Math.floor(num);
+    const hasDecimal = num !== n;
+
+    const forms = {
+        en: { one: 'year', few: 'years', many: 'years' },
+        cs: { one: 'rok', few: 'roky', many: 'let' },
+        uk: { one: 'рік', few: 'роки', many: 'років' }
+    };
+    const f = forms[l] || forms.en;
+
+    let suffix;
+    if (n === 1 && !hasPlus && !hasDecimal) suffix = f.one;
+    else if (l === 'cs' && n >= 2 && n <= 4 && !hasPlus && !hasDecimal) suffix = f.few;
+    else if (l === 'uk' && n >= 2 && n <= 4 && !hasPlus && !hasDecimal) suffix = f.few;
+    else suffix = f.many;
+
+    const displayNum = numStr.includes('.') ? numStr.replace('.', ',') : (hasPlus ? n + '+' : n);
+    return `${displayNum} ${suffix}`;
+}
+
+// Escape HTML for safe insertion
+function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+// Load and render team users for about page
+async function loadTeamUsers() {
+    const teamGrid = document.querySelector('.team-grid');
+    if (!teamGrid) return;
+
+    try {
+        const lang = getCurrentLang();
+        let url = `${API_BASE_URL}/users/landing-team?lang=${lang}`;
+        let response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        if (!response.ok && response.status === 404) {
+            url = `${API_BASE_URL}/users?lang=${lang}`;
+            response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        }
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const json = await response.json();
+        // Support both { success, data } and raw array
+        const raw = json?.data ?? json;
+        const users = Array.isArray(raw) ? raw : (raw?.users || []);
+        const filtered = users
+            .filter(u => u.add_to_website === true || u.add_to_website === 1 || u.order_at_website != null)
+            .sort((a, b) => (a.order_at_website ?? 999) - (b.order_at_website ?? 999));
+
+        const dict = translations[lang] || translations.cs || translations.en;
+        const expLabel = escapeHtml(dict['team.label_experience'] || 'Experience');
+
+        const roleLabels = { owner: 'role.founder', admin: 'team.hanna_role', photographer: 'team.zhenya_role', delivery: 'team.mykhailo_role', agent: 'role.call_agent' };
+
+        let html = '';
+        filtered.forEach(user => {
+            const fullName = [user.name, user.surname].filter(Boolean).join(' ');
+            const name = escapeHtml(fullName || user.full_name || '');
+            const roleKey = roleLabels[user.role] || user.role;
+            const role = escapeHtml(dict[roleKey] || user.role || '');
+            const photo = user.photo_url || user.photo || user.avatar || user.image_url || user.imageUrl || './images/team-placeholder.png';
+            const photoSrc = (photo.startsWith('./') || photo.startsWith('/') || photo.startsWith('http')) ? photo : `./${photo}`;
+            const expRaw = user.experience || user.exp || '';
+            const experience = escapeHtml(expRaw ? formatExperienceYears(expRaw, lang) : '');
+            const shortDescObj = user.short_description_uk || user.short_description_en || user.short_description_cs
+                ? { uk: user.short_description_uk, en: user.short_description_en, cs: user.short_description_cs }
+                : null;
+            const shortDesc = shortDescObj ? getTranslatedText(shortDescObj, lang) : (user.short_description || user.shortDescription || user.comment || '');
+
+            let description = '';
+            if (user.description_uk || user.description_en || user.description_cs) {
+                description = getTranslatedText(
+                    { uk: user.description_uk, en: user.description_en, cs: user.description_cs },
+                    lang
+                ) || '';
+            }
+
+            const metaHtml = experience
+                ? `<div class="meta"><div class="meta-row"><span class="meta-label">${expLabel}</span><span class="meta-value">${experience}</span></div></div>`
+                : '';
+
+            const descText = (shortDesc || description || '').replace(/<[^>]+>/g, '');
+            const descPreview = escapeHtml(descText.length > 80 ? descText.slice(0, 80) + '…' : descText);
+
+            const descAttr = description ? description.replace(/"/g, '&quot;') : '';
+
+            html += `
+            <div class="team-card" data-team-photo="${escapeHtml(photoSrc)}" data-team-description="${descAttr}">
+                <div class="avatar"><img src="${escapeHtml(photoSrc)}" alt="${name}" /></div>
+                <div class="name">${name}</div>
+                <div class="role">${role}</div>
+                ${metaHtml}
+                <p class="desc">${descPreview}</p>
+            </div>`;
+        });
+
+        teamGrid.innerHTML = html || '<p class="team-empty">No team members to display.</p>';
+    } catch (error) {
+        console.error('Failed to load team users:', error);
+        teamGrid.innerHTML = '<p class="team-empty">Failed to load team. Please try again later.</p>';
+    }
+}
+
 // Load and render products for pricing page
 async function loadPricingProducts() {
     const container = document.getElementById('pricing-products-container');
@@ -2588,6 +2705,7 @@ if (document.readyState === 'loading') {
         loadLessonsProducts();
         loadServices();
         loadFormOptions();
+        loadTeamUsers();
     });
 } else {
     loadFooter();
@@ -2600,4 +2718,5 @@ if (document.readyState === 'loading') {
     loadLessonsProducts();
     loadServices();
     loadFormOptions();
+    loadTeamUsers();
 }
