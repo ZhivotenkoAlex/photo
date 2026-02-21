@@ -280,6 +280,7 @@ if (leadForm) {
         const name = (formData.get('name') || '').toString().trim();
         const surname = (formData.get('surname') || '').toString().trim();
         const phone = (formData.get('phone') || '').toString().trim();
+        const email = (formData.get('email') || '').toString().trim();
         const contact = (formData.get('contact') || '').toString().trim();
 
         // Get selected values directly from select elements (more reliable than FormData.getAll)
@@ -336,6 +337,11 @@ if (leadForm) {
             errors.push('phone');
             markError('phone', 'err.phone');
         }
+        const emailValid = !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        if (email && !emailValid) {
+            errors.push('email');
+            markError('email', 'err.email');
+        }
         // Validate multiselect limits
         if (packages.length > 3) {
             errors.push('package');
@@ -370,6 +376,7 @@ if (leadForm) {
             service: services   // Always send as array (empty if none selected)
         };
         // Only include optional fields that have values
+        if (email && email.trim()) payload.email = email;
         if (contact && contact.trim()) payload.contact = contact;
         if (comment && comment.trim()) payload.comment = comment;
 
@@ -689,6 +696,7 @@ const translations = {
         'form.required_hint': 'Fields marked with * are required.',
         'err.required': 'This field is required',
         'err.phone': 'Enter a valid phone number',
+        'err.email': 'Enter a valid email address',
         'err.package_or_service': 'Please select either a package or a service',
         'err.max_packages': 'Maximum 3 packages can be selected',
         'err.max_services': 'Maximum 4 services can be selected',
@@ -700,6 +708,7 @@ const translations = {
         'coop.desc': 'Photographers and videographers — send your application to collaborate with our team.',
         'coop.note': 'A Memory manager will contact you within 24 hours.',
         'form.email': 'Email',
+        'form.email_hint': 'Used for order status updates via email.',
         'form.role': 'Role',
         'form.role_placeholder': 'Choose a role',
         'role.founder': 'Founder',
@@ -954,6 +963,7 @@ const translations = {
         'form.required_hint': 'Povinná pole jsou označena *.',
         'err.required': 'Toto pole je povinné',
         'err.phone': 'Zadejte platné telefonní číslo',
+        'err.email': 'Zadejte platnou e-mailovou adresu',
         'err.package_or_service': 'Prosím vyberte buď balíček nebo službu',
         'err.max_packages': 'Můžete vybrat maximálně 3 balíčky',
         'err.max_services': 'Můžete vybrat maximálně 4 služby',
@@ -966,6 +976,7 @@ const translations = {
         'coop.desc': 'Fotografové a kameramani — pošlete žádost o spolupráci s naším týmem.',
         'coop.note': 'Správce paměti vás bude kontaktovat do 24 hodin.',
         'form.email': 'E-mail',
+        'form.email_hint': 'Použije se pro e-mailové informace o stavu objednávky.',
         'form.role': 'Role',
         'form.role_placeholder': 'Vyberte roli',
         'role.empty': 'Prázdný',
@@ -1194,6 +1205,7 @@ const translations = {
         'form.required_hint': 'Поля, позначені *, є обов’язковими.',
         'err.required': 'Це поле є обов\'язковим',
         'err.phone': 'Введіть коректний номер телефону.',
+        'err.email': 'Введіть коректну email-адресу.',
         'err.package_or_service': 'Будь ласка, оберіть або пакет, або послугу',
         'err.max_packages': 'Можна вибрати максимум 3 пакети',
         'err.max_services': 'Можна вибрати максимум 4 послуги',
@@ -1206,6 +1218,7 @@ const translations = {
         'coop.desc': 'Фотографи та відеооператори — надішліть заявку на співпрацю з нашою командою.',
         'coop.note': 'Керівник Memori зв’яжеться з вами протягом 24 годин.',
         'form.email': 'Email',
+        'form.email_hint': 'Використовується для електронних повідомлень про статус замовлення.',
         'form.role': 'Роль',
         'form.role_placeholder': 'Оберіть роль',
         'role.empty': 'Пусто',
